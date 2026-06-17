@@ -1,4 +1,4 @@
-﻿package nitis.gravillaso.content;
+package nitis.gravillaso.content;
 
 import mindustry.type.Planet;
 
