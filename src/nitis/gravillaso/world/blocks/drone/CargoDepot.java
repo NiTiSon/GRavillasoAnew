@@ -1,6 +1,7 @@
 package nitis.gravillaso.world.blocks.drone;
 
 import arc.Core;
+import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.gen.Building;
@@ -14,7 +15,7 @@ import mindustry.world.meta.BlockGroup;
 
 public class CargoDepot extends Block {
     public UnitType droneType;
-    public float buildDuration = 120f * 60f;
+    public float buildDuration = 90f * Time.toSeconds;
 
     public CargoDepot(String name) {
         super(name);
@@ -31,7 +32,7 @@ public class CargoDepot extends Block {
         addBar("drone-status", (CargoDepotBuild build) -> {
             if (build.drone != null && build.drone.isValid() && !build.drone.dead()) {
                 return new Bar(
-                    () -> Core.bundle.get("bar.drone-active"),
+                    () -> Core.bundle.get("bar.drone-health"),
                     () -> Pal.heal,
                     () -> build.drone.health / droneType.health
                 );

@@ -5,10 +5,10 @@ import mindustry.gen.UnitEntity;
 import mindustry.type.UnitType;
 
 public class GRUnitTypes {
-    public static UnitType cargoDrone, bigCargoDrone;
+    public static UnitType phortotis, skoros;
 
     public static void load() {
-        cargoDrone = new UnitType("cargo-drone") {{
+        phortotis = new UnitType("phortotis") {{
             flying = true;
             health = 120f;
             speed = 2.5f;
@@ -29,7 +29,7 @@ public class GRUnitTypes {
             constructor = UnitEntity::create;
         }};
 
-        bigCargoDrone = new UnitType("big-cargo-drone") {{
+        skoros = new UnitType("skoros") {{
             flying = true;
             health = 240f;
             speed = 3.0f;
