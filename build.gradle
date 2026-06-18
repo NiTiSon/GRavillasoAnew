@@ -4,6 +4,14 @@ version = '1.0'
 
 sourceSets.main.java.srcDirs = ["src"]
 
+sourceSets{
+    tools{
+        java{
+            srcDirs = ["tools/src"]
+        }
+    }
+}
+
 repositories{
     mavenCentral()
 
@@ -45,8 +53,22 @@ ext{
     sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
 }
 
+configurations{
+    toolsImplementation.extendsFrom implementation
+}
+
 dependencies{
     compileOnly mindustryVersion == "be" ? "Anuken:MindustryBuilds:latest" : "Anuken:Mindustry:$mindustryVersion"
+    toolsImplementation mindustryVersion == "be" ? "Anuken:MindustryBuilds:latest" : "Anuken:Mindustry:$mindustryVersion"
+}
+
+tasks.register('packSprites', JavaExec){
+    dependsOn toolsClasses
+    description = 'Process raw sprites with antialiasing and generate outlines'
+    group = 'build'
+    classpath = sourceSets.tools.runtimeClasspath
+    mainClass = 'pack.SpritesPacker'
+    workingDir = projectDir
 }
 
 tasks.register('jarAndroid'){
@@ -70,6 +92,8 @@ tasks.register('jarAndroid'){
                 .execute(null, new File("build/libs")).waitForProcessOutput(System.out, System.err)
     }
 }
+
+jar.dependsOn packSprites
 
 jar{
     archiveFileName = "${project.name}Desktop.jar"

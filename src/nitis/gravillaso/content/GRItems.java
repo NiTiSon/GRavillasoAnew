@@ -5,7 +5,7 @@ import mindustry.content.Items;
 import mindustry.type.Item;
 
 public class GRItems {
-    public static Item cobalt, bauxite, alumina, aluminum;
+    public static Item cobalt, bauxite, alumina, aluminium;
 
     public static void load() {
         cobalt = new Item("cobalt", Color.valueOf("#0047ab")) {{
@@ -23,7 +23,7 @@ public class GRItems {
             cost = 2f;
         }};
 
-        aluminum = new Item("aluminum") {{
+        aluminium = new Item("aluminium") {{
             color = Color.valueOf("#c0c8d8");
             cost = 1.3f;
         }};

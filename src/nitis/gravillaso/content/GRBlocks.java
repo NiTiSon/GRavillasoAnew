@@ -20,7 +20,7 @@ public class GRBlocks {
     // storage - gravillo
     public static Block coreFortress;
     // cargo
-    public static Block cargoDepot, cargoDepotLarge, cargoReceivingPort, cargoSupplyPort;
+    public static Block cargoDepot, cargoDepotLarge, cargoSupplyPort, cargoReceivingPort;
 
     public static void load() {
         coreFortress = new CoreBlock("core-fortress") {{
@@ -59,13 +59,13 @@ public class GRBlocks {
             envEnabled |= Env.any;
         }};
 
-        cargoReceivingPort = new CargoReceivingPort("cargo-receiving-port") {{
+        cargoSupplyPort = new CargoSupplyPort("cargo-supply-port") {{
             requirements(Category.distribution, with(cobalt, 160, silicon, 300));
 
             size = 3;
         }};
 
-        cargoSupplyPort = new CargoSupplyPort("cargo-supply-port") {{
+        cargoReceivingPort = new CargoReceivingPort("cargo-receiving-port") {{
             requirements(Category.distribution, with(cobalt, 160, silicon, 300));
 
             size = 3;
