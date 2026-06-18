@@ -11,6 +11,7 @@ import mindustry.graphics.g3d.MultiMesh;
 import mindustry.maps.planet.SerpuloPlanetGenerator;
 import mindustry.type.Planet;
 import mindustry.world.meta.Env;
+import nitis.gravillaso.maps.planet.GravilloPlanetGenerator;
 
 public class GRPlanets {
     public static Planet gravillo;
@@ -19,7 +20,7 @@ public class GRPlanets {
         gravillo = new Planet("gravillo", Planets.sun, 0.7f, 1) {{
             loadPlanetData = false;
 
-            generator = new SerpuloPlanetGenerator();
+            generator = new GravilloPlanetGenerator();
             meshLoader = () -> new HexMesh(this, 6);
             cloudMeshLoader = () -> new MultiMesh(
                 new HexSkyMesh(this, 2, 0.15f, 0.13f, 5,
@@ -30,8 +31,8 @@ public class GRPlanets {
             minZoom = 1f;
             maxZoom = 2.5f;
 
-            accessible = true;
-            alwaysUnlocked = true;
+            accessible = false;
+            alwaysUnlocked = false;
             visible = true;
 
             bloom = true;
@@ -48,7 +49,7 @@ public class GRPlanets {
             atmosphereRadOut = 0.35f;
 
             defaultEnv = Env.terrestrial | Env.oxygen;
-            defaultCore = Blocks.coreShard;
+            defaultCore = GRBlocks.coreFortress;
 
             allowWaves = true;
             allowSectorInvasion = true;

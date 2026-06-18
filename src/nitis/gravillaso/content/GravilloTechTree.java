@@ -7,6 +7,7 @@ import mindustry.type.*;
 import static mindustry.Vars.*;
 import static mindustry.content.Blocks.*;
 import static mindustry.content.TechTree.*;
+import static nitis.gravillaso.content.GRBlocks.*;
 
 public class GravilloTechTree {
     public static void load() {
@@ -38,12 +39,12 @@ public class GravilloTechTree {
         costMultipliers.put(Items.phaseFabric, 0.2f);
         */
 
-        GRPlanets.gravillo.techTree = nodeRoot("gravillo", coreBastion, true, () -> {
+        GRPlanets.gravillo.techTree = nodeRoot("gravillo", coreFortress, true, () -> {
             context().researchCostMultipliers = costMultipliers;
 
             // units
-            node(GRBlocks.cargoDepot, () -> {
-                node(GRBlocks.CargoDepotLarge, () -> {
+            node(cargoDepot, () -> {
+                node(cargoDepotLarge, () -> {
 
                 });
             });
