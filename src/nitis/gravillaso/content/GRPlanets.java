@@ -3,6 +3,7 @@ package nitis.gravillaso.content;
 import arc.graphics.Color;
 import mindustry.content.Blocks;
 import mindustry.content.Planets;
+import mindustry.game.Difficulty;
 import mindustry.game.Rules;
 import mindustry.game.Team;
 import mindustry.graphics.g3d.HexMesh;
@@ -17,11 +18,11 @@ public class GRPlanets {
     public static Planet gravillo;
 
     public static void load() {
-        gravillo = new Planet("gravillo", Planets.sun, 0.7f, 1) {{
+        gravillo = new Planet("gravillo", Planets.sun, 1.125f, 2) {{
             loadPlanetData = false;
 
             generator = new GravilloPlanetGenerator();
-            meshLoader = () -> new HexMesh(this, 6);
+            meshLoader = () -> new HexMesh(this, 5);
             cloudMeshLoader = () -> new MultiMesh(
                 new HexSkyMesh(this, 2, 0.15f, 0.13f, 5,
                     Color.white.cpy().mul(0.9f).a(0.75f), 2, 0.45f, 0.9f, 0.38f),
@@ -33,9 +34,9 @@ public class GRPlanets {
 
             accessible = false;
             alwaysUnlocked = false;
-            visible = true;
+            visible = false;
 
-            bloom = true;
+            bloom = false;
             drawOrbit = true;
 
             sectorSeed = 2;
@@ -46,7 +47,7 @@ public class GRPlanets {
             landCloudColor = Color.white.cpy().a(0.5f);
 
             atmosphereRadIn = 0.02f;
-            atmosphereRadOut = 0.35f;
+            atmosphereRadOut = 0.3f;
 
             defaultEnv = Env.terrestrial | Env.oxygen;
             defaultCore = GRBlocks.coreFortress;
@@ -70,6 +71,12 @@ public class GRPlanets {
             };
 
             showRtsAIRule = true;
+
+            allowCampaignRules = true;
+            campaignRuleDefaults.difficulty = Difficulty.normal;
+            campaignRuleDefaults.fog = true;
+            campaignRuleDefaults.showSpawns = false;
+            campaignRuleDefaults.rtsAI = true;
         }};
     }
 }

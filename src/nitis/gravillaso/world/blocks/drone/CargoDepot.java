@@ -1,9 +1,11 @@
 package nitis.gravillaso.world.blocks.drone;
 
 import arc.Core;
+import arc.struct.EnumSet;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import mindustry.entities.TargetPriority;
 import mindustry.gen.Building;
 import mindustry.gen.Groups;
 import mindustry.gen.Unit;
@@ -11,6 +13,7 @@ import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
+import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockGroup;
 
 public class CargoDepot extends Block {

@@ -42,8 +42,14 @@ public class GravilloTechTree {
         GRPlanets.gravillo.techTree = nodeRoot("gravillo", coreFortress, true, () -> {
             context().researchCostMultipliers = costMultipliers;
 
-            // units
+            // distribution
             node(cargoDepot, () -> {
+                node(cargoSupplyPort, () -> {
+                    node(cargoReceivingPort, () -> {
+
+                    });
+                });
+
                 node(cargoDepotLarge, () -> {
 
                 });

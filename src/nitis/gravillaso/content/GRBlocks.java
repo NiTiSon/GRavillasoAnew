@@ -9,6 +9,8 @@ import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.Env;
 import nitis.gravillaso.world.blocks.drone.CargoDepot;
+import nitis.gravillaso.world.blocks.drone.CargoReceivingPort;
+import nitis.gravillaso.world.blocks.drone.CargoSupplyPort;
 
 import static mindustry.type.ItemStack.with;
 import static mindustry.content.Items.*;
@@ -18,7 +20,7 @@ public class GRBlocks {
     // storage - gravillo
     public static Block coreFortress;
     // cargo
-    public static Block cargoDepot, cargoDepotLarge;
+    public static Block cargoDepot, cargoDepotLarge, cargoReceivingPort, cargoSupplyPort;
 
     public static void load() {
         coreFortress = new CoreBlock("core-fortress") {{
@@ -42,7 +44,7 @@ public class GRBlocks {
         }};
 
         cargoDepot = new CargoDepot("cargo-depot") {{
-            requirements(Category.units, with(cobalt, 80, silicon, 120));
+            requirements(Category.distribution, with(cobalt, 80, silicon, 120));
             size = 3;
             droneType = GRUnitTypes.phortotis;
             consumePower(1f);
@@ -50,11 +52,23 @@ public class GRBlocks {
         }};
 
         cargoDepotLarge = new CargoDepot("cargo-depot-large") {{
-            requirements(Category.units, with(cobalt, 160, silicon, 300));
+            requirements(Category.distribution, with(cobalt, 160, silicon, 300));
             size = 4;
             droneType = GRUnitTypes.skoros;
             consumePower(3f);
             envEnabled |= Env.any;
+        }};
+
+        cargoReceivingPort = new CargoReceivingPort("cargo-receiving-port") {{
+            requirements(Category.distribution, with(cobalt, 160, silicon, 300));
+
+            size = 3;
+        }};
+
+        cargoSupplyPort = new CargoSupplyPort("cargo-supply-port") {{
+            requirements(Category.distribution, with(cobalt, 160, silicon, 300));
+
+            size = 3;
         }};
     }
 }
