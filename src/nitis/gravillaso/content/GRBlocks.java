@@ -9,8 +9,8 @@ import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.Env;
 import nitis.gravillaso.world.blocks.drone.CargoDepot;
-import nitis.gravillaso.world.blocks.drone.CargoReceivingPort;
-import nitis.gravillaso.world.blocks.drone.CargoSupplyPort;
+import nitis.gravillaso.world.blocks.drone.CargoPort;
+import nitis.gravillaso.world.blocks.drone.CargoTerminal;
 
 import static mindustry.type.ItemStack.with;
 import static mindustry.content.Items.*;
@@ -20,7 +20,7 @@ public class GRBlocks {
     // storage - gravillo
     public static Block coreFortress;
     // cargo
-    public static Block cargoDepot, cargoDepotLarge, cargoSupplyPort, cargoReceivingPort;
+    public static Block cargoDepot, cargoDepotLarge, cargoPort, cargoTerminal;
 
     public static void load() {
         coreFortress = new CoreBlock("core-fortress") {{
@@ -59,16 +59,20 @@ public class GRBlocks {
             envEnabled |= Env.any;
         }};
 
-        cargoSupplyPort = new CargoSupplyPort("cargo-supply-port") {{
+        cargoPort = new CargoPort("cargo-port") {{
             requirements(Category.distribution, with(cobalt, 160, silicon, 300));
-
             size = 3;
+
+            itemCapacity = 320;
+            liquidCapacity = 60f;
         }};
 
-        cargoReceivingPort = new CargoReceivingPort("cargo-receiving-port") {{
+        cargoTerminal = new CargoTerminal("cargo-terminal") {{
             requirements(Category.distribution, with(cobalt, 160, silicon, 300));
-
             size = 3;
+
+            itemCapacity = 320;
+            liquidCapacity = 60f;
         }};
     }
 }

@@ -1,14 +1,23 @@
 package nitis.gravillaso.content;
 
-import mindustry.ai.types.FlyingAI;
+import arc.Core;
+import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
+import arc.scene.ui.layout.Table;
 import mindustry.gen.UnitEntity;
+import mindustry.gen.Unit;
+import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
+import mindustry.ui.Bar;
+import nitis.gravillaso.ai.CargoDroneAI;
+import nitis.gravillaso.type.CargoUnitType;
 
 public class GRUnitTypes {
     public static UnitType phortotis, skoros;
 
     public static void load() {
-        phortotis = new UnitType("phortotis") {{
+        phortotis = new CargoUnitType("phortotis") {{
             flying = true;
             health = 120f;
             speed = 2.5f;
@@ -25,11 +34,11 @@ public class GRUnitTypes {
             createWreck = false;
             itemCapacity = 50;
             lowAltitude = true;
-            aiController = FlyingAI::new;
+            aiController = CargoDroneAI::new;
             constructor = UnitEntity::create;
         }};
 
-        skoros = new UnitType("skoros") {{
+        skoros = new CargoUnitType("skoros") {{
             flying = true;
             health = 240f;
             speed = 3.0f;
@@ -46,7 +55,7 @@ public class GRUnitTypes {
             createWreck = false;
             itemCapacity = 120;
             lowAltitude = true;
-            aiController = FlyingAI::new;
+            aiController = CargoDroneAI::new;
             constructor = UnitEntity::create;
         }};
     }

@@ -44,8 +44,8 @@ public class GravilloTechTree {
 
             // distribution
             node(cargoDepot, () -> {
-                node(cargoSupplyPort, () -> {
-                    node(cargoReceivingPort, () -> {
+                node(cargoPort, () -> {
+                    node(cargoTerminal, () -> {
 
                     });
                 });

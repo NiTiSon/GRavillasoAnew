@@ -15,6 +15,7 @@ import mindustry.ui.Bar;
 import mindustry.world.Block;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockGroup;
+import nitis.gravillaso.ai.CargoDroneAI;
 
 public class CargoDepot extends Block {
     public UnitType droneType;
@@ -47,6 +48,17 @@ public class CargoDepot extends Block {
                 );
             }
         });
+        addBar("drone-power", (CargoDepotBuild build) -> {
+            if (build.drone != null && build.drone.isValid() && !build.drone.dead()
+                && build.drone.controller() instanceof CargoDroneAI ai) {
+                return new Bar(
+                    () -> Core.bundle.get("bar.drone-power"),
+                    () -> Pal.accent,
+                    () -> ai.power / CargoDroneAI.maxPower
+                );
+            }
+            return null;
+        });
     }
 
     @Override
@@ -68,6 +80,10 @@ public class CargoDepot extends Block {
                 drone = Groups.unit.find(u -> u.id == pendingDroneId);
                 if (drone != null && (drone.dead() || !drone.isValid())) {
                     drone = null;
+                }
+                if (drone != null && drone.controller() instanceof CargoDroneAI ai) {
+                    ai.homeX = x;
+                    ai.homeY = y;
                 }
                 pendingDroneId = -1;
             }
@@ -94,6 +110,10 @@ public class CargoDepot extends Block {
             drone = droneType.spawn(team, x, y, 90f);
             if (drone != null) {
                 drone.vel().add(0f, 1.5f);
+                if (drone.controller() instanceof CargoDroneAI ai) {
+                    ai.homeX = x;
+                    ai.homeY = y;
+                }
             }
             isConstructing = false;
             progress = 0f;
