@@ -4,12 +4,16 @@ import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
+import arc.scene.ui.Image;
 import arc.scene.ui.layout.Table;
+import arc.util.Scaling;
 import mindustry.gen.Unit;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.ui.Bar;
 import nitis.gravillaso.ai.CargoDroneAI;
+
+import static mindustry.Vars.iconMed;
 
 public class CargoUnitType extends UnitType {
     public float powerCapacity = 2400f;
@@ -23,6 +27,13 @@ public class CargoUnitType extends UnitType {
 
     @Override
     public void display(Unit unit, Table table) {
+        table.table(t -> {
+            t.left();
+            t.add(new Image(uiIcon)).size(iconMed).scaling(Scaling.fit);
+            t.labelWrap(unit.isPlayer() ? unit.getPlayer().coloredName() + "\n[lightgray]" + localizedName : localizedName).left().width(190f).padLeft(5);
+        }).growX().left();
+        table.row();
+
         table.table(bars -> {
             bars.defaults().growX().height(20f).pad(4);
             bars.add(new Bar("stat.health", Pal.health, unit::healthf).blink(Color.white));
