@@ -1,15 +1,7 @@
 package nitis.gravillaso.content;
 
-import arc.Core;
-import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
-import arc.scene.ui.layout.Table;
 import mindustry.gen.UnitEntity;
-import mindustry.gen.Unit;
-import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
-import mindustry.ui.Bar;
 import nitis.gravillaso.ai.CargoDroneAI;
 import nitis.gravillaso.type.CargoUnitType;
 

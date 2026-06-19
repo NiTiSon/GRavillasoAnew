@@ -5,6 +5,7 @@ import arc.util.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.type.*;
+import nitis.gravillaso.type.*;
 import nitis.gravillaso.world.blocks.drone.*;
 
 import static mindustry.Vars.*;
@@ -30,15 +31,11 @@ public class CargoDroneAI extends AIController {
     public static float loadTime = 60f;
     public static float unloadTime = 60f;
 
-    // TODO: move to the CargoUnitType
-    public static float maxPower = 2400f;
-    public static float powerUsePerTick = 0.5f;
-    public static float lowPowerRatio = 0.075f;
-    public static float chargeSpeed = 5f;
-
     @Override
     public void init() {
-        power = maxPower;
+        if (unit.type instanceof CargoUnitType t) {
+            power = t.powerCapacity;
+        }
     }
 
     @Override
@@ -65,7 +62,7 @@ public class CargoDroneAI extends AIController {
     void updateIdle() {
         target = null;
 
-        if (power < maxPower * lowPowerRatio) {
+        if (unit.type instanceof CargoUnitType t && power < t.powerCapacity * t.lowPowerRatio) {
             state = State.charging;
             return;
         }
@@ -138,7 +135,8 @@ public class CargoDroneAI extends AIController {
     }
 
     void updateSupply() {
-        power = Math.max(0, power - powerUsePerTick * Time.delta);
+        float use = unit.type instanceof CargoUnitType t ? t.powerUsePerTick : 0f;
+        power = Math.max(0, power - use * Time.delta);
 
         if (target == null || !target.isValid() || target.team != unit.team) {
             release();
@@ -182,9 +180,9 @@ public class CargoDroneAI extends AIController {
         target = null;
         release();
 
-        if (unit.within(homeX, homeY, homeRange)) {
-            power = Math.min(maxPower, power + chargeSpeed * Time.delta);
-            if (power >= maxPower) {
+        if (unit.type instanceof CargoUnitType t && unit.within(homeX, homeY, homeRange)) {
+            power = Math.min(t.powerCapacity, power + t.chargeSpeed * Time.delta);
+            if (power >= t.powerCapacity) {
                 state = State.idle;
             }
         }

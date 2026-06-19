@@ -1,11 +1,9 @@
 package nitis.gravillaso.world.blocks.drone;
 
 import arc.Core;
-import arc.struct.EnumSet;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mindustry.entities.TargetPriority;
 import mindustry.gen.Building;
 import mindustry.gen.Groups;
 import mindustry.gen.Unit;
@@ -13,27 +11,32 @@ import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
-import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockGroup;
 import nitis.gravillaso.ai.CargoDroneAI;
+import nitis.gravillaso.type.CargoUnitType;
 
 public class CargoDepot extends Block {
     public UnitType droneType;
     public float buildDuration = 90f * Time.toSeconds;
+    public float powerCapacity = 5000f;
+    public float powerUseConstruction = 1f;
+    public float droneChargeSpeed = 5f;
 
     public CargoDepot(String name) {
         super(name);
         update = true;
         solid = true;
         hasItems = true;
-        configurable = false; // TODO: add drone configuration
+        hasPower = true;
+        configurable = false;
         group = BlockGroup.units;
+        consumePowerBuffered(powerCapacity);
     }
 
     @Override
     public void setBars() {
         super.setBars();
-        addBar("drone-status", (CargoDepotBuild build) -> {
+        addBar("drone-status", (DepotBuilding build) -> {
             if (build.drone != null && build.drone.isValid() && !build.drone.dead()) {
                 return new Bar(
                     () -> Core.bundle.get("bar.drone-health"),
@@ -48,13 +51,19 @@ public class CargoDepot extends Block {
                 );
             }
         });
-        addBar("drone-power", (CargoDepotBuild build) -> {
+        addBar("depot-power", (DepotBuilding build) -> new Bar(
+            () -> Core.bundle.get("bar.power"),
+            () -> Pal.powerBar,
+            () -> build.power.status
+        ));
+        addBar("drone-power", (DepotBuilding build) -> {
             if (build.drone != null && build.drone.isValid() && !build.drone.dead()
-                && build.drone.controller() instanceof CargoDroneAI ai) {
+                && build.drone.controller() instanceof CargoDroneAI ai
+                && build.drone.type instanceof CargoUnitType t) {
                 return new Bar(
                     () -> Core.bundle.get("bar.drone-power"),
                     () -> Pal.accent,
-                    () -> ai.power / CargoDroneAI.maxPower
+                    () -> ai.power / t.powerCapacity
                 );
             }
             return null;
@@ -66,7 +75,7 @@ public class CargoDepot extends Block {
         return false;
     }
 
-    public class CargoDepotBuild extends Building {
+    public class DepotBuilding extends Building {
         public Unit drone;
         public float progress;
         public boolean isConstructing;
@@ -95,12 +104,23 @@ public class CargoDepot extends Block {
                 }
 
                 progress += delta() * efficiency;
+                if (power != null) {
+                    float drain = Math.min(powerUseConstruction * delta(), power.status * powerCapacity);
+                    power.status -= drain / powerCapacity;
+                }
                 if (progress >= buildDuration) {
                     spawnDrone();
                 }
             } else if (isConstructing) {
                 isConstructing = false;
                 progress = 0f;
+            }
+
+            if (drone != null && drone.isValid() &&
+                    drone.controller() instanceof CargoDroneAI ai && ai.state == CargoDroneAI.State.charging &&
+                    power != null && power.status > 0) {
+                float drain = Math.min(droneChargeSpeed * delta(), power.status * powerCapacity);
+                power.status -= drain / powerCapacity;
             }
         }
 
