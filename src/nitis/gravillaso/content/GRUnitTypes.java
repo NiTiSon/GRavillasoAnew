@@ -28,6 +28,7 @@ public class GRUnitTypes {
             lowAltitude = true;
             aiController = CargoDroneAI::new;
             constructor = UnitEntity::create;
+            powerCapacity = 2400f;
         }};
 
         skoros = new CargoUnitType("skoros") {{
@@ -49,6 +50,9 @@ public class GRUnitTypes {
             lowAltitude = true;
             aiController = CargoDroneAI::new;
             constructor = UnitEntity::create;
+            powerCapacity = 4200f;
+            powerUsePerTick = 0.7f;
+            chargeSpeed = 6;
         }};
     }
 }
