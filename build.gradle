@@ -93,9 +93,9 @@ tasks.register('jarAndroid'){
     }
 }
 
-jar.dependsOn packSprites
-
 jar{
+    dependsOn packSprites
+
     archiveFileName = "${project.name}Desktop.jar"
 
     from{
@@ -108,6 +108,21 @@ jar{
 
     from("assets/"){
         include "**"
+    }
+}
+
+tasks.register('runMindustry'){
+    dependsOn jar
+    description = 'Build the mod and launch Mindustry via Steam'
+    group = 'build'
+
+    doLast{
+        def steamUrl = "steam://rungameid/1127400"
+        if(isWindows){
+            "cmd /c start $steamUrl".execute()
+        } else {
+            "xdg-open $steamUrl".execute()
+        }
     }
 }
 
