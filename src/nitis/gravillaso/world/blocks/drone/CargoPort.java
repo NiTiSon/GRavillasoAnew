@@ -13,10 +13,9 @@ public class CargoPort extends Block {
         priority = TargetPriority.transport;
         update = true;
         sync = true;
-        destructible = true;
         hasItems = true;
         separateItemCapacity = true;
-        hasLiquids = true;
+        // hasLiquids = true;
         solid = true;
         group = BlockGroup.transportation;
         flags = EnumSet.of(BlockFlag.storage);
@@ -47,7 +46,7 @@ public class CargoPort extends Block {
         @Override
         public int acceptStack(Item item, int amount, Teamc source) {
             if (items == null) return 0;
-            return Math.min(amount, getMaximumAccepted(item));
+            return Math.min(amount, getMaximumAccepted(item) - items.get(item));
         }
     }
 }

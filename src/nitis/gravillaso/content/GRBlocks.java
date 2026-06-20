@@ -64,7 +64,6 @@ public class GRBlocks {
             size = 3;
 
             itemCapacity = 320;
-            liquidCapacity = 60f;
         }};
 
         cargoTerminal = new CargoTerminal("cargo-terminal") {{
@@ -72,7 +71,6 @@ public class GRBlocks {
             size = 3;
 
             itemCapacity = 320;
-            liquidCapacity = 60f;
         }};
     }
 }

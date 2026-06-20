@@ -17,10 +17,9 @@ public class CargoTerminal extends Block {
         priority = TargetPriority.transport;
         update = true;
         sync = true;
-        destructible = true;
         hasItems = true;
         separateItemCapacity = true;
-        hasLiquids = true;
+        // hasLiquids = true;
         solid = true;
         group = BlockGroup.transportation;
         flags = EnumSet.of(BlockFlag.storage);
@@ -53,12 +52,12 @@ public class CargoTerminal extends Block {
 
         @Override
         public boolean acceptItem(Building source, Item item) {
-            return isFilterEmpty() || hasFilter(item);
+            return (isFilterEmpty() || hasFilter(item)) && items.get(item) < itemCapacity;
         }
 
         @Override
         public boolean acceptLiquid(Building source, Liquid liquid) {
-            return isFilterEmpty() || hasFilter(liquid);
+            return (isFilterEmpty() || hasFilter(liquid)) && liquids.get(liquid) < block.liquidCapacity - 0.001f;
         }
     }
 }

@@ -51,11 +51,6 @@ public class CargoDepot extends Block {
                 );
             }
         });
-        addBar("depot-power", (DepotBuilding build) -> new Bar(
-            () -> Core.bundle.get("bar.power"),
-            () -> Pal.powerBar,
-            () -> build.power.status
-        ));
         addBar("drone-power", (DepotBuilding build) -> {
             if (build.drone != null && build.drone.isValid() && !build.drone.dead()
                 && build.drone.controller() instanceof CargoDroneAI ai
