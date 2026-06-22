@@ -2,8 +2,6 @@ package nitis.gravillaso.type;
 
 import arc.Core;
 import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
 import arc.scene.ui.Image;
 import arc.scene.ui.layout.Table;
 import arc.util.Scaling;
@@ -19,7 +17,7 @@ public class CargoUnitType extends UnitType {
     public float powerCapacity = 2400f;
     public float powerUsePerTick = 0.5f;
     public float lowPowerRatio = 0.075f;
-    public float chargeSpeed = 5f;
+    public float chargePerTick = 5f;
 
     public CargoUnitType(String name) {
         super(name);
@@ -30,7 +28,7 @@ public class CargoUnitType extends UnitType {
         table.table(t -> {
             t.left();
             t.add(new Image(uiIcon)).size(iconMed).scaling(Scaling.fit);
-            t.labelWrap(unit.isPlayer() ? unit.getPlayer().coloredName() + "\n[lightgray]" + localizedName : localizedName).left().width(190f).padLeft(5);
+            t.labelWrap(localizedName).left().width(190f).padLeft(5);
         }).growX().left();
         table.row();
 

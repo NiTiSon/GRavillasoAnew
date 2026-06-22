@@ -181,7 +181,7 @@ public class CargoDroneAI extends AIController {
         release();
 
         if (unit.type instanceof CargoUnitType t && unit.within(homeX, homeY, homeRange)) {
-            power = Math.min(t.powerCapacity, power + t.chargeSpeed * Time.delta);
+            power = Math.min(t.powerCapacity, power + t.chargePerTick * Time.delta);
             if (power >= t.powerCapacity) {
                 state = State.idle;
             }

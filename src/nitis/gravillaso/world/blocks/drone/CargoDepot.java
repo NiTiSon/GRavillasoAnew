@@ -18,7 +18,7 @@ import nitis.gravillaso.type.CargoUnitType;
 public class CargoDepot extends Block {
     public UnitType droneType;
     public float buildDuration = 90f * Time.toSeconds;
-    public float powerCapacity = 5000f;
+    public float powerCapacity = 8000f;
     public float powerUseConstruction = 1f;
     public float droneChargeSpeed = 5f;
 
