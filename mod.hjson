@@ -2,7 +2,7 @@ displayName: "Gravillaso Anew"
 name: "gr-anew"
 author: "NiTiSon"
 main: "nitis.gravillaso.GravillasoMod"
-description: "TODO"
+description: "Anew version of Gravillaso mod.\n\n[red[]]ALPHA VERSION.\nNOT INTENDED TO ACTUAL GAMEPLAY.[[]]"
 
 version: 3.42
 minGameVersion: 158
