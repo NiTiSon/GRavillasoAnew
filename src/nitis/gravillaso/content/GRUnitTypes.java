@@ -52,7 +52,7 @@ public class GRUnitTypes {
             constructor = UnitEntity::create;
             powerCapacity = 4200f;
             powerUsePerTick = 0.7f;
-            chargeSpeed = 6;
+            chargePerTick = 6;
         }};
     }
 }

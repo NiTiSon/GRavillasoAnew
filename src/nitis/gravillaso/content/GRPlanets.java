@@ -32,9 +32,9 @@ public class GRPlanets {
             minZoom = 1f;
             maxZoom = 2.5f;
 
-            accessible = false;
-            alwaysUnlocked = false;
-            visible = false;
+            accessible = true;
+            alwaysUnlocked = true;
+            visible = true;
 
             bloom = false;
             drawOrbit = true;

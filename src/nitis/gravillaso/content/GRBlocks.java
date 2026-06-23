@@ -18,29 +18,64 @@ import static nitis.gravillaso.content.GRItems.*;
 
 public class GRBlocks {
     // storage - gravillo
-    public static Block coreFortress;
+    public static Block coreFortress, coreTier2, coreTier3;
     // cargo
     public static Block cargoDepot, cargoDepotLarge, cargoPort, cargoTerminal;
 
     public static void load() {
         coreFortress = new CoreBlock("core-fortress") {{
             requirements(Category.effect, with(cobalt, 1000, lead, 800));
-
             isFirstTier = true;
+            size = 4;
+
             unitType = UnitTypes.gamma;
             health = 3500;
             itemCapacity = 2000;
-            size = 4;
             thrusterLength = 34/4f;
             armor = 5f;
+
             alwaysUnlocked = true;
             incinerateNonBuildable = true;
+            buildCostMultiplier = 0.7f;
             requiresCoreZone = true;
 
-            buildCostMultiplier = 0.7f;
+            unitCapModifier = 5;
+        }};
 
-            unitCapModifier = 7;
-            researchCostMultiplier = 0.07f;
+        coreTier2 = new CoreBlock("core-2") {{
+            requirements(Category.effect, with(cobalt, 67, lead, 67));
+            size = 5;
+
+            unitType = UnitTypes.gamma;
+            health = 9000;
+            itemCapacity = 3000;
+            thrusterLength = 40/4f;
+            armor = 10f;
+
+            incinerateNonBuildable = true;
+            buildCostMultiplier = 0.7f;
+            requiresCoreZone = true;
+
+            unitCapModifier = 13;
+            researchCostMultiplier = 0.1f;
+        }};
+
+        coreTier3 = new CoreBlock("core-3") {{
+            requirements(Category.effect, with(cobalt, 67, lead, 67));
+            size = 6;
+
+            unitType = UnitTypes.gamma;
+            health = 21000;
+            itemCapacity = 4000;
+            thrusterLength = 48/4f;
+            armor = 10f;
+
+            incinerateNonBuildable = true;
+            buildCostMultiplier = 0.7f;
+            requiresCoreZone = true;
+
+            unitCapModifier = 23;
+            researchCostMultiplier = 0.1f;
         }};
 
         cargoDepot = new CargoDepot("cargo-depot") {{

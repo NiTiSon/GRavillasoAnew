@@ -11,6 +11,6 @@ public class GravillasoMod extends Mod {
         GRUnitTypes.load();
         GRBlocks.load();
         GRPlanets.load();
-        // GravilloTechTree.load();
+        GravilloTechTree.load();
     }
 }
