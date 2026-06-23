@@ -1,10 +1,17 @@
 package nitis.gravillaso.content;
 
+import arc.graphics.Color;
+import arc.util.Time;
 import mindustry.content.Blocks;
+import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.UnitTypes;
+import mindustry.entities.bullet.LightningBulletType;
+import mindustry.gen.Sounds;
 import mindustry.type.Category;
+import mindustry.type.ItemStack;
 import mindustry.world.Block;
+import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.Env;
@@ -19,6 +26,8 @@ import static nitis.gravillaso.content.GRItems.*;
 public class GRBlocks {
     // storage - gravillo
     public static Block coreFortress, coreTier2, coreTier3;
+    // turrets
+    public static Block voltum;
     // cargo
     public static Block cargoDepot, cargoDepotLarge, cargoPort, cargoTerminal;
 
@@ -76,6 +85,30 @@ public class GRBlocks {
 
             unitCapModifier = 23;
             researchCostMultiplier = 0.1f;
+        }};
+
+        voltum = new PowerTurret("voltum"){{
+            requirements(Category.turret, ItemStack.with(cobalt, 120, aluminium, 120));
+            size = 3;
+            health = 1200;
+            reload = 12;
+            inaccuracy = 3.5f;
+            range = 175;
+            // shots = 3;
+            shootType = new LightningBulletType(){{
+                lightningColor = Color.valueOf("a4ded0");
+                buildingDamageMultiplier = 0.15f;
+                speed = 2;
+                lifetime = Time.toSeconds / 1.5f;
+                damage = 83;
+                reloadMultiplier = 1.15f;
+                shootEffect = Fx.lightningShoot;
+            }};
+            shootSound = Sounds.shootArc;
+            heatColor = Color.red;
+            consumePower(8.5f);
+            targetAir = true;
+            targetGround = true;
         }};
 
         cargoDepot = new CargoDepot("cargo-depot") {{

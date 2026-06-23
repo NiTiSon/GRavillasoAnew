@@ -55,6 +55,11 @@ public class GravilloTechTree {
                 });
             });
 
+            // turrets
+            node(voltum, () -> {
+
+            });
+
             // items
             nodeProduce(GRItems.cobalt, () -> {
                 nodeProduce(Items.lead, () -> {
