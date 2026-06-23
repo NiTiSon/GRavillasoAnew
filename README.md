@@ -1,4 +1,15 @@
+# Gravillaso Anew
+The anew version of old [Gravillaso mod](https://github.com/NiTiSon/Gravillaso).
 
+> [!IMPORTANT]
+> Currently mod is on <ins>early alpha</ins> stage. This is not playable yet.
+
+## Install
+ 
+### Via Mod Browser
+1. Open mod menu
+2. Go to mod browser
+3. Select `GRavillaso Anew` and download
 
 ## Building for Desktop Testing
 
