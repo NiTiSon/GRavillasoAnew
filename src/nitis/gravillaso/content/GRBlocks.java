@@ -37,7 +37,7 @@ public class GRBlocks {
             isFirstTier = true;
             size = 4;
 
-            unitType = UnitTypes.gamma;
+            unitType = GRUnitTypes.releaseChan;
             health = 3500;
             itemCapacity = 2000;
             thrusterLength = 34/4f;
@@ -55,7 +55,7 @@ public class GRBlocks {
             requirements(Category.effect, with(cobalt, 67, lead, 67));
             size = 5;
 
-            unitType = UnitTypes.gamma;
+            unitType = GRUnitTypes.releaseChan;
             health = 9000;
             itemCapacity = 3000;
             thrusterLength = 40/4f;
@@ -73,7 +73,7 @@ public class GRBlocks {
             requirements(Category.effect, with(cobalt, 67, lead, 67));
             size = 6;
 
-            unitType = UnitTypes.gamma;
+            unitType = GRUnitTypes.releaseChan;
             health = 21000;
             itemCapacity = 4000;
             thrusterLength = 48/4f;
