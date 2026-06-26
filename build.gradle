@@ -62,6 +62,7 @@ configurations{
 dependencies{
     compileOnly mindustryVersion == "be" ? "Anuken:MindustryBuilds:latest" : "Anuken:Mindustry:$mindustryVersion"
     toolsImplementation mindustryVersion == "be" ? "Anuken:MindustryBuilds:latest" : "Anuken:Mindustry:$mindustryVersion"
+    toolsImplementation sourceSets.main.output
 }
 
 tasks.register('packSprites', JavaExec){

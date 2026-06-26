@@ -45,7 +45,7 @@ import groovy.transform.CompileStatic
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-def genFolder = "assets-raw/sprites_out/generated/"
+def genFolder = "../assets-raw/sprites_out/generated/"
 def enableAA = true
 
 @CompileStatic
@@ -53,7 +53,7 @@ static int getRGB(Pixmap image, int ix, int iy) {
     return image.getRaw(Math.max(Math.min(ix, image.width - 1), 0), Math.max(Math.min(iy, image.height - 1), 0))
 }
 
-@groovy.transform.CompileStatic
+@CompileStatic
 static void antialias(File file){
     Pixmap image = new Pixmap(new Fi(file))
     Pixmap out = image.copy()
@@ -151,42 +151,42 @@ tasks.register('pack'){
     doLast{
         //cleanup old sprites
         delete{
-            delete "../core/assets-raw/sprites_out/"
-        }
-
-        //copy in new sprites
-        copy{
-            from "../core/assets-raw/sprites/"
-            into "../core/assets-raw/sprites_out/"
+            delete "../assets-raw/sprites_out/"
         }
 
         //run generation task; generate all needed sprites
         file(genFolder).mkdirs()
 
-        project.services.get(ExecOperations).javaexec{
-            mainClass = "mindustry.tools.ImagePacker"
+        //copy in new sprites
+        copy{
+            from "../assets-raw/sprites/"
+            into "../assets-raw/sprites_out/"
+        }
+
+        project.services.get(ExecOperations).javaexec {
+            mainClass = "pack.ImagePacker"
             classpath = sourceSets.main.runtimeClasspath
             workingDir = genFolder
         }
 
-        copy{
-            from "../core/assets-raw/sprites_out/ui/icons"
-            into "../core/assets-raw/sprites_out/ui/"
+        copy {
+            from "../assets-raw/sprites_out/ui/icons"
+            into "../assets-raw/sprites_out/ui/"
         }
 
-        delete{
-            delete "../core/assets-raw/sprites_out/ui/icons"
+        delete {
+            delete "../assets-raw/sprites_out/ui/icons"
         }
 
-        if(enableAA){
+        if (enableAA) {
             ExecutorService executor = Executors.newFixedThreadPool(OS.cores)
             long ms = System.currentTimeMillis()
 
             //antialias everything except UI elements
-            fileTree(dir: new File(rootDir, 'core/assets-raw/sprites_out/').absolutePath, include: "**/*.png").visit{ file ->
+            fileTree(dir: new File(rootDir, 'assets-raw/sprites_out/').absolutePath, include: "**/*.png").visit{ file ->
                 if(file.isDirectory() || (file.toString().replace("\\", "/").contains("/ui/") && file.toString().startsWith("icon-")) || file.toString().contains(".9.png") || file.toString().contains("aaaa")) return
 
-                executor.submit{
+                executor.submit {
                     antialias(file.file)
                 }
             }
@@ -199,18 +199,26 @@ tasks.register('pack'){
         println("\n\nPacking normal 4096 sprites...\n\n")
 
         //pack normal sprites
-        TexturePacker.process(new File(rootDir, "core/assets-raw/sprites_out/").absolutePath, new File(rootDir, "core/assets/sprites/").absolutePath, "sprites.aatls")
+        TexturePacker.process(new File(rootDir, "assets-raw/sprites_out/").absolutePath, new File(rootDir, "assets/sprites/").absolutePath, "sprites.aatls")
 
         println("\n\nPacking fallback 2048 sprites...\n\n")
 
         //replace config file contents
-        fileTree(dir: '../core/assets-raw/sprites_out/', include: "**/*.json").visit{ file ->
+        fileTree(dir: '../assets-raw/sprites_out/', include: "**/*.json").visit{ file ->
             if(!file.isDirectory()) file.file.text = file.file.text.replace("4096", "2048")
         }
 
         //pack fallback 2048x2048 sprites - disabled when debugging
         if(!project.hasProperty("args")){
-            TexturePacker.process(new File(rootDir, "core/assets-raw/sprites_out/").absolutePath, new File(rootDir, "core/assets/sprites/fallback/").absolutePath, "sprites.aatls")
+            TexturePacker.process(new File(rootDir, "assets-raw/sprites_out/").absolutePath, new File(rootDir, "assets/sprites/fallback/").absolutePath, "sprites.aatls")
+        }
+    }
+}
+
+tasks.register('antialiasGen') {
+    doLast {
+        fileTree(dir: genFolder, include: "**/*.png").visit { file ->
+            antialias(file.file)
         }
     }
 }
@@ -219,71 +227,18 @@ tasks.register('genSprites', JavaExec){
     dependsOn classes
     finalizedBy 'antialiasGen'
 
-    mainClass = "mindustry.tools.ImagePacker"
+    mainClass = "pack.ImagePacker"
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
     workingDir = genFolder
 }
 
-tasks.register('fontgen', JavaExec){
-    dependsOn classes
-    /* icon font pipeline:
-     1. take set of pre-defined icons and SVGs
-     2. use Fontello API to get a font with these
-     3. combine fontello font and standard font, get output font
-     4. use json to generate a file with constants for every icon size+type (during annotation processing)
-     */
-    doLast{
-        Fi folder = Fi.get("core/assets-raw/fontgen/out/")
-        folder.mkdirs()
-
-        Log.info("Session...")
-
-        OS.exec("curl", "--fail", "--output", "core/assets-raw/fontgen/out/session", "--form", "config=@core/assets-raw/fontgen/config.json", "https://fontello.com")
-
-        Log.info("Zip...")
-
-        String session = folder.child("session").readString()
-
-        Http.get("https://fontello.com/" + session + "/get").block(result -> {
-            Streams.copy(result.getResultAsStream(), folder.child("font.zip").write())
-        })
-
-        Log.info("Icon font...")
-
-        ZipFi zip = new ZipFi(folder.child("font.zip"))
-        Fi dest = folder.child("font.woff")
-        zip.list()[0].child("font").child("fontello.ttf").copyTo(dest)
-        dest.copyTo(Fi.get("core/assets/fonts/icon.ttf"))
-
-        Log.info("Merge...")
-
-        //TODO this is broken
-
-        Log.info(OS.exec("fontforge", "-script",
-                Fi.get("core/assets-raw/fontgen/merge.pe").absolutePath(),
-                Fi.get("core/assets/fonts/font.woff").absolutePath(),
-                Fi.get("core/assets-raw/fontgen/out/font.woff").absolutePath())
-        )
-
-        Log.info("Done.")
-    }
-}
-
 tasks.register('icongen', JavaExec){
     dependsOn classes
-    mainClass = "mindustry.tools.IconConverter"
+    mainClass = "pack.IconConverter"
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
-    workingDir = "../core/assets-raw"
-}
-
-tasks.register('updateScripts', JavaExec){
-    dependsOn classes
-    mainClass = "mindustry.tools.ScriptMainGenerator"
-    classpath = sourceSets.main.runtimeClasspath
-    standardInput = System.in
-    workingDir = "../"
+    workingDir = "../assets-raw"
 }
 
 tasks.register('updateBundles'){
@@ -314,11 +269,11 @@ tasks.register('updateBundles'){
         }
 
         OrderedMap<String, String> base = new OrderedMap<>()
-        PropertiesUtils.load(base, Fi.get("core/assets/bundles/bundle.properties").reader())
+        PropertiesUtils.load(base, Fi.get("assets/bundles/bundle.properties").reader())
 
         //map of line number to comment (or just empty string for blank line) content
         IntMap<String> commentAndBlankLines = new IntMap<>()
-        var lines = Fi.get("core/assets/bundles/bundle.properties").reader().readLines()
+        var lines = Fi.get("assets/bundles/bundle.properties").reader().readLines()
         int offset = 0
         for(int i = 0; i < lines.size(); i++){
             var line = lines.get(i)
@@ -328,7 +283,7 @@ tasks.register('updateBundles'){
 
         Log.info("Updating bundles...")
 
-        Fi.get("core/assets/bundles").walk(child -> {
+        Fi.get("assets/bundles").walk(child -> {
             if(child.name() == "bundle.properties" || child.name() == "global.properties" || child.toString().contains("output")) return
             if(project.hasProperty("bundle") && child.name() != project.property("bundle")) return
 
