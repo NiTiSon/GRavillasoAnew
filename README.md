@@ -1,5 +1,11 @@
+<div align="center">
+
 # Gravillaso Anew
 The anew version of old [Gravillaso mod](https://github.com/NiTiSon/Gravillaso).
+
+![Discord](https://img.shields.io/discord/1520114138834014208?style=flat&logo=discord&logoColor=white&link=https%3A%2F%2Fdiscord.gg%2FS8AhF8HZw)  
+
+</div>
 
 > [!IMPORTANT]
 > Currently mod is on <ins>early alpha</ins> stage. This is not playable yet.
