@@ -1,8 +1,8 @@
 logs/
-/core/assets/mindustry-saves/
-/core/assets/mindustry-maps/
-/core/assets/bundles/output/
-/core/assets/.gifimages/
+/assets/mindustry-saves/
+/assets/mindustry-maps/
+/assets/bundles/output/
+/assets/.gifimages/
 /deploy/
 /desktop/packr-out/
 /desktop/packr-export/
@@ -11,8 +11,8 @@ logs/
 /desktop/gifexport/
 /core/lib/
 /ios/assets/
-/core/assets-raw/sprites/generated/
-/core/assets-raw/sprites_out/
+/assets-raw/sprites/generated/
+/assets-raw/sprites_out/
 /annotations/build/
 /annotations/out/
 /net/build/
@@ -20,7 +20,6 @@ logs/
 /tests/build/
 /server/build/
 /test_files/
-/annotations/build/
 /desktop-sdl/build/
 desktop-sdl/build/
 /android/assets/mindustry-maps/

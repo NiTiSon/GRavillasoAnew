@@ -12,28 +12,30 @@ sourceSets{
     }
 }
 
-repositories{
-    mavenCentral()
+allprojects{
+    repositories{
+        mavenCentral()
 
-    //Downloads the dependencies JAR file from Mindustry releases; does not use any real repository. Surprisingly, this is the most reliable option.
-    ivy{
-        url = 'https://github.com/'
-        patternLayout{artifact '/[organisation]/[module]/releases/download/[revision]/dependencies.jar'}
-        metadataSources{ artifact() }
-    }
+        //Downloads the dependencies JAR file from Mindustry releases; does not use any real repository. Surprisingly, this is the most reliable option.
+        ivy{
+            url = 'https://github.com/'
+            patternLayout{artifact '/[organisation]/[module]/releases/download/[revision]/dependencies.jar'}
+            metadataSources{ artifact() }
+        }
 
-    //If the version is set to 'latest', downloads the latest Mindustry *release* as a dependency
-    ivy{
-        url = 'https://github.com/'
-        patternLayout{artifact '/[organisation]/[module]/releases/[revision]/download/dependencies.jar'}
-        metadataSources{ artifact() }
-    }
+        //If the version is set to 'latest', downloads the latest Mindustry *release* as a dependency
+        ivy{
+            url = 'https://github.com/'
+            patternLayout{artifact '/[organisation]/[module]/releases/[revision]/download/dependencies.jar'}
+            metadataSources{ artifact() }
+        }
 
-    //For depending on the absolute newest commit for Mindustry
-    ivy{
-        url = 'https://github.com/'
-        patternLayout{artifact '/[organisation]/[module]/releases/download/master/[revision].jar'}
-        metadataSources{ artifact() }
+        //For depending on the absolute newest commit for Mindustry
+        ivy{
+            url = 'https://github.com/'
+            patternLayout{artifact '/[organisation]/[module]/releases/download/master/[revision].jar'}
+            metadataSources{ artifact() }
+        }
     }
 }
 
@@ -139,5 +141,14 @@ tasks.register('deploy', Jar){
         delete{
             delete "build/libs/${projectName}Android.jar"
         }
+    }
+}
+
+project(":tools"){
+    apply plugin: "java"
+
+    dependencies{
+        implementation rootProject
+        implementation mindustryVersion == "be" ? "Anuken:MindustryBuilds:latest" : "Anuken:Mindustry:$mindustryVersion"
     }
 }
