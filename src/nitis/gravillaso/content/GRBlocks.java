@@ -24,6 +24,9 @@ import static mindustry.content.Items.*;
 import static nitis.gravillaso.content.GRItems.*;
 
 public class GRBlocks {
+    // distribution
+    public static Block dispentor;
+
     // storage - gravillo
     public static Block coreFortress, coreTier2, coreTier3;
     // turrets
@@ -88,7 +91,7 @@ public class GRBlocks {
         }};
 
         voltum = new PowerTurret("voltum"){{
-            requirements(Category.turret, ItemStack.with(cobalt, 120, aluminium, 120));
+            requirements(Category.turret, ItemStack.with(cobalt, 120, aluminium, 100));
             size = 3;
             health = 1200;
             reload = 12;
@@ -128,17 +131,17 @@ public class GRBlocks {
         }};
 
         cargoPort = new CargoPort("cargo-port") {{
-            requirements(Category.distribution, with(cobalt, 160, silicon, 300));
+            requirements(Category.distribution, with(cobalt, 160, silicon, 120));
             size = 3;
 
-            itemCapacity = 320;
+            itemCapacity = 350;
         }};
 
         cargoTerminal = new CargoTerminal("cargo-terminal") {{
-            requirements(Category.distribution, with(cobalt, 160, silicon, 300));
+            requirements(Category.distribution, with(cobalt, 160, silicon, 220));
             size = 3;
 
-            itemCapacity = 320;
+            itemCapacity = 500;
         }};
     }
 }
