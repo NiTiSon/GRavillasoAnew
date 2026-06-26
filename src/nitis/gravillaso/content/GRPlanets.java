@@ -1,6 +1,7 @@
 package nitis.gravillaso.content;
 
 import arc.graphics.Color;
+import arc.util.Time;
 import mindustry.content.Blocks;
 import mindustry.content.Planets;
 import mindustry.content.SerpuloTechTree;
@@ -13,6 +14,7 @@ import mindustry.graphics.g3d.MultiMesh;
 import mindustry.maps.planet.SerpuloPlanetGenerator;
 import mindustry.type.Planet;
 import mindustry.world.meta.Env;
+import nitis.gravillaso.graphics.PlanetRingMesh;
 import nitis.gravillaso.maps.planet.GravilloPlanetGenerator;
 
 public class GRPlanets {
@@ -22,14 +24,11 @@ public class GRPlanets {
         gravillo = new Planet("gravillo", Planets.sun, 1.125f, 2) {{
             loadPlanetData = false;
 
+            rotateTime = 10 * 60f;
             generator = new GravilloPlanetGenerator();
             meshLoader = () -> new HexMesh(this, 5);
-            cloudMeshLoader = () -> new MultiMesh(
-                new HexSkyMesh(this, 2, 0.15f, 0.13f, 5,
-                    Color.white.cpy().mul(0.9f).a(0.75f), 2, 0.45f, 0.9f, 0.38f),
-                new HexSkyMesh(this, 1, 0.6f, 0.16f, 5,
-                    Color.white.cpy().lerp(Color.valueOf("#cceeff"), 0.55f).a(0.75f), 2, 0.45f, 1f, 0.41f)
-            );
+            //  cloudMeshLoader = () ->
+            //         new PlanetRingMesh(this, radius * 2f, radius * 3.4f, Color.valueOf("#e6dbb3"), 0.5f);
             minZoom = 1f;
             maxZoom = 2.5f;
 

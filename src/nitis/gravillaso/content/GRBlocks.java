@@ -15,6 +15,7 @@ import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.Env;
+import nitis.gravillaso.world.blocks.distribution.DispentorBlock;
 import nitis.gravillaso.world.blocks.drone.CargoDepot;
 import nitis.gravillaso.world.blocks.drone.CargoPort;
 import nitis.gravillaso.world.blocks.drone.CargoTerminal;
@@ -24,14 +25,14 @@ import static mindustry.content.Items.*;
 import static nitis.gravillaso.content.GRItems.*;
 
 public class GRBlocks {
-    // distribution
-    public static Block dispentor;
-
     // storage - gravillo
     public static Block coreFortress, coreTier2, coreTier3;
     // turrets
     public static Block voltum;
-    // cargo
+
+    // distribution
+    public static Block dispentor;
+    // distribution - cargo
     public static Block cargoDepot, cargoDepotLarge, cargoPort, cargoTerminal;
 
     public static void load() {
@@ -112,6 +113,12 @@ public class GRBlocks {
             consumePower(8.5f);
             targetAir = true;
             targetGround = true;
+        }};
+
+        // distribution
+        dispentor = new DispentorBlock("dispentor") {{
+            requirements(Category.distribution, with(cobalt, 100, lead, 120, silicon, 40));
+            size = 2;
         }};
 
         cargoDepot = new CargoDepot("cargo-depot") {{
