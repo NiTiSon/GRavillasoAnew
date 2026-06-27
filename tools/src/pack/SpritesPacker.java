@@ -160,15 +160,17 @@ public class SpritesPacker {
             boolean isUISprite = pathForward.contains("/ui/");
             boolean isOutline = src.nameWithoutExtension().endsWith("-outline");
             boolean isTurret = pathForward.contains("/turrets/");
+            boolean isHeatMask = src.nameWithoutExtension().endsWith("-heat");
 
-            if (!isUISprite && !isOutline) {
+            if (!isUISprite && !isOutline && !isHeatMask) {
                 antialias(dest);
                 System.out.println("  [AA] " + relPath);
             } else {
-                System.out.println("  [--] " + relPath + (isUISprite ? " (skipped AA: UI sprite)" : " (skipped AA: outline)"));
+                String skipReason = isUISprite ? "UI sprite" : isOutline ? "outline" : "mask";
+                System.out.println("  [--] " + relPath + " (skipped AA: " + skipReason + ")");
             }
 
-            if (isTurret && !isOutline) {
+            if (isTurret && !isOutline && !isHeatMask) {
                 generateOutline(dest, 0x000000ff, 3);
             }
         }

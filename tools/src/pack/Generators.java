@@ -16,8 +16,6 @@ import mindustry.world.blocks.ConstructBlock;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.legacy.LegacyBlock;
-import nitis.gravillaso.GravillasoMod;
-
 import static mindustry.Vars.content;
 import static pack.ImagePacker.*;
 
@@ -30,7 +28,8 @@ public class Generators {
         generate("block-icons", () -> {
             Pixmap colors = new Pixmap(content.blocks().size, 1);
 
-            for (Block block : content.blocks().select(GravillasoMod::isRelated)) {
+            for (Block block : content.blocks()) {
+                if (!has(block.name)) continue;
                 if (block.isAir() || block instanceof ConstructBlock || block instanceof OreBlock || block instanceof LegacyBlock) continue;
 
                 Seq<TextureRegion> toOutline = new Seq<>();
@@ -162,16 +161,20 @@ public class Generators {
                 }
             }
 
-            save(colors, "../assets/sprites/block_colors");
+            save(colors, "../../../assets/sprites/block_colors");
         });
 
         generate("item-icons", () -> {
-            for(UnlockableContent item : Seq.<UnlockableContent>withArrays(content.items(), content.liquids(), content.statusEffects()).select(GravillasoMod::isRelated)){
-                if(item instanceof StatusEffect && !has(item.getContentType().name() + "-" + item.name)){
+            for(UnlockableContent item : Seq.<UnlockableContent>withArrays(content.items(), content.liquids(), content.statusEffects())){
+                String spriteName = item.getContentType().name() + "-" + item.name;
+                if(item instanceof StatusEffect && !has(spriteName)){
+                    continue;
+                }
+                if(!(item instanceof StatusEffect) && !has(item.name)){
                     continue;
                 }
 
-                Pixmap base = get(item.getContentType().name() + "-" + item.name);
+                Pixmap base = get(item instanceof StatusEffect ? spriteName : item.name);
                 //tint status effect icon color
                 if(item instanceof StatusEffect){
                     StatusEffect stat = (StatusEffect)item;

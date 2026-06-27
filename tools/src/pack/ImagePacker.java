@@ -33,7 +33,7 @@ public class ImagePacker {
         Vars.content.init();
         Log.logger = new Log.DefaultLogHandler();
 
-        Fi.get("../assets-raw/sprites_out").walk(path -> {
+        Fi.get("../../../assets-raw/sprites_out").walk(path -> {
             if(!path.extEquals("png")) return;
 
             cache.put(path.nameWithoutExtension(), new PackIndex(path));
@@ -87,6 +87,8 @@ public class ImagePacker {
                 return cache.containsKey(s);
             }
         };
+
+        new nitis.gravillaso.GravillasoMod().loadContent();
 
         Time.mark();
         Vars.content.load();
