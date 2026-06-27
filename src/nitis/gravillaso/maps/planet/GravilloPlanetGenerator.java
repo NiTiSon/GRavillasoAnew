@@ -24,6 +24,11 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
         );
     }
 
+    // ice, snow, calcite, perite?,
+    // cryofluid lakes
+    // weather: snow, snowstorm
+    // buildings?
+
     public boolean allowNumberedLaunch(Sector sector) {
         return sector != null && sector.hasBase() && !sector.isAttacked() && (sector.info.bestCoreType.size >= 4 ||
                 sector.isBeingPlayed() && state.rules.defaultTeam.cores().contains(b -> b.block.size >= 4));
@@ -62,17 +67,9 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
         distort(6, 12);
         median(3);
 
-        pass((x, y) -> {
-            if (rand.chance(0.03)) {
-                block = Blocks.iceWall;
-            }
-        });
-
         blend(Blocks.snow, Blocks.iceSnow, 0.008f);
 
-        ores(Seq.with(
-            Blocks.oreLead
-        ));
+        ores(Seq.with(Blocks.oreLead));
 
         decoration(0.06f);
 

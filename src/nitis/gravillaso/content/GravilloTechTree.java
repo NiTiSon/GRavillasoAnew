@@ -5,9 +5,11 @@ import mindustry.content.Items;
 import mindustry.type.*;
 
 import static mindustry.Vars.*;
-import static mindustry.content.Blocks.*;
 import static mindustry.content.TechTree.*;
 import static nitis.gravillaso.content.GRBlocks.*;
+import static nitis.gravillaso.content.GRItems.*;
+import static mindustry.content.Items.*;
+import static nitis.gravillaso.content.GRSectorPresets.*;
 
 public class GravilloTechTree {
     public static void load() {
@@ -55,20 +57,34 @@ public class GravilloTechTree {
                 });
             });
 
+            // cores
+            node(coreTier2, () -> {
+                node(coreTier3, () -> {
+
+                });
+            });
+
             // turrets
             node(voltum, () -> {
 
             });
 
+            // units
+
+            // sectors
+            node(negativeOnCelsius, () -> {
+
+            });
+
             // items
-            nodeProduce(GRItems.cobalt, () -> {
-                nodeProduce(Items.lead, () -> {
-                    nodeProduce(GRItems.bauxite, () -> {
-                        nodeProduce(GRItems.alumina, () -> {
-                           nodeProduce(GRItems.aluminium, () -> {});
+            nodeProduce(cobalt, () -> {
+                nodeProduce(lead, () -> {
+                    nodeProduce(bauxite, () -> {
+                        nodeProduce(alumina, () -> {
+                           nodeProduce(aluminium, () -> {});
                         });
 
-                        nodeProduce(Items.silicon, () -> {
+                        nodeProduce(silicon, () -> {
 
                         });
                     });

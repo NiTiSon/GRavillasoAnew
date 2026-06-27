@@ -16,6 +16,8 @@ public class GravillasoMod extends Mod {
         GRUnitTypes.load();
         GRBlocks.load();
         GRPlanets.load();
+        GRSectorPresets.load();
+        GRWeathers.load();
         GravilloTechTree.load();
 
         if (!Vars.headless) {
