@@ -1,14 +1,17 @@
 package nitis.gravillaso.maps.planet;
 
 import arc.graphics.Color;
+import arc.math.Mathf;
 import arc.math.geom.Vec3;
 import arc.struct.Seq;
 import arc.struct.StringMap;
+import arc.util.Log;
 import arc.util.noise.Simplex;
 import mindustry.content.Blocks;
 import mindustry.game.Schematic;
 import mindustry.game.Schematics;
 import mindustry.maps.generators.PlanetGenerator;
+import mindustry.maps.planet.SerpuloPlanetGenerator;
 import mindustry.type.Sector;
 import mindustry.world.Block;
 import mindustry.world.TileGen;
@@ -17,6 +20,11 @@ import nitis.gravillaso.content.GRBlocks;
 import static mindustry.Vars.state;
 
 public class GravilloPlanetGenerator extends PlanetGenerator {
+    float heightYOffset = 42.7f;
+    float scl = 5f;
+    float waterOffset = 0.04f;
+    float heightScl = 1.01f;
+
     {
         defaultLoadout = new Schematic(
                 Seq.with(new Schematic.Stile(GRBlocks.coreFortress, 0, 0, null, (byte)0)),
@@ -39,9 +47,14 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
         return sector != null && sector.planet.allowLaunchToNumbered && (sector.hasBase() || sector.near().contains(this::allowNumberedLaunch));
     }
 
+    float rawHeight(Vec3 position){
+        return (Mathf.pow(Simplex.noise3d(seed, 7, 0.5f, 1f/3f, position.x * scl, position.y * scl + heightYOffset, position.z * scl) * heightScl, 2.3f) + waterOffset) / (1f + waterOffset);
+    }
+
     @Override
-    public float getHeight(Vec3 pos) {
-        return 0.125f;
+    public float getHeight(Vec3 position){
+        float height = rawHeight(position);
+        return Math.max(height, 0.15f);
     }
 
     @Override
