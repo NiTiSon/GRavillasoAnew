@@ -13,6 +13,7 @@ public class GravillasoMod extends Mod {
     @Override
     public void loadContent() {
         GRItems.load();
+        GRLiquids.load();
         GRUnitTypes.load();
         GRBlocks.load();
         GRPlanets.load();
