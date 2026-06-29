@@ -79,7 +79,7 @@ public class GravilloTechTree {
             // items
             nodeProduce(cobalt, () -> {
                 nodeProduce(lead, () -> {
-                    nodeProduce(bauxite, () -> {
+                    nodeProduce(GRItems.bauxite, () -> {
                         nodeProduce(alumina, () -> {
                            nodeProduce(aluminium, () -> {});
                         });

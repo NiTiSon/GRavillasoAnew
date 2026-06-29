@@ -11,9 +11,14 @@ import mindustry.gen.Sounds;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.world.Block;
+import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
+import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.OreBlock;
+import mindustry.world.blocks.environment.Prop;
+import mindustry.world.blocks.environment.StaticWall;
 import mindustry.world.blocks.storage.CoreBlock;
+import mindustry.world.meta.Attribute;
 import mindustry.world.meta.Env;
 import nitis.gravillaso.world.blocks.distribution.DispentorBlock;
 import nitis.gravillaso.world.blocks.drone.CargoDepot;
@@ -25,6 +30,11 @@ import static mindustry.content.Items.*;
 import static nitis.gravillaso.content.GRItems.*;
 
 public class GRBlocks {
+    // environment
+    public static Block bauxite, bauxiteWall;
+    // environment - boulders
+    public static Block bauxiteBoulder;
+
     // storage - gravillo
     public static Block coreFortress, coreTier2, coreTier3;
     // turrets
@@ -36,6 +46,22 @@ public class GRBlocks {
     public static Block cargoDepot, cargoDepotLarge, cargoPort, cargoTerminal;
 
     public static void load() {
+        bauxite = new Floor("bauxite-floor") {{
+            itemDrop = GRItems.bauxite;
+            playerUnmineable = true;
+            attributes.set(Attribute.water, 0.3f);
+        }};
+
+        bauxiteWall = new StaticWall("bauxite-wall") {{
+            bauxite.asFloor().wall = this;
+            attributes.set(Attribute.water, 0.3f);
+        }};
+
+        bauxiteBoulder = new Prop("bauxite-boulder") {{ // TODO: rework texture
+            variants = 2;
+            bauxite.asFloor().decoration = this;
+        }};
+
         coreFortress = new CoreBlock("core-fortress") {{
             requirements(Category.effect, with(cobalt, 1000, lead, 800));
             isFirstTier = true;
