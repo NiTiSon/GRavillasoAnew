@@ -35,6 +35,9 @@ public class GRBlocks {
     // environment - boulders
     public static Block bauxiteBoulder;
 
+    // ores
+    public static Block oreCobalt;
+
     // storage - gravillo
     public static Block coreFortress, coreTier2, coreTier3;
     // turrets
@@ -60,6 +63,12 @@ public class GRBlocks {
         bauxiteBoulder = new Prop("bauxite-boulder") {{ // TODO: rework texture
             variants = 2;
             bauxite.asFloor().decoration = this;
+        }};
+
+        oreCobalt = new OreBlock("ore-cobalt", cobalt) {{
+            oreDefault = true;
+            oreThreshold = 0.78f;
+            oreScale = 23.47512f;
         }};
 
         coreFortress = new CoreBlock("core-fortress") {{

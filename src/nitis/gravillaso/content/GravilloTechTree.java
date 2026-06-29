@@ -24,9 +24,8 @@ public class GravilloTechTree {
         //   oxygen?
         //   hydrogen?
         //
-        // silicon is acquired from bauxite + something(acid?)
-        // alumina is acquired from bauxite
-        // aluminium & oxygen is acquired from alumina
+        // silicon is acquired from bauxite + brine
+        // aluminium & oxygen is acquired from bauxite
 
         var costMultipliers = new ObjectFloatMap<Item>();
         for (var item : content.items()) {

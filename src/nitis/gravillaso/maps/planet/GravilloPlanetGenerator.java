@@ -382,7 +382,7 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
             });
         }
 
-        Seq<Block> ores = Seq.with(Blocks.oreLead);
+        Seq<Block> ores = Seq.with(GRBlocks.oreCobalt, Blocks.oreLead);
         float poles = Math.abs(sector.tile.v.y);
         float nmag = 0.5f;
         float scl = 1f;
