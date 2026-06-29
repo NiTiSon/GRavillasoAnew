@@ -57,11 +57,11 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
     Block[][] arr = {
         {Blocks.ice, Blocks.ice, Blocks.ice, Blocks.iceSnow, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.stone, Blocks.stone, Blocks.stone, Blocks.stone, Blocks.stone, Blocks.stone},
         {Blocks.ice, Blocks.ice, Blocks.ice, Blocks.iceSnow, Blocks.snow, Blocks.snow, Blocks.stone, Blocks.stone, Blocks.stone, Blocks.stone, Blocks.stone, Blocks.stone, Blocks.stone},
-        {Blocks.ice, Blocks.ice, Blocks.ice, Blocks.iceSnow, Blocks.snow, Blocks.snow, Blocks.stone, Blocks.stone, Blocks.shale, Blocks.shale, Blocks.stone, Blocks.stone, Blocks.stone},
-        {Blocks.ice, Blocks.iceSnow, Blocks.iceSnow, Blocks.snow, Blocks.snow, Blocks.stone, Blocks.stone, Blocks.shale, Blocks.shale, Blocks.stone, Blocks.stone, Blocks.stone, Blocks.stone},
-        {Blocks.iceSnow, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.stone, Blocks.stone, Blocks.shale, Blocks.shale, Blocks.stone, Blocks.stone, Blocks.redIce, Blocks.redIce, Blocks.redIce},
-        {Blocks.snow, Blocks.snow, Blocks.snow, Blocks.stone, Blocks.stone, Blocks.stone, Blocks.shale, Blocks.stone, Blocks.stone, Blocks.redIce, Blocks.redIce, Blocks.redIce, Blocks.redIce},
-        {Blocks.snow, Blocks.snow, Blocks.stone, Blocks.stone, Blocks.stone, Blocks.shale, Blocks.shale, Blocks.stone, Blocks.stone, Blocks.redIce, Blocks.redIce, Blocks.redIce, Blocks.redIce},
+        {Blocks.ice, Blocks.ice, Blocks.ice, Blocks.iceSnow, Blocks.snow, Blocks.snow, Blocks.stone, GRBlocks.bauxite, Blocks.shale, Blocks.shale, Blocks.stone, Blocks.stone, Blocks.stone},
+        {Blocks.ice, Blocks.iceSnow, Blocks.iceSnow, Blocks.snow, Blocks.snow, Blocks.stone, GRBlocks.bauxite, Blocks.shale, Blocks.shale, Blocks.stone, Blocks.stone, Blocks.stone, Blocks.stone},
+        {Blocks.iceSnow, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.stone, GRBlocks.bauxite, Blocks.shale, Blocks.shale, Blocks.stone, Blocks.stone, Blocks.redIce, Blocks.redIce, Blocks.redIce},
+        {Blocks.snow, Blocks.snow, Blocks.snow, Blocks.stone, GRBlocks.bauxite, Blocks.stone, Blocks.shale, Blocks.stone, Blocks.stone, Blocks.redIce, Blocks.redIce, Blocks.redIce, Blocks.redIce},
+        {Blocks.snow, Blocks.snow, Blocks.stone, GRBlocks.bauxite, Blocks.stone, Blocks.shale, Blocks.shale, Blocks.stone, Blocks.stone, Blocks.redIce, Blocks.redIce, Blocks.redIce, Blocks.redIce},
     };
 
     ObjectMap<Block, Block> dec = ObjectMap.of(
@@ -382,26 +382,18 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
             });
         }
 
-        Seq<Block> ores = Seq.with(Blocks.oreLead, Blocks.oreTitanium);
+        Seq<Block> ores = Seq.with(Blocks.oreLead);
         float poles = Math.abs(sector.tile.v.y);
         float nmag = 0.5f;
         float scl = 1f;
         float addscl = 1.3f;
 
         if(Simplex.noise3d(seed, 2, 0.5, scl, sector.tile.v.x, sector.tile.v.y, sector.tile.v.z)*nmag + poles > 0.25f*addscl){
-            ores.add(Blocks.oreCoal);
-        }
-
-        if(Simplex.noise3d(seed, 2, 0.5, scl, sector.tile.v.x + 1, sector.tile.v.y, sector.tile.v.z)*nmag + poles > 0.5f*addscl){
-            ores.add(Blocks.oreThorium);
+            ores.add(Blocks.oreTitanium);
         }
 
         if(Simplex.noise3d(seed, 2, 0.5, scl, sector.tile.v.x + 2, sector.tile.v.y, sector.tile.v.z)*nmag + poles > 0.7f*addscl){
             ores.add(Blocks.oreCrystalThorium);
-        }
-
-        if(rand.chance(0.25)){
-            ores.add(Blocks.oreScrap);
         }
 
         FloatSeq frequencies = new FloatSeq();
@@ -422,10 +414,6 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
                     break;
                 }
             }
-
-            if(ore == Blocks.oreScrap && rand.chance(0.33)){
-                floor = Blocks.metalFloorDamaged;
-            }
         });
 
         trimDark();
@@ -435,12 +423,6 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
         inverseFloodFill(tiles.getn(spawn.x, spawn.y));
 
         pass((x, y) -> {
-            if(floor == Blocks.crystallineStone){
-                if(Math.abs(0.5f - noise(x - 90, y, 4, 0.8, 65)) > 0.02){
-                    floor = Blocks.crystallineStone;
-                }
-            }
-
             if(floor == Blocks.shale){
                 if(Math.abs(0.5f - noise(x - 40, y, 2, 0.7, 80)) > 0.25f &&
                 Math.abs(0.5f - noise(x, y + sector.id*10, 1, 1, 60)) > 0.41f && !(roomseq.contains(r -> Mathf.within(x, y, r.x, r.y, 30)))){
@@ -464,6 +446,9 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
                 }
             }
 
+        });
+
+        pass((x, y) -> {
             dec: {
                 for(int i = 0; i < 4; i++){
                     Tile near = tiles.get(x + Geometry.d4[i].x, y + Geometry.d4[i].y);
