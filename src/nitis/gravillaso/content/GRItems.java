@@ -8,7 +8,7 @@ public class GRItems {
     public static Item cobalt, bauxite, alumina, aluminium;
 
     public static void load() {
-        cobalt = new Item("cobalt", Color.valueOf("#0047ab")) {{
+        cobalt = new Item("cobalt", Color.valueOf("#88bcbd")) {{
             hardness = 1;
             cost = 0.5f;
         }};
