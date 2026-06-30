@@ -20,6 +20,7 @@ import mindustry.world.blocks.environment.StaticWall;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.Env;
+import nitis.gravillaso.world.blocks.distribution.AccelerationConveyor;
 import nitis.gravillaso.world.blocks.distribution.DispentorBlock;
 import nitis.gravillaso.world.blocks.drone.CargoDepot;
 import nitis.gravillaso.world.blocks.drone.CargoPort;
@@ -44,7 +45,7 @@ public class GRBlocks {
     public static Block voltum;
 
     // distribution
-    public static Block dispentor;
+    public static Block vectorConveyor, smartRouter, programmableRouter, dispentor;
     // distribution - cargo
     public static Block cargoDepot, cargoDepotLarge, cargoPort, cargoTerminal;
 
@@ -151,6 +152,17 @@ public class GRBlocks {
         }};
 
         // distribution
+        vectorConveyor = new AccelerationConveyor("vector-conveyor") {{
+            requirements(Category.distribution, with(cobalt, 2));
+        }};
+
+        smartRouter = new Block("smart-router") {{
+            requirements(Category.distribution, with(cobalt, 5, lead, 5));
+        }};
+
+        programmableRouter = new Block("programmable-router") {{
+            requirements(Category.distribution, with(cobalt, 20, silicon, 10));
+        }};
         dispentor = new DispentorBlock("dispentor") {{
             requirements(Category.distribution, with(cobalt, 100, lead, 120, silicon, 40));
             size = 2;

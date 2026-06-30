@@ -44,17 +44,24 @@ public class GravilloTechTree {
             context().researchCostMultipliers = costMultipliers;
 
             // distribution
-            node(cargoDepot, () -> {
-                node(cargoPort, () -> {
-                    node(cargoTerminal, () -> {
+            node(vectorConveyor, () -> {
+                node(smartRouter, () -> {
+                    node(programmableRouter, () -> {
+                        node(cargoDepot, () -> {
+                            node(cargoPort, () -> {
+                                node(cargoTerminal, () -> {
 
+                                });
+                            });
+
+                            node(cargoDepotLarge, () -> {
+
+                            });
+                        });
                     });
                 });
-
-                node(cargoDepotLarge, () -> {
-
-                });
             });
+
 
             // cores
             node(coreTier2, () -> {
