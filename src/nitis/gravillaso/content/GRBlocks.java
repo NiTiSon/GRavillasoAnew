@@ -153,7 +153,12 @@ public class GRBlocks {
 
         // distribution
         vectorConveyor = new AccelerationConveyor("vector-conveyor") {{
-            requirements(Category.distribution, with(cobalt, 2));
+            requirements(Category.distribution, with(cobalt, 1));
+            health = 40;
+            speed = 0.03f;
+            displayedSpeed = 4.2f;
+            buildCostMultiplier = 2f;
+            researchCost = with(cobalt, 20);
         }};
 
         smartRouter = new Block("smart-router") {{
