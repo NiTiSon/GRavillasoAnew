@@ -2,6 +2,12 @@ apply plugin: "java"
 
 sourceSets.main.java.srcDirs = ["src"]
 
+sourceSets{
+    tool{
+        java.srcDirs = ["tools"]
+    }
+}
+
 ext{
     // Mindustry version to depend on.
     // Valid values:
@@ -95,6 +101,21 @@ tasks.register('deploy', Jar){
     doLast{
         delete{
             delete "build/libs/${projectName}Android.jar"
+        }
+    }
+}
+
+tasks.register('runMindustry'){
+    dependsOn jar
+    description = 'Build the mod and launch Mindustry via Steam.'
+    group = 'build'
+
+    doLast{
+        def steamUrl = "steam://rungameid/1127400"
+        if(isWindows){
+            "cmd /c start $steamUrl".execute()
+        } else {
+            "xdg-open $steamUrl".execute()
         }
     }
 }
