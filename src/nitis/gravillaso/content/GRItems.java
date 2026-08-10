@@ -3,12 +3,13 @@ package nitis.gravillaso.content;
 import arc.graphics.Color;
 import mindustry.content.Items;
 import mindustry.type.Item;
+import nitis.gravillaso.graphics.GRPal;
 
 public class GRItems {
     public static Item cobalt, bauxite, alumina, aluminium;
 
     public static void load() {
-        cobalt = new Item("cobalt", Color.valueOf("#88bcbd")) {{
+        cobalt = new Item("cobalt", GRPal.cobalt) {{
             hardness = 1;
             cost = 0.5f;
         }};

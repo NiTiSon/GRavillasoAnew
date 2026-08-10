@@ -4,6 +4,7 @@ import arc.graphics.Color;
 import arc.util.Time;
 import mindustry.content.Fx;
 import mindustry.content.Liquids;
+import mindustry.content.UnitTypes;
 import mindustry.entities.bullet.LightningBulletType;
 import mindustry.gen.Sounds;
 import mindustry.type.Category;

@@ -1,4 +1,6 @@
 logs/
+/assets-raw/sprites_out/
+/assets/sprites/
 /core/assets/mindustry-saves/
 /core/assets/mindustry-maps/
 /core/assets/bundles/output/
