@@ -13,6 +13,9 @@ public class GRPlanets {
     public static Planet gravillo;
 
     public static void load() {
+        // Planed:
+        // One vulcano with no snow nor ice
+        // The VERY cold top and down: the storm is heavy and damaging
         gravillo = new Planet("gravillo", Planets.sun, 1.125f, 2) {{
             loadPlanetData = false;
 

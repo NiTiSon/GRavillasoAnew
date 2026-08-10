@@ -1,26 +1,19 @@
 package nitis.gravillaso.content;
 
-import arc.graphics.Color;
-import arc.util.Time;
-import mindustry.content.Fx;
 import mindustry.content.Liquids;
-import mindustry.content.UnitTypes;
-import mindustry.entities.bullet.LightningBulletType;
-import mindustry.gen.Sounds;
+import mindustry.entities.bullet.LaserBulletType;
 import mindustry.type.Category;
-import mindustry.type.ItemStack;
 import mindustry.world.Block;
-import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.environment.Prop;
 import mindustry.world.blocks.environment.StaticWall;
-import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.meta.Attribute;
-import mindustry.world.meta.Env;
 import nitis.gravillaso.world.blocks.distribution.DispentorBlock;
+import nitis.gravillaso.type.BlockWeapon;
 import nitis.gravillaso.world.blocks.environment.AdjoiningResourceWell;
 import nitis.gravillaso.world.blocks.environment.MainResourceWell;
+import nitis.gravillaso.world.blocks.storage.FactoryCoreBlock;
 
 import static mindustry.type.ItemStack.with;
 import static mindustry.content.Items.*;
@@ -79,7 +72,7 @@ public class GRBlocks {
             oreScale = 23.47512f;
         }};
 
-        coreBase = new CoreBlock("core-base") {{
+        coreBase = new FactoryCoreBlock("core-base") {{
             requirements(Category.effect, with(cobalt, 1000, lead, 800));
             isFirstTier = true;
             size = 4;
@@ -96,6 +89,26 @@ public class GRBlocks {
             requiresCoreZone = true;
 
             unitCapModifier = 5;
+
+            // corner turrets; offset by the mount position formula Angles.trnsx(rotation - 90, x, y)
+            weapons.add(
+                new BlockWeapon("core-base-turret"){{
+                    x = -12f; y = 12f;
+                    bullet = new LaserBulletType(75f){{ length = 260f; }};
+                }},
+                new BlockWeapon("core-base-turret"){{
+                    x = 12f; y = 12f;
+                    bullet = new LaserBulletType(75f){{ length = 260f; }};
+                }},
+                new BlockWeapon("core-base-turret"){{
+                    x = -12f; y = -12f;
+                    bullet = new LaserBulletType(75f){{ length = 260f; }};
+                }},
+                new BlockWeapon("core-base-turret"){{
+                    x = 12f; y = -12f;
+                    bullet = new LaserBulletType(75f){{ length = 260f; }};
+                }}
+            );
         }};
 
         // distribution
