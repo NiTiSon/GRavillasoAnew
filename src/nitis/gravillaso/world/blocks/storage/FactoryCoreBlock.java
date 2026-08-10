@@ -2,15 +2,20 @@ package nitis.gravillaso.world.blocks.storage;
 
 import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
+import arc.struct.IntSeq;
 import arc.struct.Seq;
 import arc.util.Log;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.content.Fx;
 import mindustry.entities.units.WeaponMount;
+import mindustry.gen.Groups;
 import mindustry.gen.Sounds;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.io.TypeIO;
 import mindustry.type.UnitType;
 import mindustry.world.blocks.storage.CoreBlock;
 import nitis.gravillaso.content.GRUnitTypes;
@@ -22,9 +27,13 @@ import static mindustry.Vars.state;
 
 public class FactoryCoreBlock extends CoreBlock {
     public int droneSlots = 1;
+    // DISCUSSION:
+    // How handle new cores?
+    // Do they should make new units or use Draug
+    // What about building helper drones?
+    // What if user wants both helpers and miners?
     public UnitType droneType = GRUnitTypes.draugDrone;
     public float droneConstructTime = 10f * 60f;
-    public Seq<BlockWeapon> weapons = new Seq<>();
 
     public FactoryCoreBlock(String name) {
         super(name);
@@ -32,59 +41,26 @@ public class FactoryCoreBlock extends CoreBlock {
         ambientSoundVolume = 0.13f;
     }
 
-    @Override
-    public void load() {
-        super.load();
-        for(var weapon : weapons){
-            weapon.load();
-        }
-    }
-
-    public class FactoryCoreBuild extends CoreBlock.CoreBuild implements MultiWeaponBuild {
+    public class FactoryCoreBuild extends CoreBlock.CoreBuild {
+        protected IntSeq readUnits = new IntSeq(); // required for saves
         public float droneProgress, totalDroneProgress, droneWarmup;
         public Seq<Unit> units = new Seq<>();
-        public Seq<WeaponMount> mounts = new Seq<>();
-
-        public void setupWeapons(){
-            mounts.clear();
-            for(var weapon : weapons){
-                mounts.add(new WeaponMount(weapon));
-            }
-            Log.info("FactoryCore '@': set up @ weapon mounts, client=@", block.name, mounts.size, net.client());
-        }
 
         @Override
-        public float rotation(){ return rotation; }
-
-        @Override
-        public float efficiency(){ return efficiency; }
-
-        @Override
-        public boolean isControlled(){ return false; }
-
-        @Override
-        public boolean logicControlled(){ return false; }
-
-        @Override
-        public boolean canShoot(){ return true; }
-
-        @Override
-        public Seq<WeaponMount> mounts(){ return mounts; }
-
-        @Override
-        public void update() {
-            super.update();
-
-            if(mounts.size != weapons.size){
-                setupWeapons();
+        public void updateTile() {
+            if(!readUnits.isEmpty()){ // reassign drones after `read`
+                units.clear();
+                readUnits.each(i -> {
+                    var unit = Groups.unit.getByID(i);
+                    if(unit != null){
+                        units.add(unit);
+                    }
+                });
+                readUnits.clear();
             }
 
             // TODO: weapons and drones are simulated on the server only; spawned units sync to clients, and cores can't use @Remote
             if(net.client()) return;
-
-            for(int i = 0; i < mounts.size; i++){
-                weapons.get(i).update(this, mounts.get(i));
-            }
 
             units.removeAll(u -> !u.isAdded() || u.dead);
 
@@ -107,12 +83,34 @@ public class FactoryCoreBlock extends CoreBlock {
         public void draw() {
             super.draw();
 
-            for(int i = 0; i < mounts.size; i++){
-                weapons.get(i).draw(this, mounts.get(i));
-            }
-
             if(net.client() || droneWarmup <= 0.001f) return;
             Draw.draw(Layer.blockOver + 0.2f, () -> Drawf.construct(this, droneType.fullIcon, Pal.accent, 0f, droneProgress, droneWarmup, totalDroneProgress, 14f));
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+
+            write.b(units.size);
+            for(var unit : units){
+                write.i(unit.id);
+            }
+        }
+
+        @Override
+        public byte version(){
+            return 1;
+        }
+
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+
+            int count = read.b();
+            readUnits.clear();
+            for(int i = 0; i < count; i++){
+                readUnits.add(read.i());
+            }
         }
     }
 }

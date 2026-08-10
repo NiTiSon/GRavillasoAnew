@@ -8,7 +8,9 @@ import static mindustry.Vars.*;
 import static mindustry.content.TechTree.*;
 import static nitis.gravillaso.content.GRBlocks.*;
 import static nitis.gravillaso.content.GRItems.*;
+import static nitis.gravillaso.content.GRLiquids.*;
 import static mindustry.content.Items.*;
+import static mindustry.content.Liquids.*;
 import static nitis.gravillaso.content.GRSectorPresets.*;
 
 public class GravilloTechTree {
@@ -44,12 +46,12 @@ public class GravilloTechTree {
             context().researchCostMultipliers = costMultipliers;
 
             // distribution
-            /*node(vectorConveyor, () -> {
-                node(smartRouter, () -> {
-                    node(programmableRouter, () -> {
-                    });
+            node(cobaltConveyor, () -> {
+                // TODO: junction
+                node(cobaltRouter, () -> {
+
                 });
-            });*/
+            });
 
 
             // cores
@@ -72,16 +74,29 @@ public class GravilloTechTree {
 //            });
 
             // items
+            // THE ORDER WILL CHANGE 100%
             nodeProduce(cobalt, () -> {
                 nodeProduce(lead, () -> {
                     nodeProduce(GRItems.bauxite, () -> {
                         nodeProduce(alumina, () -> {
                            nodeProduce(aluminium, () -> {});
                         });
+                    });
 
+                    nodeProduce(brine, () -> {
                         nodeProduce(silicon, () -> {
 
                         });
+
+                        nodeProduce(oxide, () -> {
+
+                        });
+                    });
+                });
+
+                nodeProduce(cryofluid, () -> { // Use rockets for phaseFabric, (maybe replace with phaseFluid/phaseAlloy
+                    nodeProduce(phaseFabric, () -> {
+
                     });
                 });
             });

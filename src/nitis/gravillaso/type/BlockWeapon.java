@@ -35,12 +35,14 @@ public class BlockWeapon extends Weapon{
     public BlockWeapon(){
         super();
         autoTarget = true;
+        controllable = false;
         rotate = true;
     }
 
     public BlockWeapon(String name){
         super(name);
         autoTarget = true;
+        controllable = false;
         rotate = true;
     }
 
