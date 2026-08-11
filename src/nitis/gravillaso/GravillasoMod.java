@@ -4,13 +4,13 @@ import arc.util.CommandHandler;
 import mindustry.gen.Player;
 import mindustry.mod.Mod;
 import nitis.gravillaso.content.*;
-import nitis.gravillaso.world.temperature.GravilloTemperatureSystem;
+import nitis.gravillaso.world.temperature.TemperatureSystem;
 
 public class GravillasoMod extends Mod{
 
     @Override
     public void init() {
-        GravilloTemperatureSystem.init();
+        TemperatureSystem.init();
     }
 
     @Override
@@ -23,8 +23,8 @@ public class GravillasoMod extends Mod{
                 return;
             }
 
-            boolean on = args.length == 0 ? !GravilloTemperatureSystem.debugDraw : args[0].equals("on");
-            GravilloTemperatureSystem.debugDraw = on;
+            boolean on = args.length == 0 ? !TemperatureSystem.debugDraw : args[0].equals("on");
+            TemperatureSystem.debugDraw = on;
 
             if(context instanceof Player player){
                 player.sendMessage("[accent]Temperature overlay [lightgray]" + (on ? "enabled." : "disabled."));

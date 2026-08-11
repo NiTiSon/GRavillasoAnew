@@ -11,8 +11,14 @@ import mindustry.game.EventType.Trigger;
 import mindustry.game.EventType.WorldLoadEvent;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
+import mindustry.io.SaveFileReader.CustomChunk;
+import mindustry.io.SaveVersion;
 import mindustry.world.Block;
 import nitis.gravillaso.content.GRBlocks;
+
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
@@ -21,7 +27,7 @@ import static mindustry.Vars.world;
  * Per-tile temperature grid, one value per 1x1 tile, normalized to [-1, 1]:
  * -1 very cold, 0 neutral, +1 very hot. Rebuilt from the floor layout on every world load.
  */
-public class GravilloTemperatureSystem {
+public class TemperatureSystem {
     private static float[] temperature = new float[0];
     private static int width = 1;
 
@@ -32,7 +38,39 @@ public class GravilloTemperatureSystem {
 
     public static void init() {
         Events.on(WorldLoadEvent.class, e -> build());
-        Events.run(Trigger.draw, GravilloTemperatureSystem::drawDebug);
+        Events.run(Trigger.draw, TemperatureSystem::drawDebug);
+        registerChunk();
+    }
+
+    private static void registerChunk() {
+        SaveVersion.addCustomChunk("gr-anew-temperature", new CustomChunk() {
+            static final int version = 1;
+
+            @Override
+            public boolean shouldWrite() {
+                return temperature.length > 0;
+            }
+
+            @Override
+            public void write(DataOutput stream) throws IOException {
+                stream.write(version);
+                stream.writeInt(width);
+                stream.writeInt(temperature.length / width);
+                for(float t : temperature) stream.writeFloat(t);
+            }
+
+            @Override
+            public void read(DataInput stream) throws IOException {
+                int readVersion = stream.readInt();
+                int w = stream.readInt();
+                int h = stream.readInt();
+                // stale or mismatched save: keep the floor-derived build
+                if(w <= 0 || h <= 0 || w != world.width() || h != world.height()) return;
+                width = w;
+                temperature = new float[w * h];
+                for(int i = 0; i < temperature.length; i++) temperature[i] = stream.readFloat();
+            }
+        });
     }
 
     public static void build() {
@@ -44,7 +82,6 @@ public class GravilloTemperatureSystem {
     }
 
     /** Base temperature contributed by a floor, before emitters/weather. */
-    // ponytail: hardcoded per-floor values, move to content when the system grows
     static float floorTemp(Block floor) {
         if(floor == Blocks.ice) return -0.6f;
         if(floor == Blocks.iceSnow) return -0.5f;
@@ -75,6 +112,7 @@ public class GravilloTemperatureSystem {
     }
 
     static void drawDebug() {
+        var whiteRect = Core.atlas.find("white");
         if(!debugDraw || temperature.length == 0) return;
 
         Core.camera.bounds(Tmp.r1);
@@ -92,7 +130,7 @@ public class GravilloTemperatureSystem {
                 float t = temperature[x + y * width];
                 if(t == 0f) continue;
                 Draw.color(t < 0f ? coldColor : hotColor, Math.abs(t));
-                Draw.rect(Core.atlas.find("white"), x * tilesize, y * tilesize, tilesize, tilesize);
+                Draw.rect(whiteRect, x * tilesize, y * tilesize, tilesize, tilesize);
             }
         }
         Draw.color();
