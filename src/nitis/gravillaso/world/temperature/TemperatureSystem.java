@@ -2,26 +2,34 @@ package nitis.gravillaso.world.temperature;
 
 import arc.Core;
 import arc.Events;
-import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
+import arc.struct.ObjectSet;
+import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.content.Blocks;
+import mindustry.content.Fx;
 import mindustry.game.EventType.Trigger;
 import mindustry.game.EventType.WorldLoadEvent;
 import mindustry.gen.Building;
+import mindustry.gen.Groups;
+import mindustry.gen.Sounds;
 import mindustry.graphics.Layer;
 import mindustry.io.SaveFileReader.CustomChunk;
 import mindustry.io.SaveVersion;
 import mindustry.world.Block;
 import nitis.gravillaso.content.GRBlocks;
+import nitis.gravillaso.content.GRPlanets;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+import static mindustry.Vars.net;
+import static mindustry.Vars.state;
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
+import static nitis.gravillaso.graphics.GRPal.*;
 
 /**
  * Per-tile temperature grid, one value per 1x1 tile, normalized to [-1, 1]:
@@ -31,15 +39,64 @@ public class TemperatureSystem {
     private static float[] temperature = new float[0];
     private static int width = 1;
 
-    private static final Color coldColor = Color.valueOf("4d9fff");
-    private static final Color hotColor = Color.valueOf("ff5f3c");
+    // temperatures below this freeze liquid carriers (pipes crack)
+    private static final float crackTemp = -0.4f;
+    // temperatures below this damage every building
+    private static final float damageTemp = -0.7f;
+    // hp per second while cracking, and max cold damage per second (at -1)
+    private static final float crackRate = 80f;
+    private static final float coldRate = 40f;
+
+    /** Blocks that resist freezing. Register mod conduits/tanks here. */
+    // ponytail: empty until heat-resistant blocks exist
+    public static final ObjectSet<Block> insulated = new ObjectSet<>();
 
     public static boolean debugDraw;
 
     public static void init() {
         Events.on(WorldLoadEvent.class, e -> build());
+        Events.run(Trigger.update, TemperatureSystem::updateDamage);
         Events.run(Trigger.draw, TemperatureSystem::drawDebug);
         registerChunk();
+    }
+
+    static float lastCheck;
+
+    static void updateDamage() {
+        // host/singleplayer only, on the gravillo planet, no point before the grid exists
+        if(net.client() || state.rules.planet != GRPlanets.gravillo || temperature.length == 0) return;
+
+        float dt = 0.5f;
+        if(Time.time - lastCheck < dt * 60f) return;
+        lastCheck = Time.time;
+
+        for(Building b : Groups.build){
+            float t = temperature(b.tileX(), b.tileY());
+            float dmg = 0f;
+
+            if(t <= damageTemp){
+                dmg += coldRate * Mathf.clamp((t - damageTemp) / (1f + damageTemp), 0f, 1f) * dt;
+            }
+
+            if(t <= crackTemp && canCrack(b)){
+                dmg += crackRate * dt;
+                if(Mathf.chance(0.4)) Sounds.blockBreak1.at(b.x, b.y, 0.4f, Mathf.random(0.9f, 1.2f));
+            }
+
+            if(dmg > 0f){
+                b.damage(dmg);
+                // same full-block flash mechanics a mender uses for heal, only blue
+                Fx.healBlockFull.at(b.x, b.y, b.block.size, coldFlash, b.block);
+            }
+        }
+    }
+
+    static boolean canCrack(Building b){
+        // anything carrying liquid freezes; insulated blocks are exempt
+        return !insulated.contains(b.block)
+            && b.block.hasLiquids && b.liquids != null
+            && b.liquids.currentAmount() > 0.01f
+            && b.liquids.current().temperature <= 0.5f;
     }
 
     private static void registerChunk() {
@@ -129,7 +186,7 @@ public class TemperatureSystem {
             for(int x = minx; x < maxx; x++){
                 float t = temperature[x + y * width];
                 if(t == 0f) continue;
-                Draw.color(t < 0f ? coldColor : hotColor, Math.abs(t));
+                Draw.color(t < 0f ? debugColdColor : debugHotColor, Math.abs(t));
                 Draw.rect(whiteRect, x * tilesize, y * tilesize, tilesize, tilesize);
             }
         }
