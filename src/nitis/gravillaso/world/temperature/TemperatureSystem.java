@@ -5,6 +5,7 @@ import arc.Events;
 import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
 import arc.struct.ObjectSet;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.content.Blocks;
@@ -35,6 +36,101 @@ import static nitis.gravillaso.graphics.GRPal.*;
  * Per-tile temperature grid, one value per 1x1 tile, normalized to [-1, 1]:
  * -1 very cold, 0 neutral, +1 very hot. Rebuilt from the floor layout on every world load.
  */
+public final class TemperatureSystem implements CustomChunk {
+    // Whenever draw the temperature debug view.
+    public static boolean enableDebugView = false;
+    private static volatile int ww, wh;
+
+    private volatile float[] data;
+
+    public TemperatureSystem() {
+        Events.on(WorldLoadEvent.class, e -> {
+            ww = world.width();
+            wh = world.height();
+        });
+        Events.run(Trigger.update, TemperatureSystem::update);
+        Events.run(Trigger.draw, TemperatureSystem::drawDebug);
+
+        SaveVersion.addCustomChunk("gr-anew-temperature-system" ,this);
+    }
+
+    static void drawDebug(){
+        if (!enableDebugView) return;
+
+        /*
+        var whiteRect = Core.atlas.find("white");
+        Core.camera.bounds(Tmp.r1);
+        int minx = Math.max(0, Mathf.floor(Tmp.r1.x / tilesize));
+        int miny = Math.max(0, Mathf.floor(Tmp.r1.y / tilesize));
+        int maxx = Math.min(width, Mathf.ceil((Tmp.r1.x + Tmp.r1.width) / tilesize));
+        int maxy = Math.min(world.height(), Mathf.ceil((Tmp.r1.y + Tmp.r1.height) / tilesize));
+
+        // too zoomed out to see per-tile data, skip to avoid a lag spike
+        if((maxx - minx) * (maxy - miny) > 120_000) return;
+
+        Draw.z(Layer.blockOver);
+        for(int y = miny; y < maxy; y++){
+            for(int x = minx; x < maxx; x++){
+                float t = temperature[x + y * width];
+                if(t == 0f) continue;
+                Draw.color(t < 0f ? debugColdColor : debugHotColor, Math.abs(t));
+                Draw.rect(whiteRect, x * tilesize, y * tilesize, tilesize, tilesize);
+            }
+        }
+        Draw.color();
+        */
+    }
+
+    static void update() {
+        if (state.rules.planet != GRPlanets.gravillo) return;
+
+        world.tiles.each(TemperatureSystem::tileUpdate);
+    }
+
+    static void tileUpdate(int x, int y) {
+
+    }
+
+    @Override
+    public void write(DataOutput stream) throws IOException {
+        stream.writeShort(world.width());
+        stream.writeShort(world.height());
+
+        int size = ww * wh;
+        for (int i = 0; i < size; i++){
+            stream.writeShort(encodeNormalizedFloat(0.0f)); // leave for forward-compatibility
+        }
+    }
+
+    @Override
+    public void read(DataInput stream) throws IOException {
+        int w = stream.readShort(), h = stream.readShort();
+
+        ww = w; wh = h;
+        int size = w * h;
+        for (int i = 0; i < size; i++){
+            float temp = decodeNormalizedFloat(stream.readShort());
+        }
+    }
+
+    public static short encodeNormalizedFloat(float value) {
+        if (value < 0){
+            return (short)(value * Short.MIN_VALUE);
+        }else{
+            return (short)(value * Short.MAX_VALUE);
+        }
+    }
+
+    public static float decodeNormalizedFloat(short value) {
+        if (value < 0){
+            return (float)value / Short.MIN_VALUE;
+        } else{
+            return (float)value / Short.MAX_VALUE;
+        }
+    }
+}
+
+/*
 public class TemperatureSystem {
     private static float[] temperature = new float[0];
     private static int width = 1;
@@ -47,8 +143,6 @@ public class TemperatureSystem {
     private static final float crackRate = 80f;
     private static final float coldRate = 40f;
 
-    /** Blocks that resist freezing. Register mod conduits/tanks here. */
-    // ponytail: empty until heat-resistant blocks exist
     public static final ObjectSet<Block> insulated = new ObjectSet<>();
 
     public static boolean debugDraw;
@@ -131,6 +225,8 @@ public class TemperatureSystem {
     }
 
     public static void build() {
+        if(state.rules.planet != GRPlanets.gravillo) return;
+
         width = world.width();
         int height = world.height();
         temperature = new float[width * height];
@@ -138,7 +234,6 @@ public class TemperatureSystem {
         world.tiles.each((x, y) -> temperature[x + y * width] = floorTemp(world.tiles.get(x, y).floor()));
     }
 
-    /** Base temperature contributed by a floor, before emitters/weather. */
     static float floorTemp(Block floor) {
         if(floor == Blocks.ice) return -0.6f;
         if(floor == Blocks.iceSnow) return -0.5f;
@@ -193,3 +288,4 @@ public class TemperatureSystem {
         Draw.color();
     }
 }
+*/

@@ -40,7 +40,7 @@ public class GRBlocks {
     // ores
     public static Block oreCobalt;
 
-    //crafting - erekir
+    //crafting - gravillo
     public static Block oxidePrecipitator;
 
     // storage - gravillo

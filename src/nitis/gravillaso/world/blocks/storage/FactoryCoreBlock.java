@@ -37,8 +37,6 @@ public class FactoryCoreBlock extends CoreBlock {
 
     public FactoryCoreBlock(String name) {
         super(name);
-        ambientSound = Sounds.loopUnitBuilding;
-        ambientSoundVolume = 0.13f;
     }
 
     public class FactoryCoreBuild extends CoreBlock.CoreBuild {
