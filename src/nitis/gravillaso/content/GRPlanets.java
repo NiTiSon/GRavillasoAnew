@@ -1,12 +1,14 @@
 package nitis.gravillaso.content;
 
 import arc.graphics.Color;
+import arc.util.Time;
 import mindustry.content.Planets;
 import mindustry.game.Difficulty;
 import mindustry.game.Team;
 import mindustry.graphics.g3d.HexMesh;
 import mindustry.type.Planet;
 import mindustry.world.meta.Env;
+import nitis.gravillaso.core.GRRules;
 import nitis.gravillaso.maps.planet.GravilloPlanetGenerator;
 
 public class GRPlanets {
@@ -48,21 +50,23 @@ public class GRPlanets {
             defaultCore = GRBlocks.coreBase;
 
             allowWaves = true;
-            allowSectorInvasion = true;
+            allowSectorInvasion = false;
             allowLaunchSchematics = true;
             allowLaunchLoadout = true;
-            allowLegacyLaunchPads = true;
+            allowLegacyLaunchPads = false;
             allowSelfSectorLaunch = true;
             enemyCoreSpawnReplace = true;
 
-            enemyFactoryActivationDelay = 7200f;
+            enemyFactoryActivationDelay = 120f * Time.toSeconds;
             launchCapacityMultiplier = 0.5f;
 
             ruleSetter = rules -> {
+                GRRules grRules = new GRRules();
                 rules.waveTeam = Team.blue;
                 rules.placeRangeCheck = false;
                 rules.hideSpawns = false;
                 rules.coreDestroyClear = true;
+                grRules.appendTo(rules);
             };
 
             showRtsAIRule = true;

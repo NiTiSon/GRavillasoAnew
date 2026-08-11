@@ -3,14 +3,27 @@ package nitis.gravillaso.core;
 import arc.util.serialization.Json;
 import arc.util.serialization.JsonValue;
 import arc.util.serialization.Json.JsonSerializable;
+import mindustry.game.Rules;
 import mindustry.game.Team;
+import mindustry.io.JsonIO;
 
-public class GRGameRules {
+public class GRRules {
     /** Whenever the cold mechanic is enabled */
     public boolean coldEnabled = true;
+    /** Base environment temperature */
+    public float baseTemperature = 0.0f;
     /** Team-specific rules. */
     public TeamRules teams = new TeamRules();
 
+    public static GRRules getFrom(Rules rules) {
+        return rules.tags.get("gr-rules") == null
+                ? new GRRules()
+                : JsonIO.read(GRRules.class, rules.tags.get("gr-rules"));
+    }
+
+    public void appendTo(Rules rules) {
+        rules.tags.put("gr-rules", JsonIO.write(this));
+    }
 
     /** A team-specific ruleset. */
     public static class TeamRule {

@@ -11,6 +11,7 @@ import mindustry.ui.dialogs.CustomRulesDialog;
 import nitis.gravillaso.content.*;
 import nitis.gravillaso.core.GRGameState;
 import nitis.gravillaso.core.GRLogic;
+import nitis.gravillaso.ui.dialog.CustomRulesDialogExtension;
 import nitis.gravillaso.world.temperature.TemperatureSystem;
 
 public class GravillasoMod extends Mod{
@@ -18,16 +19,18 @@ public class GravillasoMod extends Mod{
     public static GRLogic grLogic;
     public static GRGameState grState;
 
+    public GravillasoMod() {
+        Core.app.addListener(grLogic = new GRLogic());
+    }
+
     @Override
     public void init() {
         temperatureSystem = new TemperatureSystem();
         grState = new GRGameState();
 
-        Core.app.addListener(grLogic = new GRLogic());
+        grLogic.init();
 
-        // TODO:
-        // rules edited in-game
-        // rules edited in map editor
+        CustomRulesDialogExtension.inject();
     }
 
     @Override
