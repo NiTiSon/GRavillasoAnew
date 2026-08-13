@@ -14,6 +14,7 @@ import arc.struct.ObjectMap;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
 import arc.struct.StringMap;
+import arc.util.Log;
 import arc.util.Tmp;
 import arc.util.noise.Ridged;
 import arc.util.noise.Simplex;
@@ -33,6 +34,7 @@ import mindustry.world.TileGen;
 import mindustry.world.Tiles;
 import nitis.gravillaso.content.GRBlocks;
 import nitis.gravillaso.content.GRWeathers;
+import nitis.gravillaso.core.GRRules;
 
 import static mindustry.Vars.*;
 
@@ -86,6 +88,9 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
 
     @Override
     public void addWeather(Sector sector, Rules rules) {
+        GRRules gr = GRRules.getFrom(rules);
+        gr.baseTemperature = Mathf.map(Math.abs(sector.tile.v.y), 0f, 1f, 0.1f, -0.9f);
+        gr.appendTo(rules);
         rules.weather.clear();
 
         rules.weather.add(new Weather.WeatherEntry(Weathers.snow));

@@ -1,11 +1,13 @@
 package nitis.gravillaso.ui.dialog;
 
+import arc.math.Mathf;
 import arc.scene.Element;
 import arc.scene.ui.layout.Collapser;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Reflect;
+import arc.util.Strings;
 import mindustry.Vars;
 import mindustry.editor.MapInfoDialog;
 import mindustry.game.Rules;
@@ -39,7 +41,12 @@ public final class CustomRulesDialogExtension {
                     Table prev = dialog.current;
                     dialog.current = dialog.categories.get(env);
                     dialog.check("@rules.gr.colddisabled", b -> { gr.coldEnabled = !b; save.run(); }, () -> !gr.coldEnabled);
-                    dialog.number("@rules.gr.basetemperature", f -> { gr.baseTemperature = f; save.run(); }, () -> gr.baseTemperature, -1f, 1f);
+                    dialog.current.table(t -> {
+                        t.left();
+                        t.add("@rules.gr.basetemperature").left().padRight(5);
+                        t.field(Strings.autoFixed(gr.baseTemperature, 2), s -> { gr.baseTemperature = Mathf.clamp(Strings.parseFloat(s), -1f, 1f); save.run(); })
+                            .valid(Strings::canParseFloat).padRight(50f).width(120f).left();
+                    }).padTop(0).row();
                     dialog.current = prev;
                 }
 

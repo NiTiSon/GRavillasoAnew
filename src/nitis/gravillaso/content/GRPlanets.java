@@ -61,7 +61,7 @@ public class GRPlanets {
             launchCapacityMultiplier = 0.5f;
 
             ruleSetter = rules -> {
-                GRRules grRules = new GRRules();
+                GRRules grRules = GRRules.getFrom(rules);
                 rules.waveTeam = Team.blue;
                 rules.placeRangeCheck = false;
                 rules.hideSpawns = false;
