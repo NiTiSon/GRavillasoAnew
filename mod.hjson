@@ -1,0 +1,9 @@
+name: gr
+displayName: Gravillaso Anew
+author: NiTiSon
+description: ""
+version: v3.42
+
+java: true
+main: nitis.gravillaso.GravillasoMod
+hideBrowser: true

@@ -1,0 +1,45 @@
+apply plugin: 'java'
+
+java{
+    sourceCompatibility = 17
+    targetCompatibility = 17
+}
+
+sourceSets{
+    main{
+        java.srcDirs = ['src']
+    }
+}
+
+dependencies{
+    implementation "Anuken:Mindustry:$mindustryVersion"
+    implementation project(':mod')
+}
+
+tasks.register('run', JavaExec){
+    group = 'tools'
+    description = 'Processes mod/assets-raw/sprites into mod/assets/sprites.'
+    dependsOn classes
+    mainClass = 'nitis.gravillaso.tools.Tools'
+    classpath = sourceSets.main.runtimeClasspath
+    workingDir = temporaryDir
+
+    def rawDir = file("$rootDir/mod/assets-raw/sprites")
+    def outDir = file("$rootDir/mod/assets/sprites")
+
+    args = [file("$rootDir/mod").absolutePath, modName]
+
+    doFirst{
+        copy{
+            from rawDir
+            into "$temporaryDir/sprites"
+        }
+    }
+
+    doLast{
+        copy{
+            from "$temporaryDir/sprites"
+            into outDir
+        }
+    }
+}

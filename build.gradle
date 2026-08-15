@@ -1,0 +1,55 @@
+allprojects{
+    apply plugin: 'java'
+
+    version = '0.1'
+
+    repositories{
+        mavenCentral()
+        // Fetches Mindustry's dependencies.jar straight from a GitHub release. No real maven repo involved.
+        ivy{
+            url 'https://github.com/'
+            patternLayout{
+                artifact '/[organisation]/[module]/releases/download/[revision]/dependencies.jar'
+            }
+            metadataSources{
+                artifact()
+            }
+        }
+    }
+
+    tasks.withType(JavaCompile).configureEach{
+        options.encoding = 'UTF-8'
+        options.incremental = true
+        options.fork = true
+        options.forkOptions.jvmArgs += [
+            '--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED',
+            '--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
+            '--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED',
+            '--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED',
+            '--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED',
+            '--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
+            '--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
+            '--add-opens=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED',
+            '--add-opens=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED',
+            '--add-opens=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED',
+            '--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED',
+            '--add-opens=java.base/sun.reflect.annotation=ALL-UNNAMED'
+        ]
+    }
+}
+
+// Copies the built desktop JAR into the Mindustry mods folder.
+tasks.register('install', DefaultTask){
+    dependsOn ':mod:jar'
+    doLast{
+        def jar = file("${rootDir}/mod/build/libs/${modArtifact}Desktop.jar")
+        def home = System.getenv('APPDATA') ?: new File(System.properties['user.home'] as File, '.local/share').toString()
+        def modsDir = new File(home, 'Mindustry/mods')
+        modsDir.mkdirs()
+        copy{
+            from jar
+            into modsDir
+        }
+        logger.lifecycle("Copied '${jar.name}' to '${modsDir}'.")
+    }
+}

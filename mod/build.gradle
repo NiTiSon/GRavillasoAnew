@@ -1,0 +1,38 @@
+apply plugin: 'java'
+
+java{
+    sourceCompatibility = 17
+    targetCompatibility = 17
+}
+
+sourceSets{
+    main{
+        java.srcDirs = ['src']
+        resources.srcDirs = ['assets/sprites']
+    }
+}
+
+dependencies{
+    compileOnly "Anuken:Mindustry:$mindustryVersion"
+    compileOnly project(':annotations')
+    annotationProcessor project(':annotations')
+}
+
+tasks.withType(JavaCompile).configureEach{
+    options.encoding = 'UTF-8'
+    options.compilerArgs += [
+        "-AmodName=$modName",
+        "-AclassPrefix=$classPrefix",
+        "-AgenPackage=$genPackage"
+    ]
+}
+
+jar{
+    archiveFileName = "${modArtifact}Desktop.jar"
+    from rootProject.file('mod.hjson')
+    def icon = rootProject.file('icon.png')
+    if(icon.exists()){
+        from icon
+    }
+    exclude '**/.gitkeep'
+}
