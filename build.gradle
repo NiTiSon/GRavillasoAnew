@@ -3,6 +3,10 @@ allprojects{
 
     version = '0.1'
 
+    ext{
+        sdkRoot = System.getenv('ANDROID_HOME') ?: System.getenv('ANDROID_SDK_ROOT')
+    }
+
     repositories{
         mavenCentral()
         // Fetches Mindustry's dependencies.jar straight from a GitHub release. No real maven repo involved.
@@ -38,18 +42,85 @@ allprojects{
     }
 }
 
-// Copies the built desktop JAR into the Mindustry mods folder.
+def modDir = { ->
+    def customPath = providers.gradleProperty('mindustryPath').orElse('').get()
+    customPath ? new File(customPath) : new File(rootDir, 'run')
+}
+
+// Copies the built desktop JAR into the Mindustry mods folder (run/mods or <mindustryPath>/mods, Steam-aware).
 tasks.register('install', DefaultTask){
+    final def modJar = project(':mod').tasks.named('jar', Jar).flatMap{ it.archiveFile }
+
+    inputs.file(modJar).withPathSensitivity(PathSensitivity.ABSOLUTE)
     dependsOn ':mod:jar'
+
     doLast{
-        def jar = file("${rootDir}/mod/build/libs/${modArtifact}Desktop.jar")
-        def home = System.getenv('APPDATA') ?: new File(System.properties['user.home'] as File, '.local/share').toString()
-        def modsDir = new File(home, 'Mindustry/mods')
+        File jarFile = modJar.get().asFile
+        def mindustryDir = modDir()
+        def isSteam = new File(mindustryDir, 'Mindustry.exe').exists()
+        def savesDir = isSteam ? new File(mindustryDir, 'saves') : mindustryDir
+
+        def modsDir = new File(savesDir, 'mods')
         modsDir.mkdirs()
+
+        File existingJar = new File(modsDir, jarFile.name)
+        if(existingJar.exists()){
+            existingJar.delete()
+        }
+
         copy{
-            from jar
+            from jarFile
             into modsDir
         }
-        logger.lifecycle("Copied '${jar.name}' to '${modsDir}'.")
+        logger.lifecycle("Copied '${jarFile.name}' to '${modsDir}'.")
+    }
+}
+
+// Downloads the Mindustry client for the configured version into run/ (or <mindustryPath>).
+tasks.register('installClient', DefaultTask){
+    final def clientVersion = mindustryVersion
+
+    doLast{
+        def mindustryDir = modDir()
+        if(new File(mindustryDir, 'Mindustry.exe').exists()){
+            logger.lifecycle("Mindustry is installed via Steam, skipping installation.")
+            return
+        }
+
+        def clientFile = new File(mindustryDir, "client-${clientVersion}.jar")
+        if(clientFile.exists()){
+            logger.lifecycle("Client is installed at '${clientFile.path}'.")
+            return
+        }
+
+        mindustryDir.mkdirs()
+
+        String githubClientUrl = "https://github.com/Anuken/Mindustry/releases/download/${clientVersion}/Mindustry.jar"
+        logger.lifecycle("Downloading client from ${githubClientUrl}")
+        new URL(githubClientUrl).withInputStream{ input ->
+            clientFile.withOutputStream{ output -> output << input }
+        }
+
+        logger.lifecycle("Installed to '${clientFile.path}'.")
+    }
+}
+
+// Installs the mod, ensures the client, then launches Mindustry with the mod active.
+tasks.register('runClient', Exec){
+    dependsOn 'installClient', 'install'
+
+    final def clientVersion = mindustryVersion
+
+    doFirst{
+        def mindustryDir = modDir()
+        def isSteam = new File(mindustryDir, 'Mindustry.exe').exists()
+        def savesDir = isSteam ? new File(mindustryDir, 'saves') : mindustryDir
+
+        def clientFile = isSteam ? new File(mindustryDir, 'Mindustry.exe') : new File(mindustryDir, "client-${clientVersion}.jar")
+
+        logger.lifecycle("> Starting Mindustry.")
+        environment 'MINDUSTRY_DATA_DIR', savesDir.absolutePath
+        environment 'DEVELOPMENT', 'true'
+        commandLine isSteam ? clientFile.path : ['java', '-jar', clientFile.path, '-debug']
     }
 }

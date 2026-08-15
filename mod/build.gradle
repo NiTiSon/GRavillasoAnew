@@ -36,3 +36,51 @@ jar{
     }
     exclude '**/.gitkeep'
 }
+
+tasks.register('dex', Jar){
+    archiveFileName = "${modArtifact}.jar"
+    dependsOn jar
+
+    final def desktopJar = jar.archiveFile.get().asFile
+    final def dexJar = new File(dex.temporaryDir, 'Dexed.jar')
+    final def windows = System.getProperty('os.name').toLowerCase().contains('windows')
+
+    doFirst {
+        if(!sdkRoot){
+            throw new GradleException("Android SDK not found. Set ANDROID_HOME (or ANDROID_SDK_ROOT) to build for Android.")
+        }
+
+        def d8 = null
+        def buildTools = file("$sdkRoot/build-tools")
+        if(buildTools.directory){
+            def versions = buildTools.listFiles().findAll { it.isDirectory() }*.name.sort()
+            if (!versions.empty) {
+                def candidate = new File(buildTools, "${versions.last()}/${windows ? 'd8.bat' : 'd8'}")
+                if (candidate.exists()) d8 = candidate.path
+            }
+        }
+        if (!d8) d8 = windows ? 'd8.bat' : 'd8'
+
+        def command = [d8, '--min-api', sdkAPI, '--output', dexJar.path, desktopJar.path]
+        for(file in configurations.compileClasspath.asList() + configurations.runtimeClasspath.asList()) {
+            command += ['--classpath', file.path]
+        }
+        command += ['--lib', file("$sdkRoot/platforms/android-$sdkVersion/android.jar").path]
+        if (windows) command = ['cmd', '/c'] + command
+
+        logger.lifecycle("> d8 --min-api $sdkAPI --output ${dexJar.name} ${desktopJar.name}")
+        def process
+        try{
+            process = command.execute(null, file("$buildDir/libs"))
+        } catch (IOException e){
+            throw new GradleException("Cannot run d8 ('$d8'). Install Android build-tools or add d8 to PATH.", e)
+        }
+        process.waitForProcessOutput(System.out, System.err)
+        if (process.exitValue() != 0) {
+            throw new GradleException("d8 failed with exit code ${process.exitValue()}.")
+        }
+    }
+
+    from zipTree(desktopJar)
+    from zipTree(dexJar)
+}
