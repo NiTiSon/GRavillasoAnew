@@ -37,12 +37,12 @@ jar{
     exclude '**/.gitkeep'
 }
 
-tasks.register('dex', Jar){
-    archiveFileName = "${modArtifact}.jar"
+tasks.register('jarAndroid', Jar){
+    archiveFileName = "${modArtifact}Android.jar"
     dependsOn jar
 
     final def desktopJar = jar.archiveFile.get().asFile
-    final def dexJar = new File(dex.temporaryDir, 'Dexed.jar')
+    final def dexJar = new File(temporaryDir, 'Dexed.jar')
     final def windows = System.getProperty('os.name').toLowerCase().contains('windows')
 
     doFirst {
@@ -83,4 +83,18 @@ tasks.register('dex', Jar){
 
     from zipTree(desktopJar)
     from zipTree(dexJar)
+}
+
+tasks.register('deploy', Jar){
+    dependsOn jarAndroid, jar
+    archiveFileName = "${modArtifact}.jar"
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from{
+        [zipTree("$buildDir/libs/${modArtifact}Desktop.jar"), zipTree("$buildDir/libs/${modArtifact}Android.jar")]
+    }
+    doLast{
+        delete{
+            delete "$buildDir/libs/${modArtifact}Android.jar"
+        }
+    }
 }
