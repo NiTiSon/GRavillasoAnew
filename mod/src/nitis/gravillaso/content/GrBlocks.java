@@ -1,12 +1,18 @@
 package nitis.gravillaso.content;
 
-import mindustry.type.*;
-import mindustry.world.*;
-import mindustry.world.blocks.defense.*;
-import mindustry.world.meta.*;
+import mindustry.world.Block;
+import mindustry.world.blocks.environment.Floor;
+import mindustry.world.blocks.environment.StaticWall;
 
 public class GrBlocks{
-    public static void load(){
+    // environment
+    public static Block corundum, corundumWall;
 
+    public static void load(){
+        corundum = new Floor("corundum-floor", 3);
+
+        corundumWall = new StaticWall("corundum-wall") {{
+            corundum.asFloor().wall = this;
+        }};
     }
 }

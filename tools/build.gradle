@@ -11,25 +11,33 @@ sourceSets{
     }
 }
 
+def modProject = project(':mod')
+
 dependencies{
     implementation "Anuken:Mindustry:$mindustryVersion"
-    implementation project(':mod')
+    implementation files(modProject.sourceSets.main.output)
 }
+
+tasks.named('compileJava'){
+    dependsOn modProject.tasks.named('classes')
+}
+
+def rawDir = file("$rootDir/mod/assets-raw/sprites")
+def outDir = file("$rootDir/mod/assets/sprites")
 
 tasks.register('run', JavaExec){
     group = 'tools'
-    description = 'Processes mod/assets-raw/sprites into mod/assets/sprites.'
-    dependsOn classes
+    description = 'Processes mod/assets-raw/sprites into mod/assets/sprites (with mod init + previews).'
+    dependsOn 'classes'
     mainClass = 'nitis.gravillaso.tools.Tools'
     classpath = sourceSets.main.runtimeClasspath
     workingDir = temporaryDir
 
-    def rawDir = file("$rootDir/mod/assets-raw/sprites")
-    def outDir = file("$rootDir/mod/assets/sprites")
-
     args = [file("$rootDir/mod").absolutePath, modName]
 
     doFirst{
+        delete "$temporaryDir/sprites"
+
         copy{
             from rawDir
             into "$temporaryDir/sprites"
@@ -37,6 +45,7 @@ tasks.register('run', JavaExec){
     }
 
     doLast{
+        delete outDir
         copy{
             from "$temporaryDir/sprites"
             into outDir

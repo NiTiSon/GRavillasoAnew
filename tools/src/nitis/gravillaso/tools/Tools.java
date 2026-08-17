@@ -16,7 +16,9 @@ import nitis.gravillaso.tools.processors.*;
 
 public class Tools{
     protected static final SpriteProcessor[] processes = new SpriteProcessor[]{
-        new BlockProcessor()
+        new BlockProcessor(),
+        new OreGenerator(),
+        new ItemProcessor()
     };
 
     public static GravillasoMod main;

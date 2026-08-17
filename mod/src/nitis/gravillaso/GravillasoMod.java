@@ -40,7 +40,7 @@ public class GravillasoMod extends Mod{
     @Override
     public void init(){
         Events.on(ContentInitEvent.class, event -> {
-            Vars.content.each(GravillasoContentRegionRegistry::load);
+            Vars.content.each(this::regionRegistry);
         });
     }
 }

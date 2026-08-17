@@ -8,7 +8,7 @@ java{
 sourceSets{
     main{
         java.srcDirs = ['src']
-        resources.srcDirs = ['assets/sprites']
+        resources.srcDirs = ['assets/']
     }
 }
 
@@ -28,12 +28,14 @@ tasks.withType(JavaCompile).configureEach{
 }
 
 jar{
+    dependsOn ':tools:run'
     archiveFileName = "${modArtifact}Desktop.jar"
     from rootProject.file('mod.hjson')
     def icon = rootProject.file('icon.png')
     if(icon.exists()){
         from icon
     }
+    exclude 'vanilla-sprites/**'
     exclude '**/.gitkeep'
 }
 

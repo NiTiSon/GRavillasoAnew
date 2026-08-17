@@ -3,7 +3,9 @@ displayName: Gravillaso Anew
 author: NiTiSon
 description: ""
 version: v3.42
+minGameVersion: 159.7
 
 java: true
+pregenerated: true
 main: nitis.gravillaso.GravillasoMod
 hideBrowser: true
