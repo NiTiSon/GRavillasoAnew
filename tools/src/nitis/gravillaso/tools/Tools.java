@@ -18,7 +18,8 @@ public class Tools{
     protected static final SpriteProcessor[] processes = new SpriteProcessor[]{
         new BlockProcessor(),
         new OreGenerator(),
-        new ItemProcessor()
+        new ItemProcessor(),
+        new AaProcessor()
     };
 
     public static GravillasoMod main;
