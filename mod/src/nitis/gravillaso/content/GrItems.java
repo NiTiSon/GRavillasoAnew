@@ -2,12 +2,13 @@ package nitis.gravillaso.content;
 
 import arc.graphics.*;
 import mindustry.type.*;
+import nitis.gravillaso.graphics.GrPal;
 
 public class GrItems{
     public static Item cobalt, magneturn;
 
     public static void load(){
-        cobalt = new Item("cobalt", Color.valueOf("f3f3f3")){{
+        cobalt = new Item("cobalt", GrPal.cobalt){{
             cost = 1.25f;
         }};
 
