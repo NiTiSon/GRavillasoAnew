@@ -7,6 +7,7 @@ import mindustry.world.Block;
 import mindustry.world.blocks.distribution.StackConveyor;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.StaticWall;
+import nitis.gravillaso.world.blocks.distribution.*;
 import nitis.gravillaso.world.blocks.storage.FactoryCoreBlock;
 
 import static mindustry.content.Items.*;
@@ -55,6 +56,11 @@ public class GrBlocks{
             health = 120;
             speed = 2f / 60f;
             itemCapacity = 8;
+        }};
+
+        phaseConveyor = new MaglevConveyor("phase-conveyor"){{
+            requirements(Category.distribution, with(tungsten, 2, silicon, 2, phaseFabric, 1));
+            health = 250;
         }};
     }
 }
