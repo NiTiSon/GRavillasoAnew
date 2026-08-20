@@ -50,17 +50,16 @@ public final class TemperatureSystem implements CustomChunk{
         Events.on(WorldLoadEvent.class, e -> {
             ww = world.width();
             wh = world.height();
-            enableDebugView = Core.settings.getBool("gr-showtemperature");
+            Log.debug("WorldLoadEvent");
         });
         Events.run(Trigger.update, TemperatureSystem::update);
         Events.run(Trigger.draw, TemperatureSystem::drawDebug);
 
+        enableDebugView = Core.settings.getBool("gr-showtemperature");
         SaveVersion.addCustomChunk("gr-anew-temperature-system" ,this);
     }
 
     static void drawDebug(){
-        // TODO: check settings
-        // Cannot do this on draw: big performance issues
         if (!enableDebugView) return;
 
         /*
@@ -117,6 +116,7 @@ public final class TemperatureSystem implements CustomChunk{
         for (int i = 0; i < size; i++){
             float temp = decodeNormalizedFloat(stream.readShort());
         }
+        Log.debug("world read");
     }
 
     public static short encodeNormalizedFloat(float value) {

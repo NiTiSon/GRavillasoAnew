@@ -60,6 +60,7 @@ public class Tools{
         Vars.headless = true;
         Core.app = new MockApplication();
         Core.files = new MockFiles();
+        Core.settings = new MockSettings();
         Core.assets = new AssetManager(Vars.tree = new FileTree(){
             @Override
             public Fi get(String path){
