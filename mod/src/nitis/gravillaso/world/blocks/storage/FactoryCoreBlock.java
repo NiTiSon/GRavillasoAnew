@@ -46,6 +46,7 @@ public class FactoryCoreBlock extends CoreBlock {
     public void setStats() {
         super.setStats();
 
+        // code from CoreBlock.setStas
         stats.add(GrStat.droneType,table -> {
             table.row();
             table.table(Styles.grayPanel, b -> {
@@ -57,7 +58,7 @@ public class FactoryCoreBlock extends CoreBlock {
                         info.add(droneType.name).left().color(Color.lightGray);
                     }
                 });
-                b.button("?", Styles.flatBordert, () -> ui.content.show(unitType)).size(40f).pad(10).right().grow().visible(() -> droneType.unlockedNow());
+                b.button("?", Styles.flatBordert, () -> ui.content.show(droneType)).size(40f).pad(10).right().grow().visible(() -> droneType.unlockedNow());
             }).growX().pad(5).row();
         });
     }
