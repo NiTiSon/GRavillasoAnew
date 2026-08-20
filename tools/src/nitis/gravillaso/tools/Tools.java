@@ -20,7 +20,8 @@ public class Tools{
         new OreGenerator(),
         new ItemProcessor(),
         new AaProcessor(),
-        new BleedProcessor()
+        new BleedProcessor(),
+        new ColorProcessor()
     };
 
     public static GravillasoMod main;
