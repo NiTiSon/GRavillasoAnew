@@ -37,17 +37,20 @@ import static nitis.gravillaso.graphics.GrPal.*;
  * Per-tile temperature grid, one value per 1x1 tile, normalized to [-1, 1]:
  * -1 very cold, 0 neutral, +1 very hot. Rebuilt from the floor layout on every world load.
  */
-public final class TemperatureSystem implements CustomChunk {
+public final class TemperatureSystem implements CustomChunk{
     // Whenever draw the temperature debug view.
     public static boolean enableDebugView = false;
     private static volatile int ww, wh;
 
+    // PERF: Maybe reconsider using bytes/short instead
+    // Does it worth it? This array is not exceed 1MB most of the time
     private volatile float[] data;
 
     public TemperatureSystem() {
         Events.on(WorldLoadEvent.class, e -> {
             ww = world.width();
             wh = world.height();
+            enableDebugView = Core.settings.getBool("gr-showtemperature");
         });
         Events.run(Trigger.update, TemperatureSystem::update);
         Events.run(Trigger.draw, TemperatureSystem::drawDebug);
@@ -56,6 +59,8 @@ public final class TemperatureSystem implements CustomChunk {
     }
 
     static void drawDebug(){
+        // TODO: check settings
+        // Cannot do this on draw: big performance issues
         if (!enableDebugView) return;
 
         /*

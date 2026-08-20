@@ -11,8 +11,7 @@ import mindustry.mod.*;
 import mindustry.world.Block;
 import nitis.gravillaso.annotations.Annotations.*;
 import nitis.gravillaso.content.*;
-import nitis.gravillaso.core.GrLogic;
-import nitis.gravillaso.core.GrGameState;
+import nitis.gravillaso.core.*;
 import nitis.gravillaso.gen.*;
 import nitis.gravillaso.world.temperature.TemperatureSystem;
 
@@ -65,6 +64,7 @@ public class GravillasoMod extends Mod{
 
         grLogic.init();
 
+        GrUI.inject();
         // TODO: CustomRulesDialogExtension.inject();
     }
 
