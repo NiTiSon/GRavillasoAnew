@@ -7,6 +7,7 @@ import mindustry.world.Block;
 import mindustry.world.blocks.distribution.StackConveyor;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.StaticWall;
+import mindustry.world.meta.*;
 import nitis.gravillaso.world.blocks.distribution.*;
 import nitis.gravillaso.world.blocks.storage.FactoryCoreBlock;
 
@@ -54,13 +55,20 @@ public class GrBlocks{
         cobaltConveyor = new StackConveyor("cobalt-conveyor"){{
             requirements(Category.distribution, with(cobalt, 1));
             health = 120;
+
+            recharge = 3f;
             speed = 2f / 60f;
             itemCapacity = 8;
         }};
 
         phaseConveyor = new MaglevConveyor("phase-conveyor"){{
             requirements(Category.distribution, with(tungsten, 2, silicon, 2, phaseFabric, 1));
+            buildVisibility = BuildVisibility.hidden; // To buggy now
             health = 250;
+
+            recharge = 1f;
+            speed = 6f / 60f;
+            itemCapacity = 10;
         }};
     }
 }
