@@ -19,6 +19,7 @@ import mindustry.graphics.Layer;
 import mindustry.io.SaveFileReader.CustomChunk;
 import mindustry.io.SaveVersion;
 import mindustry.world.Block;
+import nitis.gravillaso.*;
 import nitis.gravillaso.content.GrBlocks;
 import nitis.gravillaso.content.GrPlanets;
 import nitis.gravillaso.content.GrPlanets;
@@ -31,6 +32,7 @@ import static mindustry.Vars.net;
 import static mindustry.Vars.state;
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
+import static nitis.gravillaso.GravillasoMod.grState;
 import static nitis.gravillaso.graphics.GrPal.*;
 
 /**
@@ -44,13 +46,16 @@ public final class TemperatureSystem implements CustomChunk{
 
     // PERF: Maybe reconsider using bytes/short instead
     // Does it worth it? This array is not exceed 1MB most of the time
+    /** Array of normalized[-1..1] thermal state of tile */
     private volatile float[] data;
 
     public TemperatureSystem() {
         Events.on(WorldLoadEvent.class, e -> {
             ww = world.width();
             wh = world.height();
-            Log.debug("WorldLoadEvent");
+            data = new float[ww * wh];
+
+            Log.debug("Initialized thermal grid: @x@; base temperature: @", ww, wh, grState.rules.baseTemperature);
         });
         Events.run(Trigger.update, TemperatureSystem::update);
         Events.run(Trigger.draw, TemperatureSystem::drawDebug);
@@ -103,7 +108,7 @@ public final class TemperatureSystem implements CustomChunk{
 
         int size = ww * wh;
         for (int i = 0; i < size; i++){
-            stream.writeShort(encodeNormalizedFloat(0.0f)); // leave for forward-compatibility
+            stream.writeShort(encodeNormalizedFloat(data[i])); // leave for forward-compatibility
         }
     }
 
@@ -114,7 +119,7 @@ public final class TemperatureSystem implements CustomChunk{
         ww = w; wh = h;
         int size = w * h;
         for (int i = 0; i < size; i++){
-            float temp = decodeNormalizedFloat(stream.readShort());
+            data[i] = decodeNormalizedFloat(stream.readShort());
         }
         Log.debug("world read");
     }

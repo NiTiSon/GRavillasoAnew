@@ -10,12 +10,7 @@ import static nitis.gravillaso.GravillasoMod.*;
 
 public class GrLogic implements ApplicationListener{
 
-    private boolean wasInit;
-    @Override
-    public void init() {
-        if (wasInit) return;
-
-        wasInit = true;
+    public GrLogic(){
         Events.on(StateChangeEvent.class, this::reset);
         Events.on(WorldLoadEvent.class, this::worldLoad);
     }
