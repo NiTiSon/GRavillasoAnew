@@ -5,18 +5,22 @@ import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.type.Category;
+import mindustry.type.*;
 import mindustry.world.Block;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.distribution.StackConveyor;
 import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.environment.StaticWall;
+import mindustry.world.blocks.liquid.*;
+import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import nitis.gravillaso.graphics.*;
 import nitis.gravillaso.world.blocks.distribution.*;
+import nitis.gravillaso.world.blocks.liquid.*;
 import nitis.gravillaso.world.blocks.storage.FactoryCoreBlock;
 
 import static mindustry.content.Items.*;
@@ -34,6 +38,7 @@ public class GrBlocks{
     // ores
     // wall ores
     // crafting
+    public static Block siliconFurnace, aluminiumFurnace;
     // sandbox
     // walls
     public static Block cobaltWall, cobaltWallLarge;
@@ -41,6 +46,7 @@ public class GrBlocks{
     // transport
     public static Block cobaltConveyor, phaseConveyor;
     // liquid
+    public static Block screenConduit, radiantConduit, screenLiquidRouter;
     // power
     // production
     // storage
@@ -58,6 +64,45 @@ public class GrBlocks{
 
         corundumWall = new StaticWall("corundum-wall") {{
             corundum.asFloor().wall = this;
+        }};
+        // endregion
+
+        // region crafting
+        siliconFurnace = new GenericCrafter("silicon-furnace"){{
+            requirements(Category.crafting, with(cobalt, 120));
+            craftEffect = Fx.none;
+            outputItem = new ItemStack(silicon, 2);
+            craftTime = 60f;
+            size = 3;
+            hasPower = true;
+            hasLiquids = false;
+            itemCapacity = 20;
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawDefault());
+            fogRadius = 3;
+            ambientSound = Sounds.loopSmelter;
+            ambientSoundVolume = 0.12f;
+
+            consumeItems(with(bauxite, 3));
+            consumePower(3f);
+        }};
+
+        aluminiumFurnace = new GenericCrafter("aluminium-furnace"){{
+            requirements(Category.crafting, with(cobalt, 120));
+            craftEffect = Fx.none;
+            outputItem = new ItemStack(aluminium, 2);
+            craftTime = 60f;
+            size = 3;
+            hasPower = true;
+            hasLiquids = false;
+            itemCapacity = 20;
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawDefault());
+            fogRadius = 3;
+            ambientSound = Sounds.loopSmelter;
+            ambientSoundVolume = 0.12f;
+
+            consumeItems(with(bauxite, 3));
+            consumeLiquid(brine, 1f);
+            consumePower(7f);
         }};
         // endregion
 
@@ -95,6 +140,33 @@ public class GrBlocks{
             recharge = 1f;
             speed = 6f / 60f;
             itemCapacity = 10;
+        }};
+        // endregion
+
+        // region liquid
+        screenConduit = new ArmoredConduit("screen-conduit"){{
+            requirements(Category.liquid, with(lead, 1));
+            liquidCapacity = 60f;
+            liquidPressure = 1.05f;
+            health = 150;
+            explosivenessScale = flammabilityScale = 16f / 60f; // holy magic anuke's numbers
+        }};
+
+        radiantConduit = new RadiantConduit("radiant-conduit"){{
+            requirements(Category.liquid, with(tungsten, 2, aluminium, 1));
+            liquidCapacity = 60f;
+            liquidPressure = 1.05f;
+            health = 300;
+            explosivenessScale = flammabilityScale = 20f / 60f;
+        }};
+
+        screenLiquidRouter = new LiquidRouter("screen-liquid-router"){{
+            requirements(Category.liquid, with(lead, 4));
+            liquidCapacity = 120f;
+            underBullets = true;
+            solid = false;
+
+            explosivenessScale = flammabilityScale = 20f / 120f;
         }};
         // endregion
 

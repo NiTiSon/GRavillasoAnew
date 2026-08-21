@@ -80,17 +80,19 @@ public class GravilloTechTree{
             // THE ORDER WILL CHANGE 100%
             nodeProduce(cobalt, () -> {
                 nodeProduce(lead, () -> {
-                    /*nodeProduce(GRItems.bauxite, () -> {
-                        nodeProduce(alumina, () -> {
-                            nodeProduce(aluminium, () -> {});
-                        });
-                    });*/
-
                     nodeProduce(brine, () -> {
-                        nodeProduce(silicon, () -> {
+                        nodeProduce(aluminium, () -> {
 
                         });
+                    });
+                });
 
+                nodeProduce(bauxite, () -> {
+                    nodeProduce(silicon, () -> {
+
+                    });
+
+                    nodeProduce(oxygen, () -> {
                         nodeProduce(oxide, () -> {
 
                         });
