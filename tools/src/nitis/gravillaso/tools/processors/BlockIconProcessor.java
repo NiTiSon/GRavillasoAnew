@@ -54,11 +54,11 @@ public class BlockIconProcessor implements SpriteProcessor{
         if(regions.length == 0 || !regions[0].found()) return;
 
         for(TextureRegion region : toOutline){
-            save(get(region).outline(block.outlineColor, block.outlineRadius), name(region) + "-outline");
+            save(get(region).outline(block.outlineColor, block.outlineRadius), name(region) + "-outline", SpriteProcessor.outlineFile(name(region) + "-outline"));
         }
 
         for(TextureRegion region : block.makeIconRegions()){
-            save(get(region).outline(block.outlineColor, block.outlineRadius), name(region) + "-outline");
+            save(get(region).outline(block.outlineColor, block.outlineRadius), name(region) + "-outline", SpriteProcessor.outlineFile(name(region) + "-outline"));
         }
 
         Pixmap shardTeamTop = null;
@@ -116,7 +116,7 @@ public class BlockIconProcessor implements SpriteProcessor{
         }
 
         if(!(regions.length == 1 && name(regions[0]).equals(block.name) && shardTeamTop == null)){
-            save(image, "block-" + block.name + "-full");
+            save(image, "block-" + block.name + "-full", SpriteProcessor.fullFile("block-" + block.name + "-full"));
         }
 
         if(block.buildVisibility != BuildVisibility.hidden){

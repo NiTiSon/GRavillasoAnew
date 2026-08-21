@@ -85,7 +85,7 @@ public interface SpriteProcessor{
         return Fi.get("sprites").child("ui").child(regionName + ".png");
     }
 
-    /** The file a '-outline' region should be saved to (sprites/ui/regionName.png). */
+    /** The file a '-outline' region should be saved to (sprites/generated/regionName.png). */
     static Fi outlineFile(String regionName){
         return Fi.get("sprites").child("generated").child(regionName + ".png");
     }

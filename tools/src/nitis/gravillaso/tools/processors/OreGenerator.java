@@ -55,8 +55,8 @@ public class OreGenerator implements SpriteProcessor{
                 //overwrite the variant sprite and its atlas region with the shadowed image
                 new GeneratedRegion(baseRegion.name, image, baseRegion.file).save(true);
 
-                new GeneratedRegion("block-" + ore.name + "-full", image, Fi.get("sprites").child("block-" + ore.name + "-full.png")).save(true);
-                new GeneratedRegion("block-" + ore.name + "-ui", image, Fi.get("sprites").child("ui").child("block-" + ore.name + "-ui.png")).save(true);
+                new GeneratedRegion("block-" + ore.name + "-full", image, SpriteProcessor.fullFile("block-" + ore.name + "-full")).save(true);
+                new GeneratedRegion("block-" + ore.name + "-ui", image, SpriteProcessor.uiFile("block-" + ore.name + "-ui")).save(true);
             }
         });
     }
