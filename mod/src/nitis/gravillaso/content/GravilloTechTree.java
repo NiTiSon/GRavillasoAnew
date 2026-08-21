@@ -61,9 +61,9 @@ public class GravilloTechTree{
 //            });
 
             // turrets
-//            node(voltum, () -> {
-//
-//            });
+            node(sight, () -> {
+
+            });
 
             // units
 

@@ -8,6 +8,8 @@ public class GrPal{
     public static Color cobalt = Color.valueOf("9aa3bf");
     public static Color coldFlash = Color.valueOf("9bd7ff");
 
+    public static Color cobaltShot = Color.valueOf("b8c2e0");
+
     // debug view
     public static Color debugColdColor = Color.valueOf("4d9fff");
     public static Color debugHotColor = Color.valueOf("ff5f3c");
