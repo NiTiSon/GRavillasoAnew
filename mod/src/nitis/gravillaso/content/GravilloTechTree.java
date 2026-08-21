@@ -62,7 +62,11 @@ public class GravilloTechTree{
 
             // turrets
             node(sight, () -> {
+                node(cobaltWall, () -> {
+                   node(cobaltWallLarge, () -> {
 
+                   });
+                });
             });
 
             // units

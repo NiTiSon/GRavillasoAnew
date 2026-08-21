@@ -25,6 +25,7 @@ import static nitis.gravillaso.content.GrItems.*;
 import static nitis.gravillaso.content.GrLiquids.*;
 
 import static mindustry.type.ItemStack.with;
+import static mindustry.type.ItemStack.mult;
 
 public class GrBlocks{
     // environment
@@ -52,21 +53,31 @@ public class GrBlocks{
     // campaign
 
     public static void load(){
+        // region environment
         corundum = new Floor("corundum-floor", 3);
 
         corundumWall = new StaticWall("corundum-wall") {{
             corundum.asFloor().wall = this;
         }};
+        // endregion
 
+        // region walls
+        final int wallHealthMultiplier = 4;
         cobaltWall = new Wall("cobalt-wall"){{
-
+            requirements(Category.defense, with(cobalt, 6));
+            health = 120 * wallHealthMultiplier;
+            armor = 2f;
+            envDisabled |= Env.scorching;
         }};
         cobaltWallLarge = new Wall("cobalt-wall-large"){{
-
+            requirements(Category.defense, mult(cobaltWall.requirements, 4));
+            health = 120 * wallHealthMultiplier * 4;
+            size = 2;
+            envDisabled |= Env.scorching;
         }};
+        // endregion walls
 
-
-
+        // region transport
         cobaltConveyor = new StackConveyor("cobalt-conveyor"){{
             requirements(Category.distribution, with(cobalt, 1));
             health = 120;
@@ -85,6 +96,7 @@ public class GrBlocks{
             speed = 6f / 60f;
             itemCapacity = 10;
         }};
+        // endregion
 
         // region storage
         coreBase = new FactoryCoreBlock("core-base"){{
@@ -135,7 +147,7 @@ public class GrBlocks{
 
             shake = 1f;
             ammoPerShot = 2;
-            drawer = new DrawTurret("reinforced-");
+            drawer = new DrawTurret("frost-resistant-");
             shootY = -2;
             outlineColor = GrPal.outline;
             size = 2;
