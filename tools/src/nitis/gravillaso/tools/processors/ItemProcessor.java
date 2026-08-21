@@ -53,7 +53,7 @@ public class ItemProcessor implements SpriteProcessor{
             // Overwrite original region with tinted and outlined version
             new GeneratedRegion(baseRegion.name, finalImage, baseRegion.file).save(false);
 
-            new GeneratedRegion("status-" + effect.name + "-ui", finalImage.copy(), uiFile("status-" + effect.name + "-ui")).save(true);
+            new GeneratedRegion("status-" + effect.name + "-ui", finalImage.copy(), SpriteProcessor.uiFile("status-" + effect.name + "-ui")).save(true);
 
             tinted.dispose();
             container.dispose();
@@ -66,11 +66,6 @@ public class ItemProcessor implements SpriteProcessor{
         if(!baseRegion.found()) return;
         if(Tools.atlas.has(uiIconName)) return;
 
-        new GeneratedRegion(uiIconName, baseRegion.pixmap().copy(), uiFile(uiIconName)).save(true);
-    }
-
-    /** The file a '-ui' region should be saved to (sprites/ui/<regionName>.png). */
-    private static Fi uiFile(String regionName){
-        return Fi.get("sprites").child("ui").child(regionName + ".png");
+        new GeneratedRegion(uiIconName, baseRegion.pixmap().copy(), SpriteProcessor.uiFile(uiIconName)).save(true);
     }
 }

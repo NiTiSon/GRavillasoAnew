@@ -1,5 +1,6 @@
 package nitis.gravillaso.tools;
 
+import arc.files.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.math.geom.*;
@@ -77,5 +78,20 @@ public interface SpriteProcessor{
     default Pixmap mapColors(Pixmap base, Func<Color, Color> mapper){
         base.each((x, y) -> base.set(x, y, mapper.get(new Color(base.get(x, y)))));
         return base;
+    }
+
+    /** The file a '-ui' region should be saved to (sprites/ui/regionName.png). */
+    static Fi uiFile(String regionName){
+        return Fi.get("sprites").child("ui").child(regionName + ".png");
+    }
+
+    /** The file a '-outline' region should be saved to (sprites/ui/regionName.png). */
+    static Fi outlineFile(String regionName){
+        return Fi.get("sprites").child("generated").child(regionName + ".png");
+    }
+
+    /** The file a '-full' region should be saved to (sprites/generated/regionName.png). */
+    static Fi fullFile(String regionName){
+        return Fi.get("sprites").child("generated").child(regionName + ".png");
     }
 }
