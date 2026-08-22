@@ -12,8 +12,7 @@ import mindustry.world.Block;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.distribution.StackConveyor;
-import mindustry.world.blocks.environment.Floor;
-import mindustry.world.blocks.environment.StaticWall;
+import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
@@ -35,6 +34,7 @@ public class GrBlocks{
     // environment
     public static Block corundum, corundumWall;
     // boulders
+    public static Block corundumBoulder, corundumCluster;
     // ores
     // wall ores
     // crafting
@@ -64,6 +64,19 @@ public class GrBlocks{
 
         corundumWall = new StaticWall("corundum-wall") {{
             corundum.asFloor().wall = this;
+        }};
+        // endregion
+
+        // region boulders
+        corundumBoulder = new Prop("corundum-boulder"){{
+            variants = 3;
+            customShadow = true;
+            corundum.asFloor().decoration = this;
+            obstructsLight = false;
+        }};
+        corundumCluster = new TallBlock("corundum-cluster"){{
+            variants = 3;
+            clipSize = 128f;
         }};
         // endregion
 

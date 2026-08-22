@@ -68,8 +68,8 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
 
     ObjectMap<Block, Block> dec = ObjectMap.of(
             Blocks.shale, Blocks.shaleBoulder,
-            Blocks.redIce, Blocks.redIceBoulder/*,
-            TODO: GrBlocks.corundum, GrBlocks.bauxiteBoulder*/
+            Blocks.redIce, Blocks.redIceBoulder,
+            GrBlocks.corundum, GrBlocks.corundumBoulder
     );
 
     float water = 0.08f;

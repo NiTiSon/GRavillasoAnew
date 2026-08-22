@@ -21,6 +21,7 @@ public class Tools{
         new BlockIconProcessor(),
         new ItemProcessor(),
         new UnitIconProcessor(),
+        new PropShadowProcessor(),
         new AaProcessor(),
         new BleedProcessor(),
         new ColorProcessor()

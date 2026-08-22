@@ -74,7 +74,6 @@ public class GravillasoMod extends Mod{
      * Should improve startup time
      */
     private void resolveBlockColors(){
-        Log.debug("GravillasoMod::resolveBlockColors - init");
         var mod = Vars.mods.getMod(getClass());
         if(mod == null) return;
 
@@ -109,6 +108,7 @@ public class GravillasoMod extends Mod{
                 block.mapColor.a = 1f;
                 block.hasColor = true;
                 colorMapped++;
+                Log.debug("Mapped color for @", block.name);
             }
         }finally{
             pixmap.dispose();

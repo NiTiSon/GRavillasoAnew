@@ -94,4 +94,9 @@ public interface SpriteProcessor{
     static Fi fullFile(String regionName){
         return Fi.get("sprites").child("generated").child(regionName + ".png");
     }
+
+    /** The file a '-shadow' region should be saved to (sprites/props/regionName.png). */
+    static Fi propShadowFile(String regionName){
+        return Fi.get("sprites").child("blocks").child("props").child(regionName + ".png");
+    }
 }
