@@ -23,6 +23,7 @@ tasks.named('compileJava'){
 }
 
 def rawDir = file("$rootDir/mod/assets-raw/sprites")
+def fallbackDir = file("$rootDir/mod/assets-fallback/sprites")
 def outDir = file("$rootDir/mod/assets/sprites")
 
 tasks.register('run', JavaExec){
@@ -37,10 +38,19 @@ tasks.register('run', JavaExec){
 
     doFirst{
         delete "$temporaryDir/sprites"
+        delete "$temporaryDir/fallback"
 
         copy{
             from rawDir
             into "$temporaryDir/sprites"
+        }
+
+        //vanilla sprites used by processors only; kept outside 'sprites' so they are never shipped
+        if(fallbackDir.exists()){
+            copy{
+                from fallbackDir
+                into "$temporaryDir/fallback"
+            }
         }
     }
 
@@ -49,8 +59,6 @@ tasks.register('run', JavaExec){
         copy{
             from "$temporaryDir/sprites"
             into outDir
-            //edge-stencil is a generation-time input only, keep it out of the shipped sprites
-            exclude "**/edge-stencil.png"
         }
     }
 }

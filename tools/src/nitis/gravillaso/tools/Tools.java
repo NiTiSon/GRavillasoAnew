@@ -110,6 +110,17 @@ public class Tools{
                 atlas.add(region);
             }
         });
+
+        // fallback to the generic sprites like edge-stencil or conduit bottoms
+        // used only for generation, as the actual game contains these sprites and provided jar does not contain sprites
+        Fi fallback = Fi.get("fallback");
+        if(fallback.exists()){
+            fallback.walk(file -> {
+                if(file.extEquals("png")){
+                    atlas.add(new GeneratedAtlas.GeneratedRegion(file.nameWithoutExtension(), new Pixmap(file), file));
+                }
+            });
+        }
         // error region must exist before setErrorRegion picks it up
         atlas.add(new GeneratedAtlas.GeneratedRegion(modName + "-error", new Pixmap(8, 8), null));
         atlas.setErrorRegion(modName + "-error");
