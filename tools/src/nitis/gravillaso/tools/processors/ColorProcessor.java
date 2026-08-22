@@ -4,15 +4,13 @@ import arc.files.Fi;
 import arc.graphics.Color;
 import arc.graphics.Pixmap;
 import arc.graphics.g2d.TextureAtlas.AtlasRegion;
+import arc.graphics.g2d.TextureRegion;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Log;
 
 import mindustry.world.Block;
-import mindustry.world.blocks.ConstructBlock;
 import mindustry.world.blocks.environment.Floor;
-import mindustry.world.blocks.environment.OreBlock;
-import mindustry.world.blocks.legacy.LegacyBlock;
 
 import nitis.gravillaso.tools.*;
 
@@ -22,8 +20,9 @@ import static mindustry.Vars.*;
  * Mirrors the color computation in vanilla Generators#generate("block-icons"): an alpha-weighted
  * average of the block sprite, floors darkened (x0.77), everything else brightened (x1.1), with the
  * squareSprite flag encoded in the alpha channel.
- * Writes sprites/block_colors.png indexed by this mod's block registration order, so the runtime can
- * mirror ContentLoader.loadColors when pregenerated=true (the game skips Block.createIcons there).
+ * Writes sprites/block_colors.png with one pixel per mod-owned block IN REGISTRATION ORDER -
+ * GravillasoMod.resolveBlockColors reads them back with the same iteration, so every related
+ * block consumes an index even when no color can be computed for it (pixel stays transparent).
  * Runs last so it reads the post-AA/bleed sprites.
  */
 public class ColorProcessor implements SpriteProcessor{
@@ -31,7 +30,6 @@ public class ColorProcessor implements SpriteProcessor{
     public void process(){
         Seq<Block> blocks = content.blocks().select(b ->
             b.minfo != null && b.minfo.mod == Tools.mod
-            && !b.isAir() && !(b instanceof ConstructBlock) && !(b instanceof OreBlock) && !(b instanceof LegacyBlock)
         );
 
         if(blocks.isEmpty()) return;
@@ -47,14 +45,20 @@ public class ColorProcessor implements SpriteProcessor{
         try{
             for(int i = 0; i < blocks.size; i++){
                 Block block = blocks.get(i);
+                boolean colored = false;
 
-                if(!block.fullIcon.found() || !(block.fullIcon instanceof AtlasRegion icon)) continue;
+                //fullIcon is missing for variant-only props, fall back to any real sprite
+                TextureRegion icon = block.fullIcon.found() ? block.fullIcon :
+                    block.variants > 0 && block.variantRegions != null && block.variantRegions.length > 0 ?
+                    block.variantRegions[0] : null;
 
-                String name = icon.name;
-                if(!name.startsWith(prefix)) continue;
+                do{
+                    if(!(icon instanceof AtlasRegion atlasIcon)){ Log.warn("[color] @ icon not an atlas region: @", block.name, icon); break; }
 
-                Fi file = sprites.get(name.substring(prefix.length()));
-                if(file == null) continue;
+                    String name = atlasIcon.name;
+                    //raw sprites drop the mod prefix; generated ones ('block-gr-x-full') keep their full name
+                    Fi file = sprites.get(name.startsWith(prefix) ? name.substring(prefix.length()) : name);
+                    if(file == null){ Log.warn("[color] @ no file for region @", block.name, name); break; }
 
                 Pixmap image = new Pixmap(file);
                 boolean hasEmpty = false;
@@ -75,7 +79,9 @@ public class ColorProcessor implements SpriteProcessor{
                 }
                 image.dispose();
 
-                if(asum <= 0f) continue;
+                if(asum <= 0f){ Log.warn("[color] @ sprite is fully transparent", block.name); break; }
+
+                colored = true;
 
                 average.mul(1f / asum);
 
@@ -88,6 +94,9 @@ public class ColorProcessor implements SpriteProcessor{
                 //encode square sprite in alpha channel
                 average.a = hasEmpty ? 0.1f : 1f;
                 colors.setRaw(i, 0, average.rgba());
+                }while(false);
+
+                if(!colored) Log.warn("[color] No source sprite for @", block.name);
             }
         }finally{
             Fi.get("sprites/block_colors.png").writePng(colors);
