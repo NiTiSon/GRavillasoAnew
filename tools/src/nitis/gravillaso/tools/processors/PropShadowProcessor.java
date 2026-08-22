@@ -18,15 +18,16 @@ import static mindustry.Vars.*;
  * blurred and turned black, same size as the source sprite.
  */
 public class PropShadowProcessor implements SpriteProcessor{
-    /** Box blur window size in pixels. */
-    static final int blurPower = 10;
+    /** Gaussian kernel radius in pixels. */
+    static final int blurPower = 22;
+    static final int padding = 6;
 
     @Override
     public void process(){
         content.blocks().each(b -> b.customShadow && b.minfo != null && b.minfo.mod == Tools.mod, block -> {
             try{
                 process(block);
-            }catch(Exception e){
+            }catch(Throwable e){
                 Log.err(e);
                 Log.err("Failed to generate shadow for @", block);
             }
@@ -51,23 +52,23 @@ public class PropShadowProcessor implements SpriteProcessor{
             Pixmap base = pixmap(regions.get(i));
             if(base == null) continue;
 
-            int width = base.width, height = base.height;
+            int width = base.width + padding * 2, height = base.height + padding * 2;
 
+            //alpha map padded with empty margin so the blur can spread past the art edges
             float[][] alpha = new float[height][width];
-            for(int x = 0; x < width; x++){
-                for(int y = 0; y < height; y++){
-                    alpha[y][x] = base.getA(x, y) / 255f;
+            for(int x = 0; x < base.width; x++){
+                for(int y = 0; y < base.height; y++){
+                    alpha[y + padding][x + padding] = base.getA(x, y) / 255f;
                 }
             }
 
             blur(alpha);
 
-            //same size as the source sprite, blurred black silhouette
             Pixmap shadow = new Pixmap(width, height);
             for(int x = 0; x < width; x++){
                 for(int y = 0; y < height; y++){
                     if(alpha[y][x] > 0.001f){
-                        shadow.setRaw(x, y, Color.rgba8888(0f, 0f, 0f, alpha[y][x]));
+                        shadow.setRaw(x, y, Color.rgba8888(0f, 0f, 0f, blurFade(alpha[y][x])));
                     }
                 }
             }
@@ -76,30 +77,45 @@ public class PropShadowProcessor implements SpriteProcessor{
         }
     }
 
-    /** In-place separable box blur with a blurPower×blurPower window. */
+    static float blurFade(float value){
+        return value;
+        //return -Mathf.pow(1 - value, 3) + 1;
+    }
+
+    /** In-place separable Gaussian blur with a ±blurPower kernel. */
     private static void blur(float[][] map){
         int width = map[0].length, height = map.length;
-        int half = blurPower / 2;
+        float sigma = Math.max(1f, blurPower / 2f);
+
+        //normalized 1D Gaussian kernel, applied horizontally then vertically
+        float[] kernel = new float[blurPower * 2 + 1];
+        float ksum = 0;
+        for(int k = -blurPower; k <= blurPower; k++){
+            kernel[k + blurPower] = (float)Math.exp(-(k * k) / (2f * sigma * sigma));
+            ksum += kernel[k + blurPower];
+        }
+        for(int i = 0; i < kernel.length; i++) kernel[i] /= ksum;
+
         float[] tmp = new float[Math.max(width, height)];
 
         for(int y = 0; y < height; y++){
             for(int x = 0; x < width; x++){
-                float sum = 0;
-                for(int k = -half; k < blurPower - half; k++){
-                    sum += map[y][Mathf.clamp(x + k, 0, width - 1)];
+                float acc = 0;
+                for(int k = -blurPower; k <= blurPower; k++){
+                    acc += map[y][Mathf.clamp(x + k, 0, width - 1)] * kernel[k + blurPower];
                 }
-                tmp[x] = sum / blurPower;
+                tmp[x] = acc;
             }
             System.arraycopy(tmp, 0, map[y], 0, width);
         }
 
         for(int x = 0; x < width; x++){
             for(int y = 0; y < height; y++){
-                float sum = 0;
-                for(int k = -half; k < blurPower - half; k++){
-                    sum += map[Mathf.clamp(y + k, 0, height - 1)][x];
+                float acc = 0;
+                for(int k = -blurPower; k <= blurPower; k++){
+                    acc += map[Mathf.clamp(y + k, 0, height - 1)][x] * kernel[k + blurPower];
                 }
-                tmp[y] = sum / blurPower;
+                tmp[y] = acc;
             }
             for(int y = 0; y < height; y++) map[y][x] = tmp[y];
         }

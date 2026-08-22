@@ -32,7 +32,7 @@ import static mindustry.type.ItemStack.mult;
 
 public class GrBlocks{
     // environment
-    public static Block corundum, corundumWall;
+    public static Block corundum, corundumWall, purpleStone, purpleStoneWall;
     // boulders
     public static Block corundumBoulder, corundumCluster;
     // ores
@@ -62,8 +62,14 @@ public class GrBlocks{
         // region environment
         corundum = new Floor("corundum-floor", 3);
 
-        corundumWall = new StaticWall("corundum-wall") {{
+        corundumWall = new StaticWall("corundum-wall"){{
             corundum.asFloor().wall = this;
+        }};
+
+        purpleStone = new Floor("purple-stone", 4);
+
+        purpleStoneWall = new StaticWall("purple-stone-wall"){{
+            purpleStone.asFloor().wall = this;
         }};
         // endregion
 
