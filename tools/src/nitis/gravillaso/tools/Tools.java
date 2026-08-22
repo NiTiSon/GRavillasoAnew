@@ -20,6 +20,7 @@ public class Tools{
         new OreGenerator(),
         new BlockIconProcessor(),
         new ItemProcessor(),
+        new UnitIconProcessor(),
         new AaProcessor(),
         new BleedProcessor(),
         new ColorProcessor()

@@ -54,11 +54,13 @@ public class BlockIconProcessor implements SpriteProcessor{
         if(regions.length == 0 || !regions[0].found()) return;
 
         for(TextureRegion region : toOutline){
-            save(get(region).outline(block.outlineColor, block.outlineRadius), name(region) + "-outline", SpriteProcessor.outlineFile(name(region) + "-outline"));
+            Pixmap pix = get(region);
+            if(pix != null) save(pix.outline(block.outlineColor, block.outlineRadius), name(region) + "-outline", SpriteProcessor.outlineFile(name(region) + "-outline"));
         }
 
         for(TextureRegion region : block.makeIconRegions()){
-            save(get(region).outline(block.outlineColor, block.outlineRadius), name(region) + "-outline", SpriteProcessor.outlineFile(name(region) + "-outline"));
+            Pixmap pix = get(region);
+            if(pix != null) save(pix.outline(block.outlineColor, block.outlineRadius), name(region) + "-outline", SpriteProcessor.outlineFile(name(region) + "-outline"));
         }
 
         Pixmap shardTeamTop = null;
@@ -86,11 +88,14 @@ public class BlockIconProcessor implements SpriteProcessor{
         Pixmap last = null;
         if(block.outlineIcon){
             TextureRegion region = regions[block.outlinedIcon >= 0 ? block.outlinedIcon : regions.length - 1];
-            Pixmap out = last = get(region).outline(block.outlineColor, block.outlineRadius);
+            Pixmap base = get(region);
+            if(base == null) return;
+            Pixmap out = last = base.outline(block.outlineColor, block.outlineRadius);
 
             if(block.outlinedIcon >= 0){
                 for(int i = block.outlinedIcon + 1; i < regions.length; i++){
-                    out.draw(get(regions[i]), true);
+                    Pixmap layer = get(regions[i]);
+                    if(layer != null) out.draw(layer, true);
                 }
             }
 
@@ -103,11 +108,13 @@ public class BlockIconProcessor implements SpriteProcessor{
         int i = 0;
         for(TextureRegion region : regions){
             i++;
+            Pixmap layer;
             if(i != regions.length || last == null){
-                image.draw(get(region), true);
+                layer = get(region);
             }else{
-                image.draw(last, true);
+                layer = last;
             }
+            if(i > 1 && layer != null) image.draw(layer, true);
 
             //draw shard (default team top) on top of the base sprite
             if(region == block.teamRegions[Team.sharded.id] && shardTeamTop != null){

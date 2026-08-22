@@ -176,7 +176,7 @@ public class GrBlocks{
             isFirstTier = true;
             size = 4;
 
-            unitType = UnitTypes.gamma;
+            unitType = GrUnitTypes.tantalus;
             health = 3500;
             itemCapacity = 2000;
             thrusterLength = 34/4f;
@@ -220,19 +220,106 @@ public class GrBlocks{
             shake = 1f;
             ammoPerShot = 2;
             drawer = new DrawTurret("frost-resistant-");
-            shootY = -2;
+            shootY = -1.5f;
             outlineColor = GrPal.outline;
             size = 2;
-            envEnabled |= Env.space;
             reload = 40f;
             recoil = 2f;
-            range = 190;
+            range = 150;
             shootCone = 3f;
             scaledHealth = 180;
-            rotateSpeed = 1.5f;
+            rotateSpeed = 2f;
             researchCostMultiplier = 0.05f;
 
             limitRange();
+        }};
+
+        voltum = new PowerTurret("voltum"){{
+            requirements(Category.turret, with(cobalt, 100, lead, 80));
+
+            shootType = new BasicBulletType(){{ // TODO: this is temporal shoot type
+                shootEffect = new MultiEffect(Fx.shootTitan, new WaveEffect(){{
+                    colorTo = Pal.surge;
+                    sizeTo = 26f;
+                    lifetime = 14f;
+                    strokeFrom = 4f;
+                }});
+                smokeEffect = Fx.shootSmokeTitan;
+                hitColor = Pal.surge;
+
+                sprite = "large-orb";
+                trailEffect = Fx.missileTrail;
+                trailInterval = 3f;
+                trailParam = 4f;
+                pierceCap = 2;
+                buildingDamageMultiplier = 0.5f;
+                fragOnHit = false;
+                speed = 5f;
+                damage = 180f;
+                lifetime = 80f;
+                width = height = 16f;
+                backColor = Pal.surge;
+                frontColor = Color.white;
+                shrinkX = shrinkY = 0f;
+                trailColor = Pal.surge;
+                trailLength = 12;
+                trailWidth = 2.2f;
+                despawnEffect = hitEffect = new ExplosionEffect(){{
+                    waveColor = Pal.surge;
+                    smokeColor = Color.gray;
+                    sparkColor = Pal.surge;
+                    waveStroke = 4f;
+                    waveRad = 40f;
+                }};
+
+                despawnSound = Sounds.explosionAfflict;
+                shootSound = Sounds.shootAfflict;
+
+                fragBullet = intervalBullet = new BasicBulletType(3f, 35){{
+                    width = 9f;
+                    hitSize = 5f;
+                    height = 15f;
+                    pierceCap = 3;
+                    lifetime = 28f;
+                    pierceBuilding = true;
+                    hitColor = backColor = trailColor = Pal.surge;
+                    frontColor = Color.white;
+                    trailWidth = 2.1f;
+                    trailLength = 5;
+                    hitEffect = despawnEffect = new WaveEffect(){{
+                        colorFrom = colorTo = Pal.surge;
+                        sizeTo = 4f;
+                        strokeFrom = 4f;
+                        lifetime = 10f;
+                    }};
+                    buildingDamageMultiplier = 0.3f;
+                    homingPower = 0.1f;
+                }};
+
+                bulletInterval = 3f;
+                intervalRandomSpread = 20f;
+                intervalBullets = 2;
+                intervalAngle = 180f;
+                intervalSpread = 300f;
+
+                fragBullets = 20;
+                fragVelocityMin = 0.5f;
+                fragVelocityMax = 1.2f;
+                fragLifeMin = 0.5f;
+            }};
+
+            shake = 1f;
+            ammoPerShot = 2;
+            drawer = new DrawTurret("frost-resistant-");
+            shootY = -2;
+            outlineColor = GrPal.outline;
+            size = 3;
+            reload = 40f;
+            recoil = 2f;
+            range = 60;
+            shootCone = 3f;
+            scaledHealth = 180;
+            rotateSpeed = 1.5f;
         }};
         // endregion
     }

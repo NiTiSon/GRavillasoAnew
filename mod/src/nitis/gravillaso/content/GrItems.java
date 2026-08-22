@@ -12,19 +12,13 @@ public class GrItems{
             cost = 1f;
         }};
 
-        bauxite = new Item("bauxite", GrPal.todoColor){{
+        bauxite = new Item("bauxite", GrPal.bauxite){{
             cost = 0.5f;
             buildable = false; // intermediate resource for silicon and aluminium
         }};
 
-        aluminium = new Item("aluminium", GrPal.todoColor){{
+        aluminium = new Item("aluminium", GrPal.aluminium){{
             cost = 1.5f;
         }};
-
-        /* to removal
-        magneturn = new Item("magneturn", Color.valueOf("3121ff")){{
-            explosiveness = 0.7f;
-            radioactivity = 0.1f;
-        }};*/
     }
 }

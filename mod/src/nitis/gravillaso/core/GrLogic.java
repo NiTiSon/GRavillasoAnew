@@ -22,11 +22,10 @@ public class GrLogic implements ApplicationListener{
 
     public void reset(StateChangeEvent args){
         grState = new GrGameState();
-        Log.info("GRLogic::reset");
     }
 
     public void worldLoad(WorldLoadEvent args){
         grState.rules = GrRules.getFrom(state.rules);
-        Log.info("GRLogic::worldLoad");
+        Log.debug("GrLogic::worldLoad");
     }
 }
