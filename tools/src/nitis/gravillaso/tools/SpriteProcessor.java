@@ -99,4 +99,9 @@ public interface SpriteProcessor{
     static Fi propShadowFile(String regionName){
         return Fi.get("sprites").child("blocks").child("props").child(regionName + ".png");
     }
+
+    /** The file a '-edge' region should be saved to (sprites/blocks/environment/regionName.png). */
+    static Fi edgeFile(String regionName){
+        return Fi.get("sprites").child("blocks").child("environment").child(regionName + ".png");
+    }
 }

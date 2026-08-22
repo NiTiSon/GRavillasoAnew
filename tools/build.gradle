@@ -49,6 +49,8 @@ tasks.register('run', JavaExec){
         copy{
             from "$temporaryDir/sprites"
             into outDir
+            //edge-stencil is a generation-time input only, keep it out of the shipped sprites
+            exclude "**/edge-stencil.png"
         }
     }
 }

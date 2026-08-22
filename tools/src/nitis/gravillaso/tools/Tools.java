@@ -22,6 +22,7 @@ public class Tools{
         new ItemProcessor(),
         new UnitIconProcessor(),
         new PropShadowProcessor(),
+        new EdgeProcessor(),
         new AaProcessor(),
         new BleedProcessor(),
         new ColorProcessor()
