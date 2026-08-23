@@ -1,19 +1,14 @@
 package nitis.gravillaso.world.blocks.distribution;
 
-import arc.Core;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.math.geom.Geometry;
-import arc.util.*;
+import arc.math.geom.*;
 import arc.util.io.*;
-import mindustry.content.Blocks;
-import mindustry.core.*;
-import mindustry.entities.units.*;
+import mindustry.content.*;
 import mindustry.gen.*;
-import mindustry.graphics.Layer;
-import mindustry.type.*;
+import mindustry.graphics.*;
 import mindustry.world.*;
-import mindustry.world.blocks.distribution.StackConveyor;
+import mindustry.world.blocks.distribution.*;
 import nitis.gravillaso.annotations.Annotations.*;
 
 import static mindustry.Vars.*;

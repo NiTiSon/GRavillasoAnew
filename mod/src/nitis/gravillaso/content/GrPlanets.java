@@ -1,15 +1,14 @@
 package nitis.gravillaso.content;
 
-import arc.graphics.Color;
-import arc.util.Time;
-import mindustry.content.Planets;
-import mindustry.game.Difficulty;
-import mindustry.game.Team;
-import mindustry.graphics.g3d.HexMesh;
-import mindustry.type.Planet;
-import mindustry.world.meta.Env;
-import nitis.gravillaso.core.GrRules;
-import nitis.gravillaso.maps.planet.GravilloPlanetGenerator;
+import arc.graphics.*;
+import arc.util.*;
+import mindustry.content.*;
+import mindustry.game.*;
+import mindustry.graphics.g3d.*;
+import mindustry.type.*;
+import mindustry.world.meta.*;
+import nitis.gravillaso.core.*;
+import nitis.gravillaso.maps.planet.*;
 
 public class GrPlanets {
     public static Planet gravillo;
@@ -62,6 +61,7 @@ public class GrPlanets {
 
             ruleSetter = rules -> {
                 GrRules grRules = GrRules.getFrom(rules);
+                grRules.frostEnabled = true;
                 rules.waveTeam = Team.blue;
                 rules.placeRangeCheck = false;
                 rules.hideSpawns = false;

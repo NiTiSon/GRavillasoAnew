@@ -1,37 +1,18 @@
 package nitis.gravillaso.world.temperature;
 
-import arc.Core;
-import arc.Events;
-import arc.graphics.g2d.Draw;
-import arc.math.Mathf;
-import arc.struct.ObjectSet;
-import arc.util.Log;
-import arc.util.Time;
-import arc.util.Tmp;
-import mindustry.content.Blocks;
-import mindustry.content.Fx;
-import mindustry.game.EventType.Trigger;
-import mindustry.game.EventType.WorldLoadEvent;
-import mindustry.gen.Building;
-import mindustry.gen.Groups;
-import mindustry.gen.Sounds;
-import mindustry.graphics.Layer;
-import mindustry.io.SaveFileReader.CustomChunk;
-import mindustry.io.SaveVersion;
-import mindustry.world.Block;
-import nitis.gravillaso.*;
-import nitis.gravillaso.content.GrBlocks;
-import nitis.gravillaso.content.GrPlanets;
-import nitis.gravillaso.content.GrPlanets;
+import arc.*;
+import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.util.*;
+import mindustry.game.EventType.*;
+import mindustry.graphics.*;
+import mindustry.io.SaveFileReader.*;
+import mindustry.io.*;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
+import java.io.*;
+import java.util.*;
 
-import static mindustry.Vars.net;
-import static mindustry.Vars.state;
-import static mindustry.Vars.tilesize;
-import static mindustry.Vars.world;
+import static mindustry.Vars.*;
 import static nitis.gravillaso.GravillasoMod.grState;
 import static nitis.gravillaso.graphics.GrPal.*;
 
@@ -47,13 +28,15 @@ public final class TemperatureSystem implements CustomChunk{
     // PERF: Maybe reconsider using bytes/short instead
     // Does it worth it? This array is not exceed 1MB most of the time
     /** Array of normalized[-1..1] thermal state of tile */
-    private volatile float[] data;
+    private static volatile float[] data;
 
     public TemperatureSystem() {
         Events.on(WorldLoadEvent.class, e -> {
             ww = world.width();
             wh = world.height();
             data = new float[ww * wh];
+
+            Arrays.fill(data, grState.rules.baseTemperature);
 
             Log.debug("Initialized thermal grid: @x@; base temperature: @", ww, wh, grState.rules.baseTemperature);
         });
@@ -67,13 +50,12 @@ public final class TemperatureSystem implements CustomChunk{
     static void drawDebug(){
         if (!enableDebugView) return;
 
-        /*
         var whiteRect = Core.atlas.find("white");
         Core.camera.bounds(Tmp.r1);
         int minx = Math.max(0, Mathf.floor(Tmp.r1.x / tilesize));
         int miny = Math.max(0, Mathf.floor(Tmp.r1.y / tilesize));
-        int maxx = Math.min(width, Mathf.ceil((Tmp.r1.x + Tmp.r1.width) / tilesize));
-        int maxy = Math.min(world.height(), Mathf.ceil((Tmp.r1.y + Tmp.r1.height) / tilesize));
+        int maxx = Math.min(ww, Mathf.ceil((Tmp.r1.x + Tmp.r1.width) / tilesize));
+        int maxy = Math.min(wh, Mathf.ceil((Tmp.r1.y + Tmp.r1.height) / tilesize));
 
         // too zoomed out to see per-tile data, skip to avoid a lag spike
         if((maxx - minx) * (maxy - miny) > 120_000) return;
@@ -81,19 +63,20 @@ public final class TemperatureSystem implements CustomChunk{
         Draw.z(Layer.blockOver);
         for(int y = miny; y < maxy; y++){
             for(int x = minx; x < maxx; x++){
-                float t = temperature[x + y * width];
+                float t = data[x + y * ww];
                 if(t == 0f) continue;
                 Draw.color(t < 0f ? debugColdColor : debugHotColor, Math.abs(t));
                 Draw.rect(whiteRect, x * tilesize, y * tilesize, tilesize, tilesize);
             }
         }
         Draw.color();
-        */
     }
 
+    static int tmp;
     static void update() {
-        if (state.rules.planet != GrPlanets.gravillo) return;
+        if (!grState.rules.frostEnabled) return;
 
+        Log.debug("Base temp: @", grState.rules.baseTemperature);
         world.tiles.each(TemperatureSystem::tileUpdate);
     }
 

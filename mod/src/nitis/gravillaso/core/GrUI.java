@@ -43,7 +43,7 @@ public class GrUI{
                 if(env >= 0 && env < dialog.categories.size){
                     Table prev = dialog.current;
                     dialog.current = dialog.categories.get(env);
-                    dialog.check("@rules.gr.colddisabled", b -> { gr.coldEnabled = !b; save.run(); }, () -> !gr.coldEnabled);
+                    dialog.check("@rules.gr.colddisabled", b -> { gr.frostEnabled = !b; save.run(); }, () -> !gr.frostEnabled);
                     dialog.current.table(t -> {
                         t.left();
                         t.add("@rules.gr.basetemperature").left().padRight(5);
@@ -70,8 +70,8 @@ public class GrUI{
                         for(int i = 0; i < collapsers.size; i++){
                             GrRules.TeamRule tr = gr.teams.get(Team.baseTeams[i]);
                             dialog.current = (Table)collapsers.get(i).getChildren().first();
-                            dialog.number("@rules.gr.blockcolddamage", f -> { tr.blockColdDamageMultiplier = f; save.run(); }, () -> tr.blockColdDamageMultiplier);
-                            dialog.number("@rules.gr.unitcolddamage", f -> { tr.unitColdDamageMultiplier = f; save.run(); }, () -> tr.unitColdDamageMultiplier);
+                            dialog.number("@rules.gr.blockcolddamage", f -> { tr.blockFrostDamageMultiplier = f; save.run(); }, () -> tr.blockFrostDamageMultiplier);
+                            dialog.number("@rules.gr.unitcolddamage", f -> { tr.unitFrostDamageMultiplier = f; save.run(); }, () -> tr.unitFrostDamageMultiplier);
                             dialog.number("@rules.gr.conduitcracking", f -> { tr.conduitCrackingDamageMultiplier = f; save.run(); }, () -> tr.conduitCrackingDamageMultiplier);
                         }
                         dialog.current = prev;

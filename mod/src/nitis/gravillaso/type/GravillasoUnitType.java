@@ -1,8 +1,8 @@
 package nitis.gravillaso.type;
 
-import mindustry.type.UnitType;
-import mindustry.world.meta.Env;
-import nitis.gravillaso.graphics.GrPal;
+import mindustry.type.*;
+import mindustry.world.meta.*;
+import nitis.gravillaso.graphics.*;
 
 public class GravillasoUnitType extends UnitType{
     public GravillasoUnitType(String name){

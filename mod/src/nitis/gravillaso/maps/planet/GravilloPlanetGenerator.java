@@ -1,40 +1,20 @@
 package nitis.gravillaso.maps.planet;
 
-import arc.graphics.Color;
-import arc.math.Angles;
-import arc.math.Mathf;
-import arc.math.Rand;
-import arc.math.geom.Geometry;
-import arc.math.geom.Point2;
-import arc.math.geom.Vec2;
-import arc.math.geom.Vec3;
-import arc.struct.FloatSeq;
-import arc.struct.IntSeq;
-import arc.struct.ObjectMap;
-import arc.struct.ObjectSet;
-import arc.struct.Seq;
-import arc.struct.StringMap;
-import arc.util.Tmp;
-import arc.util.noise.Ridged;
-import arc.util.noise.Simplex;
-import mindustry.ai.Astar;
-import mindustry.ai.BaseRegistry.BasePart;
-import mindustry.content.Blocks;
-import mindustry.content.Liquids;
-import mindustry.content.Weathers;
+import arc.graphics.*;
+import arc.math.*;
+import arc.math.geom.*;
+import arc.struct.*;
+import arc.util.*;
+import arc.util.noise.*;
+import mindustry.ai.*;
+import mindustry.ai.BaseRegistry.*;
+import mindustry.content.*;
 import mindustry.game.*;
-import mindustry.maps.generators.BaseGenerator;
-import mindustry.maps.generators.PlanetGenerator;
-import mindustry.type.Sector;
-import mindustry.type.Weather;
-import mindustry.world.Block;
-import mindustry.world.Tile;
-import mindustry.world.TileGen;
-import mindustry.world.Tiles;
-import nitis.gravillaso.content.GrBlocks;
-import nitis.gravillaso.content.GrBlocks;
-import nitis.gravillaso.content.GrWeathers;
-import nitis.gravillaso.core.GrRules;
+import mindustry.maps.generators.*;
+import mindustry.type.*;
+import mindustry.world.*;
+import nitis.gravillaso.content.*;
+import nitis.gravillaso.core.*;
 
 import static mindustry.Vars.*;
 
@@ -86,10 +66,14 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
         return sector != null && sector.planet.allowLaunchToNumbered && (sector.hasBase() || sector.near().contains(this::allowNumberedLaunch));
     }
 
+    public float getTemperature(float longitude, float latitude){
+        return Mathf.map(Math.abs(longitude), 0f, 1f, 0.1f, -0.9f);
+    }
+
     @Override
     public void addWeather(Sector sector, Rules rules) {
         GrRules gr = GrRules.getFrom(rules);
-        gr.baseTemperature = Mathf.map(Math.abs(sector.tile.v.y), 0f, 1f, 0.1f, -0.9f);
+        gr.baseTemperature = getTemperature(sector.tile.v.y, sector.tile.v.x);
         gr.appendTo(rules);
         rules.weather.clear();
 

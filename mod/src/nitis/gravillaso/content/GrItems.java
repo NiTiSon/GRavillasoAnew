@@ -1,8 +1,7 @@
 package nitis.gravillaso.content;
 
-import arc.graphics.*;
 import mindustry.type.*;
-import nitis.gravillaso.graphics.GrPal;
+import nitis.gravillaso.graphics.*;
 
 public class GrItems{
     public static Item cobalt, bauxite, aluminium;

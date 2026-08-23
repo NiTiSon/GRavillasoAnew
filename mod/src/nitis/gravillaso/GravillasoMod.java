@@ -1,19 +1,19 @@
 package nitis.gravillaso;
 
 import arc.*;
-import arc.files.Fi;
-import arc.graphics.Pixmap;
-import arc.util.Log;
+import arc.files.*;
+import arc.graphics.*;
+import arc.util.*;
 import mindustry.*;
-import mindustry.ctype.Content;
+import mindustry.ctype.*;
 import mindustry.game.EventType.*;
 import mindustry.mod.*;
-import mindustry.world.Block;
+import mindustry.world.*;
 import nitis.gravillaso.annotations.Annotations.*;
 import nitis.gravillaso.content.*;
 import nitis.gravillaso.core.*;
 import nitis.gravillaso.gen.*;
-import nitis.gravillaso.world.temperature.TemperatureSystem;
+import nitis.gravillaso.world.temperature.*;
 
 @SuppressWarnings("unused")
 @EnsureLoad

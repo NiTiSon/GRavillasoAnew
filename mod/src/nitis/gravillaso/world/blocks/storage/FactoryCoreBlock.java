@@ -1,30 +1,19 @@
 package nitis.gravillaso.world.blocks.storage;
 
-import arc.Core;
-import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.math.Mathf;
-import arc.struct.IntSeq;
-import arc.struct.Seq;
-import arc.util.Log;
-import arc.util.Scaling;
-import arc.util.io.Reads;
-import arc.util.io.Writes;
-import mindustry.content.Fx;
-import mindustry.entities.units.WeaponMount;
-import mindustry.gen.Groups;
-import mindustry.gen.Sounds;
-import mindustry.gen.Unit;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Layer;
-import mindustry.graphics.Pal;
-import mindustry.io.TypeIO;
-import mindustry.type.UnitType;
-import mindustry.ui.Styles;
-import mindustry.world.blocks.storage.CoreBlock;
-import mindustry.world.meta.Stat;
-import nitis.gravillaso.content.GrStat;
-import nitis.gravillaso.content.GrUnitTypes;
+import arc.*;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.struct.*;
+import arc.util.*;
+import arc.util.io.*;
+import mindustry.content.*;
+import mindustry.gen.*;
+import mindustry.graphics.*;
+import mindustry.type.*;
+import mindustry.ui.*;
+import mindustry.world.blocks.storage.*;
+import nitis.gravillaso.content.*;
 
 import static mindustry.Vars.*;
 

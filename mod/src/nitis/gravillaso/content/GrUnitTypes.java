@@ -1,13 +1,12 @@
 package nitis.gravillaso.content;
 
 import mindustry.ai.types.*;
-import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.graphics.*;
-import mindustry.type.UnitType;
+import mindustry.type.*;
 import mindustry.type.weapons.*;
-import mindustry.world.meta.Env;
-import nitis.gravillaso.type.GravillasoUnitType;
+import mindustry.world.meta.*;
+import nitis.gravillaso.type.*;
 
 import static mindustry.Vars.tilesize;
 

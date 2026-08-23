@@ -1,6 +1,6 @@
 package nitis.gravillaso.world.blocks.liquid;
 
-import mindustry.world.blocks.liquid.Conduit;
+import mindustry.world.blocks.liquid.*;
 
 /** Has high thermal conductivity */
 public class RadiantConduit extends Conduit{

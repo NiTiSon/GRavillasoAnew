@@ -1,7 +1,6 @@
 package nitis.gravillaso.graphics;
 
-import arc.graphics.Color;
-import mindustry.graphics.Pal;
+import arc.graphics.*;
 
 public class GrPal{
     /** Any usage of this color should be temporal */

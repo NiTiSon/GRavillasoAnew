@@ -1,17 +1,15 @@
 package nitis.gravillaso.core;
 
-import arc.util.serialization.Json;
-import arc.util.serialization.JsonValue;
-import arc.util.serialization.Json.JsonSerializable;
-import mindustry.game.Rules;
-import mindustry.game.Team;
-import mindustry.io.JsonIO;
+import arc.util.serialization.*;
+import arc.util.serialization.Json.*;
+import mindustry.game.*;
+import mindustry.io.*;
 
 public class GrRules {
-    /** Whenever the cold mechanic is enabled */
-    public boolean coldEnabled = true;
+    /** Whenever the frost mechanic is enabled */
+    public boolean frostEnabled = false;
     /** Base environment temperature */
-    public float baseTemperature = 0.0f;
+    public float baseTemperature = -0.3f;
     /** Team-specific rules. */
     public TeamRules teams = new TeamRules();
 
@@ -27,10 +25,10 @@ public class GrRules {
 
     /** A team-specific ruleset. */
     public static class TeamRule {
-        /** How much cold damage block takes per hit */
-        public float blockColdDamageMultiplier = 1.0f;
-        /** How much cold damage unit takes per hit */
-        public float unitColdDamageMultiplier = 1.0f;
+        /** How much frost damage block takes per hit */
+        public float blockFrostDamageMultiplier = 1.0f;
+        /** How much frost damage unit takes per hit */
+        public float unitFrostDamageMultiplier = 1.0f;
         /** Damage multiplier to conduit-like blocks containing water or brine */
         public float conduitCrackingDamageMultiplier = 1.0f;
 
@@ -39,7 +37,7 @@ public class GrRules {
 
         public TeamRule(Team team){
             if(team == Team.derelict){
-                blockColdDamageMultiplier = 0.25f;
+                blockFrostDamageMultiplier = 0f;
             }
         }
     }

@@ -1,9 +1,8 @@
 package nitis.gravillaso.content;
 
-import arc.graphics.Color;
-import mindustry.content.Liquids;
-import mindustry.content.StatusEffects;
-import mindustry.type.Liquid;
+import arc.graphics.*;
+import mindustry.content.*;
+import mindustry.type.*;
 
 public class GrLiquids{
     public static Liquid brine, oxygen;

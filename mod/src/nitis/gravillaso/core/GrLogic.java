@@ -1,12 +1,11 @@
 package nitis.gravillaso.core;
 
-import arc.ApplicationListener;
-import arc.Events;
-import arc.util.Log;
+import arc.*;
+import arc.util.*;
 import mindustry.game.EventType.*;
 
 import static mindustry.Vars.state;
-import static nitis.gravillaso.GravillasoMod.*;
+import static nitis.gravillaso.GravillasoMod.grState;
 
 public class GrLogic implements ApplicationListener{
 
@@ -22,6 +21,7 @@ public class GrLogic implements ApplicationListener{
 
     public void reset(StateChangeEvent args){
         grState = new GrGameState();
+        Log.debug("GrLogic::reset");
     }
 
     public void worldLoad(WorldLoadEvent args){
