@@ -25,14 +25,20 @@ public class GravillasoMod extends Mod{
     public static GrGameState grState;
 
     public GravillasoMod(){
+        this(false);
+    }
+
+    public GravillasoMod(boolean tools){
         instance = this;
 
-        Core.app.addListener(grLogic = new GrLogic());
+        if(!tools){
+            Core.app.addListener(grLogic = new GrLogic());
 
-        Events.on(ContentInitEvent.class, event -> {
-            Vars.content.each(this::regionRegistry);
-            resolveBlockColors();
-        });
+            Events.on(ContentInitEvent.class, event -> {
+                Vars.content.each(this::regionRegistry);
+                resolveBlockColors();
+            });
+        }
     }
 
     @Override
@@ -59,13 +65,13 @@ public class GravillasoMod extends Mod{
 
     @Override
     public void init(){
-        temperatureSystem = new TemperatureSystem();
-        grState = new GrGameState();
+        if(grLogic != null){
+            grLogic.init();
+        }
 
-        grLogic.init();
-
-        GrUI.inject();
-        // TODO: CustomRulesDialogExtension.inject();
+        if(!Vars.headless){
+            GrUI.inject();
+        }
     }
 
     /**

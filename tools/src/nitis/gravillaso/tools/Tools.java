@@ -79,7 +79,7 @@ public class Tools{
         Vars.content.createBaseContent();
 
         // creates a mockup of the mod
-        main = new GravillasoMod();
+        main = new GravillasoMod(true);
         meta = new Mods.ModMeta(){{
             name = modName;
         }};
