@@ -10,6 +10,7 @@ import static mindustry.content.TechTree.*;
 import static nitis.gravillaso.content.GrBlocks.*;
 import static nitis.gravillaso.content.GrItems.*;
 import static nitis.gravillaso.content.GrLiquids.*;
+import static nitis.gravillaso.content.GrUnitTypes.*;
 
 public class GravilloTechTree{
     public static void load() {
@@ -28,11 +29,6 @@ public class GravilloTechTree{
         // aluminium & oxygen is acquired from bauxite
 
         var costMultipliers = new ObjectFloatMap<Item>();
-        for (var item : content.items()) {
-            costMultipliers.put(item, 0.75f);
-        }
-
-        // TODO: add hard-to-make materials in here
         /*
         costMultipliers.put(Items.oxide, 0.5f);
         costMultipliers.put(Items.surgeAlloy, 0.7f);
@@ -51,13 +47,18 @@ public class GravilloTechTree{
                 //});
             });
 
+            node(bauxiteCrusher, () -> {
+
+            });
 
             // cores
+            node(draugDrone, ItemStack.with(cobalt, 1500), () -> {
 //            node(coreTier2, () -> {
 //                node(coreTier3, () -> {
 //
 //                });
 //            });
+            });
 
             // turrets
             node(sight, () -> {

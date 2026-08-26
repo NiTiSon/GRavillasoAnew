@@ -10,8 +10,10 @@ import arc.struct.Seq;
 import arc.util.Log;
 
 import mindustry.world.Block;
-import mindustry.world.blocks.environment.Floor;
+import mindustry.world.blocks.*;
+import mindustry.world.blocks.environment.*;
 
+import mindustry.world.blocks.legacy.*;
 import nitis.gravillaso.tools.*;
 
 import static mindustry.Vars.*;
@@ -45,6 +47,8 @@ public class ColorProcessor implements SpriteProcessor{
         try{
             for(int i = 0; i < blocks.size; i++){
                 Block block = blocks.get(i);
+                if(block instanceof ConstructBlock || block instanceof OreBlock || block instanceof LegacyBlock) continue;
+
                 boolean colored = false;
 
                 //fullIcon is missing for variant-only props, fall back to any real sprite

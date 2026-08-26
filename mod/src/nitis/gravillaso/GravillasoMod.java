@@ -9,6 +9,9 @@ import mindustry.ctype.*;
 import mindustry.game.EventType.*;
 import mindustry.mod.*;
 import mindustry.world.*;
+import mindustry.world.blocks.*;
+import mindustry.world.blocks.environment.*;
+import mindustry.world.blocks.legacy.*;
 import nitis.gravillaso.annotations.Annotations.*;
 import nitis.gravillaso.content.*;
 import nitis.gravillaso.core.*;
@@ -102,6 +105,8 @@ public class GravillasoMod extends Mod{
             int index = 0;
             for(Block block : Vars.content.blocks()){
                 if(!isRelated(block)) continue;
+                if(block instanceof ConstructBlock || block instanceof OreBlock || block instanceof LegacyBlock) continue;
+
                 if(index >= pixmap.width){
                     Log.warn("GravillasoMod::resolveBlockColors - index out of bounds for @", block.name);
                 }

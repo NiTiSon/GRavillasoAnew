@@ -93,7 +93,7 @@ public class GrUnitTypes {
             bounded = false;
 
             isEnemy = false;
-            hidden = false; // TODO: replace with trueddds
+            hidden = false;
             useUnitCap = false;
             logicControllable = false;
             playerControllable = false;

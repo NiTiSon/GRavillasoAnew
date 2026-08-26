@@ -25,7 +25,7 @@ import nitis.gravillaso.world.blocks.storage.*;
 import static mindustry.content.Items.*;
 import static mindustry.type.ItemStack.*;
 import static nitis.gravillaso.content.GrItems.*;
-import static nitis.gravillaso.content.GrLiquids.brine;
+import static nitis.gravillaso.content.GrLiquids.*;
 
 public class GrBlocks{
     // environment
@@ -34,6 +34,7 @@ public class GrBlocks{
     public static Block corundumBoulder, corundumCluster;
     // ores
     // wall ores
+    public static Block wallOreCobalt;
     // crafting
     public static Block siliconFurnace, aluminiumFurnace;
     // sandbox
@@ -46,6 +47,7 @@ public class GrBlocks{
     public static Block screenConduit, radiantConduit, screenLiquidRouter;
     // power
     // production
+    public static Block bauxiteCrusher;
     // storage
     public static Block coreBase;
     // turrets
@@ -57,16 +59,22 @@ public class GrBlocks{
 
     public static void load(){
         // region environment
-        corundum = new Floor("corundum-floor", 3);
+        corundum = new Floor("corundum-floor", 3){{
+            attributes.set(Attribute.sand, 3f);
+        }};
 
         corundumWall = new StaticWall("corundum-wall"){{
             corundum.asFloor().wall = this;
+            attributes.set(Attribute.sand, 3f);
         }};
 
-        purpleStone = new Floor("purple-stone", 4);
+        purpleStone = new Floor("purple-stone", 4){{
+            attributes.set(Attribute.sand, 1.25f);
+        }};
 
         purpleStoneWall = new StaticWall("purple-stone-wall"){{
             purpleStone.asFloor().wall = this;
+            attributes.set(Attribute.sand, 1.25f);
         }};
         // endregion
 
@@ -80,6 +88,12 @@ public class GrBlocks{
         corundumCluster = new TallBlock("corundum-cluster"){{
             variants = 3;
             clipSize = 128f;
+        }};
+        // endregion
+
+        // region ores
+        wallOreCobalt = new OreBlock("ore-wall-cobalt", cobalt){{
+            wallOre = true;
         }};
         // endregion
 
@@ -183,6 +197,22 @@ public class GrBlocks{
             solid = false;
 
             explosivenessScale = flammabilityScale = 20f / 120f;
+        }};
+        // endregion
+
+        // region production
+        bauxiteCrusher = new WallCrafter("bauxite-crusher"){{
+            requirements(Category.production, with(cobalt, 30, lead, 25));
+            consumePower(6 / 60f);
+
+            drillTime = 120f;
+            size = 2;
+            attribute = Attribute.sand;
+            output = bauxite;
+            fogRadius = 2;
+            researchCost = with(cobalt, 100, lead, 80);
+            ambientSound = Sounds.loopDrill;
+            ambientSoundVolume = 0.04f;
         }};
         // endregion
 

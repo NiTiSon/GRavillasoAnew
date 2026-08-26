@@ -119,10 +119,12 @@ public class BlockIconProcessor implements SpriteProcessor{
             }
             if(i > 1 && layer != null) image.draw(layer, true);
 
-            //draw shard (default team top) on top of the base sprite
-            if(region == block.teamRegions[Team.sharded.id] && shardTeamTop != null){
-                image.draw(shardTeamTop, true);
-            }
+        }
+
+        //draw shard (default team top) on top of the base sprite;
+        //vanilla blocks include the team region in getGeneratedIcons(), modded ones don't
+        if(shardTeamTop != null){
+            image.draw(shardTeamTop, true);
         }
 
         if(!(regions.length == 1 && name(regions[0]).equals(block.name) && shardTeamTop == null)){
