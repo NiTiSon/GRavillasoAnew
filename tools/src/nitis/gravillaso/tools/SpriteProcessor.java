@@ -104,4 +104,8 @@ public interface SpriteProcessor{
     static Fi edgeFile(String regionName){
         return Fi.get("sprites").child("blocks").child("environment").child(regionName + ".png");
     }
+
+    static Fi teamFile(String regionName){
+        return Fi.get("sprites").child("generated").child(regionName + ".png");
+    }
 }

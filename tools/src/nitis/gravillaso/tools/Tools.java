@@ -34,7 +34,7 @@ public class Tools{
 
     public static Fi assets;
 
-    public static String modName = "gravillaso";
+    public static String modName = "gr";
 
     public static GeneratedAtlas atlas;
 

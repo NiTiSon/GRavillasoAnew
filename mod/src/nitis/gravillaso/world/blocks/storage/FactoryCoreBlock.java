@@ -39,14 +39,19 @@ public class FactoryCoreBlock extends CoreBlock {
         stats.add(GrStat.droneType,table -> {
             table.row();
             table.table(Styles.grayPanel, b -> {
-                b.image(droneType.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit);
-                b.table(info -> {
-                    info.add(droneType.localizedName).left();
-                    if(Core.settings.getBool("console")){
-                        info.row();
-                        info.add(droneType.name).left().color(Color.lightGray);
-                    }
-                });
+                if(droneType.unlockedNow()){
+                    b.image(droneType.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit);
+                    b.table(info -> {
+                        info.add(droneType.localizedName).left();
+                        if(Core.settings.getBool("console")){
+                            info.row();
+                            info.add(droneType.name).left().color(Color.lightGray);
+                        }
+                    });
+                }else{
+                    b.image(Icon.lock).color(Pal.darkerGray).size(40).pad(10f).left();
+                    b.table(info -> info.add(droneType.localizedName).color(Pal.darkerGray).left());
+                }
                 b.button("?", Styles.flatBordert, () -> ui.content.show(droneType)).size(40f).pad(10).right().grow().visible(() -> droneType.unlockedNow());
             }).growX().pad(5).row();
         });
@@ -76,10 +81,10 @@ public class FactoryCoreBlock extends CoreBlock {
             units.removeAll(u -> !u.isAdded() || u.dead);
 
             float status = enabled ? 1f : 0f;
-            droneWarmup = Mathf.lerpDelta(droneWarmup, units.size < droneSlots ? status : 0f, 0.1f);
+            droneWarmup = Mathf.lerpDelta(droneWarmup, units.size < droneSlots && droneType.unlockedNow() ? status : 0f, 0.1f);
             totalDroneProgress += droneWarmup * delta();
 
-            if(units.size < droneSlots && (droneProgress += delta() * state.rules.unitBuildSpeed(team) / droneConstructTime) >= 1f){
+            if(units.size < droneSlots && droneType.unlockedNow() && (droneProgress += delta() * state.rules.unitBuildSpeed(team) / droneConstructTime) >= 1f){
                 var unit = droneType.create(team);
                 unit.set(x, y);
                 unit.rotation = 90f;
