@@ -30,15 +30,28 @@ public final class TemperatureSystem implements CustomChunk{
     /** Array of normalized[-1..1] thermal state of tile */
     private static volatile float[] data;
 
+    private static boolean isInEditor(){
+        // Editor(map editor ui) is not treated as editor game mode
+        Log.debug("ui.editor.isShown() = @\nstate.isEditor() = @", ui.editor.isShown(), state.isEditor());
+        return ui.editor.isShown() || state.isEditor();
+    }
+
     public TemperatureSystem() {
         Events.on(WorldLoadEvent.class, e -> {
+            if(isInEditor() || !grState.rules.frostEnabled){
+                Log.debug("Thermal grid is omitted on world load");
+                data = new float[0];
+                ww = 0;
+                wh = 0;
+                return;
+            }
             ww = world.width();
             wh = world.height();
             data = new float[ww * wh];
 
             Arrays.fill(data, grState.rules.baseTemperature);
 
-            Log.debug("Initialized thermal grid: @x@; base temperature: @", ww, wh, grState.rules.baseTemperature);
+            Log.debug("Initialized thermal grid: @x@; base temperature: @", ww, wh, data[0]);
         });
         Events.run(Trigger.update, TemperatureSystem::update);
         Events.run(Trigger.draw, TemperatureSystem::drawDebug);
@@ -72,11 +85,9 @@ public final class TemperatureSystem implements CustomChunk{
         Draw.color();
     }
 
-    static int tmp;
     static void update() {
         if (!grState.rules.frostEnabled) return;
 
-        Log.debug("Base temp: @", grState.rules.baseTemperature);
         world.tiles.each(TemperatureSystem::tileUpdate);
     }
 
@@ -85,26 +96,56 @@ public final class TemperatureSystem implements CustomChunk{
     }
 
     @Override
+    public boolean shouldWrite(){
+        return data.length > 0 && !isInEditor();
+    }
+
+    @Override
     public void write(DataOutput stream) throws IOException {
-        stream.writeShort(world.width());
-        stream.writeShort(world.height());
+        stream.writeShort(ww);
+        stream.writeShort(wh);
 
         int size = ww * wh;
+        float d = 0f;
         for (int i = 0; i < size; i++){
+            d += data[i];
             stream.writeShort(encodeNormalizedFloat(data[i])); // leave for forward-compatibility
         }
+        Log.debug("world thermal grid @x@ write, avg: @", ww, wh, d / (ww * wh));
     }
 
     @Override
     public void read(DataInput stream) throws IOException {
-        int w = stream.readShort(), h = stream.readShort();
+        int w = stream.readUnsignedShort(), h = stream.readUnsignedShort();
 
-        ww = w; wh = h;
-        int size = w * h;
-        for (int i = 0; i < size; i++){
-            data[i] = decodeNormalizedFloat(stream.readShort());
+        if(w == 0 || h == 0){
+            Log.debug("world thermal grid 0x0 read [first launch or bug]");
+            return;
         }
-        Log.debug("world read");
+
+        // stale or corrupt save
+        if(w != world.width() || h != world.height()){
+            Log.err("thermal grid size is not accurate, world size: @x@, grid size: @x@", world.width(), world.height(), w, h);
+            for(int i = 0; i < w * h; i++){
+                stream.readShort();
+            }
+            return;
+        }
+
+        // grid was omitted on this load (editor, frost disabled): drain and ignore
+        if(data == null || data.length != w * h){
+            Log.debug("thermal grid is omitted, draining @x@ chunk", w, h);
+            for(int i = 0; i < w * h; i++){
+                stream.readShort();
+            }
+            return;
+        }
+
+        float d = 0f;
+        for(int i = 0; i < w * h; i++){
+            d += data[i] = decodeNormalizedFloat(stream.readShort());
+        }
+        Log.debug("world thermal grid @x@ read, avg: @", w, h, d / (w * h));
     }
 
     public static short encodeNormalizedFloat(float value) {

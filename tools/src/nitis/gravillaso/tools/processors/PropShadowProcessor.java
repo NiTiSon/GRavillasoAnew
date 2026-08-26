@@ -20,7 +20,7 @@ import static mindustry.Vars.*;
 public class PropShadowProcessor implements SpriteProcessor{
     /** Gaussian kernel radius in pixels. */
     static final int blurPower = 22;
-    static final int padding = 6;
+    static final int padding = 10;
 
     @Override
     public void process(){
