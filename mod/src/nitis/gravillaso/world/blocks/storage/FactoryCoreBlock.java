@@ -64,6 +64,8 @@ public class FactoryCoreBlock extends CoreBlock {
 
         @Override
         public void updateTile() {
+            super.updateTile();
+
             if(!readUnits.isEmpty()){ // reassign drones after `read`
                 units.clear();
                 readUnits.each(i -> {

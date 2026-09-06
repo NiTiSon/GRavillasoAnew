@@ -1,6 +1,7 @@
 package nitis.gravillaso.content;
 
 import arc.graphics.*;
+import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -20,6 +21,7 @@ import mindustry.world.meta.*;
 import nitis.gravillaso.graphics.*;
 import nitis.gravillaso.world.blocks.distribution.*;
 import nitis.gravillaso.world.blocks.liquid.*;
+import nitis.gravillaso.world.blocks.power.*;
 import nitis.gravillaso.world.blocks.storage.*;
 
 import static mindustry.content.Items.*;
@@ -29,9 +31,9 @@ import static nitis.gravillaso.content.GrLiquids.*;
 
 public class GrBlocks{
     // environment
-    public static Block corundum, corundumWall, purpleStone, purpleStoneWall;
+    public static Block corundum, corundumWall, cryogenFloor, cryogenWall, purpleStone, purpleStoneWall;
     // boulders
-    public static Block corundumBoulder, corundumCluster;
+    public static Block corundumBoulder, corundumCluster, cryogenBoulder;
     // ores
     // wall ores
     public static Block wallOreCobalt;
@@ -46,6 +48,7 @@ public class GrBlocks{
     // liquid
     public static Block screenConduit, radiantConduit, screenLiquidRouter;
     // power
+    public static Block powerSection;
     // production
     public static Block bauxiteCrusher;
     // storage
@@ -66,6 +69,12 @@ public class GrBlocks{
         corundumWall = new StaticWall("corundum-wall"){{
             corundum.asFloor().wall = this;
             attributes.set(Attribute.sand, 3f);
+        }};
+
+        cryogenFloor = new Floor("cryogen-floor", 3);
+
+        cryogenWall = new StaticWall("cryogen-wall"){{
+            cryogenFloor.asFloor().wall = this;
         }};
 
         purpleStone = new Floor("purple-stone", 4){{
@@ -89,6 +98,12 @@ public class GrBlocks{
             variants = 3;
             clipSize = 128f;
         }};
+
+        cryogenBoulder = new Prop("cryogen-boulder"){{
+            variants = 2;
+            cryogenFloor.asFloor().decoration = this;
+            obstructsLight = false;
+        }};
         // endregion
 
         // region ores
@@ -107,7 +122,7 @@ public class GrBlocks{
             hasPower = true;
             hasLiquids = false;
             itemCapacity = 20;
-            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawDefault());
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawArcSmelt(), new DrawDefault());
             fogRadius = 3;
             ambientSound = Sounds.loopSmelter;
             ambientSoundVolume = 0.12f;
@@ -200,10 +215,24 @@ public class GrBlocks{
         }};
         // endregion
 
+        // region power
+        powerSection = new SquarePowerNode("power-section"){{
+            requirements(Category.power, with(cobalt, 5, lead, 20));
+            consumesPower = outputsPower = true;
+            size = 2;
+            health = 250;
+            fogRadius = 3;
+            laserRange = 6;
+            maxNodes = 3;
+
+            consumePowerBuffered(5000f);
+        }};
+        // endregion
+
         // region production
         bauxiteCrusher = new WallCrafter("bauxite-crusher"){{
             requirements(Category.production, with(cobalt, 30, lead, 25));
-            consumePower(6 / 60f);
+            consumePower(24 / Time.toSeconds);
 
             drillTime = 120f;
             size = 2;
