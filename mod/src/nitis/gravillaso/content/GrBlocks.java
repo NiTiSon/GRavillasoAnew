@@ -31,9 +31,9 @@ import static nitis.gravillaso.content.GrLiquids.*;
 
 public class GrBlocks{
     // environment
-    public static Block corundum, corundumWall, cryogenFloor, cryogenWall, purpleStone, purpleStoneWall;
+    public static Block corundum, corundumWall, cryogenFloor, cryogenWall, purpleStone, purpleStoneCrater, purpleStoneWall;
     // boulders
-    public static Block corundumBoulder, corundumCluster, cryogenBoulder;
+    public static Block corundumBoulder, corundumCluster, purpleStoneBoulder, cryogenBoulder;
     // ores
     // wall ores
     public static Block wallOreCobalt;
@@ -81,8 +81,13 @@ public class GrBlocks{
             attributes.set(Attribute.sand, 1.25f);
         }};
 
+        purpleStoneCrater = new Floor("purple-stone-crater", 3){{
+            attributes.set(Attribute.sand, 1.25f);
+            blendGroup = purpleStone;
+        }};
+
         purpleStoneWall = new StaticWall("purple-stone-wall"){{
-            purpleStone.asFloor().wall = this;
+            purpleStone.asFloor().wall = purpleStoneCrater.asFloor().wall = this;
             attributes.set(Attribute.sand, 1.25f);
         }};
         // endregion
@@ -97,6 +102,13 @@ public class GrBlocks{
         corundumCluster = new TallBlock("corundum-cluster"){{
             variants = 3;
             clipSize = 128f;
+        }};
+
+        purpleStoneBoulder = new Prop("purple-stone-boulder"){{
+            variants = 2;
+            customShadow = true;
+            purpleStone.asFloor().decoration = this;
+            obstructsLight = false;
         }};
 
         cryogenBoulder = new Prop("cryogen-boulder"){{
