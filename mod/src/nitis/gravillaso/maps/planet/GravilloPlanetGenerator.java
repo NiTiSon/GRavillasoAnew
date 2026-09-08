@@ -116,17 +116,6 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
         } else {
             rules.weather.add(new Weather.WeatherEntry(GrWeathers.snowstorm));
         }
-
-        rules.lighting = true;
-
-        float normalizedLatitude = Mathf.clamp(Math.abs(sector.tile.v.y)); // 0..1
-
-        Color ambient = new Color();
-        float r = Mathf.lerp(0.75f, 0.35f, normalizedLatitude);
-        float g = Mathf.lerp(0.82f, 0.42f, normalizedLatitude);
-        float b = Mathf.lerp(0.88f, 0.55f, normalizedLatitude);
-        ambient.set(r, g, b, 1f);
-        rules.ambientLight.set(ambient);
     }
 
     @Override
@@ -143,9 +132,8 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
             tile.block = Blocks.air;
         }
 
-        // TODO: replace with other block
         if(Ridged.noise3d(seed + 2, position.x, position.y + 4f, position.z, 3, 6f) > 0.6){
-            tile.floor = Blocks.carbonStone;
+            tile.floor = GrBlocks.galena;
         }
     }
 
@@ -243,14 +231,14 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
         pass((x, y) -> { // ores
             if(block != Blocks.air){
                 // TODO: rework this into cobalt and lead
-                /* if(nearAir(x, y)){
-                    if(block == Blocks.carbonWall && noise(x + 78, y, 4, 0.7f, 33f, 1f) > 0.52f){
-                        block = Blocks.graphiticWall;
-                    }else if(block != Blocks.carbonWall && noise(x + 782, y, 4, 0.8f, 38f, 1f) > 0.665f){
-                        ore = Blocks.wallOreBeryllium;
+                if(nearAir(x, y)){
+                    if(block == GrBlocks.galenaWall && noise(x + 78, y, 4, 0.7f, 33f, 1f) > 0.52f){
+                        block = GrBlocks.wallOreLead;
+                    }else if(block != GrBlocks.galenaWall && noise(x + 782, y, 4, 0.8f, 38f, 1f) > 0.665f){
+                        ore = GrBlocks.wallOreCobalt;
                     }
 
-                }*/
+                }
             }
         });
 

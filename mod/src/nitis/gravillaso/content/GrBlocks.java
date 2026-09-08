@@ -40,7 +40,7 @@ public class GrBlocks{
     public static Block corundumBoulder, corundumCluster, purpleStoneBoulder, cryogenBoulder;
     // ores
     // wall ores
-    public static Block wallOreCobalt;
+    public static Block wallOreLead, wallOreCobalt;
     // crafting
     public static Block siliconFurnace, aluminiumFurnace;
     // sandbox
@@ -129,6 +129,10 @@ public class GrBlocks{
         // endregion
 
         // region ores
+        wallOreLead = new OreBlock("ore-wall-lead", lead){{
+            wallOre = true;
+        }};
+
         wallOreCobalt = new OreBlock("ore-wall-cobalt", cobalt){{
             wallOre = true;
         }};
