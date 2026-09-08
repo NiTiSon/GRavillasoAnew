@@ -1,6 +1,7 @@
 package nitis.gravillaso.world.blocks.distribution;
 
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.math.geom.*;
 import arc.util.io.*;
 import mindustry.gen.*;
@@ -42,16 +43,10 @@ public class MaglevConveyor extends StackConveyor{
         }
 
         @Override
-        public boolean acceptItem(Building source, Item item){
-            if(!phase) return super.acceptItem(source, item);
-            //phase: only a maglev conveyor directly behind may feed this one
-            if(!(source instanceof MaglevConveyorBuild) || source.tile != behind()) return false;
-            return super.acceptItem(source, item);
+        public void updateTile(){
+            super.updateTile();
         }
 
-        protected Tile behind(){
-            return world.tile(tile.x + Geometry.d4x(rotation + 2), tile.y + Geometry.d4y(rotation + 2));
-        }
 
         @Override
         public void drawCached(){
@@ -61,6 +56,13 @@ public class MaglevConveyor extends StackConveyor{
             }
 
             Draw.rect(phaseRegion, x, y, rotdeg());
+
+            if(!(back() instanceof MaglevConveyorBuild)){
+                Draw.rect(phaseEdgeRegion, x, y, (rotation + 2) * 90);
+            }
+            if(!(front() instanceof  MaglevConveyorBuild)){
+                Draw.rect(phaseEdgeRegion, x, y, rotation * 90);
+            }
 
             for(int i = 0; i < 4; i++){
                 if((blendprox & (1 << i)) == 0){
