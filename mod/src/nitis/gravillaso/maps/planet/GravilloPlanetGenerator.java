@@ -233,7 +233,7 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
                 // TODO: rework this into cobalt and lead
                 if(nearAir(x, y)){
                     if(block == GrBlocks.galenaWall && noise(x + 78, y, 4, 0.7f, 33f, 1f) > 0.52f){
-                        block = GrBlocks.wallOreLead;
+                        ore = GrBlocks.wallOreLead;
                     }else if(block != GrBlocks.galenaWall && noise(x + 782, y, 4, 0.8f, 38f, 1f) > 0.665f){
                         ore = GrBlocks.wallOreCobalt;
                     }
