@@ -3,7 +3,6 @@ package nitis.gravillaso.content;
 import arc.struct.*;
 import mindustry.type.*;
 
-import static mindustry.Vars.content;
 import static mindustry.content.Items.*;
 import static mindustry.content.Liquids.cryofluid;
 import static mindustry.content.TechTree.*;
@@ -45,6 +44,9 @@ public class GravilloTechTree{
                 //node(cobaltRouter, () -> {
 
                 //});
+                node(maglevConveyor, () -> {
+
+                });
             });
 
             // production

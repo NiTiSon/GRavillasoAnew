@@ -48,7 +48,7 @@ public class GrBlocks{
     public static Block cobaltWall, cobaltWallLarge;
     // defense
     // transport
-    public static Block cobaltConveyor, phaseConveyor;
+    public static Block cobaltConveyor, maglevConveyor;
     // liquid
     public static Block screenConduit, radiantConduit, screenLiquidRouter;
     // power
@@ -203,9 +203,8 @@ public class GrBlocks{
             itemCapacity = 8;
         }};
 
-        phaseConveyor = new MaglevConveyor("phase-conveyor"){{
+        maglevConveyor = new MaglevConveyor("maglev-conveyor"){{
             requirements(Category.distribution, with(tungsten, 2, silicon, 2, phaseFabric, 1));
-            buildVisibility = BuildVisibility.hidden; // To buggy now
             health = 250;
 
             recharge = 1f;
