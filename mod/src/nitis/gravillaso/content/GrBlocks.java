@@ -31,7 +31,11 @@ import static nitis.gravillaso.content.GrLiquids.*;
 
 public class GrBlocks{
     // environment
-    public static Block corundum, corundumWall, cryogenFloor, cryogenWall, purpleStone, purpleStoneCrater, purpleStoneWall;
+    public static Block
+    corundum, corundumWall,
+    galena, galenaWall,
+    cryogenFloor, cryogenWall,
+    purpleStone, purpleStoneCrater, purpleStoneWall;
     // boulders
     public static Block corundumBoulder, corundumCluster, purpleStoneBoulder, cryogenBoulder;
     // ores
@@ -69,6 +73,12 @@ public class GrBlocks{
         corundumWall = new StaticWall("corundum-wall"){{
             corundum.asFloor().wall = this;
             attributes.set(Attribute.sand, 3f);
+        }};
+
+        galena = new Floor("galena", 4);
+
+        galenaWall = new StaticWall("galena-wall"){{
+            galena.asFloor().wall = this;
         }};
 
         cryogenFloor = new Floor("cryogen-floor", 3);
