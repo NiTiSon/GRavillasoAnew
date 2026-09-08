@@ -33,7 +33,7 @@ public class OreGenerator implements SpriteProcessor{
             int shadowColor = Color.rgba8888(0, 0, 0, 0.3f);
 
             for(int i = 0; i < ore.variants; i++){
-                GeneratedRegion baseRegion = Tools.atlas.find(ore.name + i);
+                GeneratedRegion baseRegion = Tools.atlas.find(ore.name + (i + 1));
                 if(!baseRegion.found()) continue;
 
                 Pixmap base = baseRegion.pixmap();
