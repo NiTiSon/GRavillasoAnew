@@ -22,11 +22,13 @@ import static mindustry.Vars.*;
 public class GravilloPlanetGenerator extends PlanetGenerator {
     public float heightScl = 0.7f, octaves = 6, persistence = 0.5f, heightPow = 3f, heightMult = 1.3f;
 
+    public static float arkThresh = 0.28f, arkScl = 0.83f;
+    public static int arkSeed = 7, arkOct = 2;
     public static float liqThresh = 0.90f, liqScl = 70f;
-    public static float airThresh = 0.15f, airScl = 11;
+    public static float airThresh = 0.15f, airScl = 15;
 
     //Block[] terrain = {Blocks.regolith, Blocks.regolith, Blocks.regolith, Blocks.regolith, Blocks.yellowStone, Blocks.rhyolite, Blocks.rhyolite, Blocks.carbonStone};
-    Block[] terrain = {GrBlocks.corundum, GrBlocks.corundum, GrBlocks.corundum, GrBlocks.corundum, GrBlocks.purpleStone, Blocks.shale, Blocks.shale};
+    Block[] terrain = {GrBlocks.corundum, GrBlocks.corundum, GrBlocks.corundum, GrBlocks.corundum, GrBlocks.purpleStone, GrBlocks.galena, GrBlocks.galena, GrBlocks.galena}; // TODO: need another one block
 
     {
         baseSeed = 2;
@@ -76,12 +78,9 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
 //            }
 //        }
 
-//        //TODO tweak this to make it more natural
-//        //TODO edge distortion?
-//        if(ice < redThresh - noArkThresh && Ridged.noise3d(seed + arkSeed, px + 2f, py + 8f, pz + 1f, arkOct, arkScl) > arkThresh){
-//            //TODO arkyic in middle
-//            result = Blocks.beryllicStone;
-//        }
+        if(/*ice < redThresh - noArkThresh &&*/ Ridged.noise3d(seed + arkSeed, px + 2f, py + 8f, pz + 1f, arkOct, arkScl) > arkThresh){
+            result = Blocks.shale;
+        }
 
 //        if(ice > redThresh){
 //            result = Blocks.redStone;
@@ -229,8 +228,8 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
         tiles.getn(endX, endY).setOverlay(Blocks.spawn);
 
         pass((x, y) -> { // ores
+            // TODO: bug, sometime ores generate not near air
             if(block != Blocks.air){
-                // TODO: rework this into cobalt and lead
                 if(nearAir(x, y)){
                     if(block == GrBlocks.galenaWall && noise(x + 78, y, 4, 0.7f, 33f, 1f) > 0.52f){
                         ore = GrBlocks.wallOreLead;
@@ -239,6 +238,15 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
                     }
 
                 }
+            }else if(!nearWall(x, y)){
+                if(noise(x + 999, y + 600 - x, 4, 0.63f, 45f, 1f) < 0.27f && (floor == Blocks.shale || floor == GrBlocks.cryogenFloor)){
+                    ore = Blocks.oreTitanium; // replace with other titanium
+                }
+            }
+
+            if(block == GrBlocks.corundumWall && rand.chance(0.11) && nearAir(x, y) && !near(x, y, 4, GrBlocks.corundumCluster)){
+                block = GrBlocks.corundumCluster;
+                ore = Blocks.air;
             }
         });
 

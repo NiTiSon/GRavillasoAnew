@@ -19,10 +19,10 @@ public class GrWeathers {
             minAlpha = 0f;
             maxAlpha = 0.2f;
             density = 1500f;
-            baseSpeed = 3.4f;
+            baseSpeed = 6.4f;
             attrs.set(Attribute.light, -0.4f);
             opacityMultiplier = 0.55f;
-            force = 0.2f;
+            force = 0.3f;
             sound = Sounds.windHowl;
             soundVol = 0.8f;
             duration = 6f * Time.toMinutes;

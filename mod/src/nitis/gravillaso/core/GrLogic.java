@@ -3,13 +3,15 @@ package nitis.gravillaso.core;
 import arc.*;
 import arc.util.*;
 import mindustry.game.EventType.*;
-import nitis.gravillaso.*;
+import mindustry.world.meta.*;
+import nitis.gravillaso.graphics.*;
 import nitis.gravillaso.world.temperature.*;
 
-import static mindustry.Vars.state;
+import static mindustry.Vars.*;
 import static nitis.gravillaso.GravillasoMod.*;
 
 public class GrLogic implements ApplicationListener{
+    public ThermalRenderer thermalRenderer;
 
     public GrLogic(){
         Events.on(StateChangeEvent.class, this::reset);
@@ -20,6 +22,7 @@ public class GrLogic implements ApplicationListener{
     public void init(){
         temperatureSystem = new TemperatureSystem();
         grState = new GrGameState();
+        thermalRenderer = new ThermalRenderer();
     }
 
     @Override

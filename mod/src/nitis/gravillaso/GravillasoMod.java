@@ -16,6 +16,7 @@ import nitis.gravillaso.annotations.Annotations.*;
 import nitis.gravillaso.content.*;
 import nitis.gravillaso.core.*;
 import nitis.gravillaso.gen.*;
+import nitis.gravillaso.graphics.*;
 import nitis.gravillaso.world.temperature.*;
 
 @SuppressWarnings("unused")
@@ -24,6 +25,7 @@ public class GravillasoMod extends Mod{
     public static GravillasoMod instance;
 
     public static TemperatureSystem temperatureSystem;
+    public static @Nullable ThermalRenderer thermalRenderer;
     public static GrLogic grLogic;
     public static GrGameState grState;
 
@@ -73,6 +75,7 @@ public class GravillasoMod extends Mod{
         }
 
         if(!Vars.headless){
+            thermalRenderer = new ThermalRenderer();
             GrUI.inject();
         }
     }

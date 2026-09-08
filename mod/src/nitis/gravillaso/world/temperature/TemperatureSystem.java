@@ -30,6 +30,15 @@ public final class TemperatureSystem implements CustomChunk{
     /** Array of normalized[-1..1] thermal state of tile */
     private static volatile float[] data;
 
+    public static float temperature(int x, int y){
+        if(data == null || data.length == 0) return 0f;
+        return data[Mathf.clamp(x, 0, ww - 1) + Mathf.clamp(y, 0, wh - 1) * ww];
+    }
+
+    public static int worldWidth(){ return ww; }
+    public static int worldHeight(){ return wh; }
+    public static boolean isActive(){ return data != null && data.length > 0; }
+
     private static boolean isInEditor(){
         // Editor(map editor ui) is not treated as editor game mode
         Log.debug("ui.editor.isShown() = @\nstate.isEditor() = @", ui.editor.isShown(), state.isEditor());
