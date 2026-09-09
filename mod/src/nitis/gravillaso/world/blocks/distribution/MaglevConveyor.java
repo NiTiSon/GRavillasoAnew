@@ -5,7 +5,9 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.io.*;
+import mindustry.*;
 import mindustry.ctype.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
@@ -20,10 +22,14 @@ public class MaglevConveyor extends StackConveyor{
     public @Load("@name$-connect") TextureRegion connectRegion;
     public TextureRegion uiPhaseIcon;
 
+    public String localizedPhaseName;
+
     public MaglevConveyor(String name){
         super(name);
         placeableLiquid = true;
         outputRouter = false;
+
+        this.localizedPhaseName = Core.bundle.get(getContentType() + "." + this.name + "-phase" + ".name", this.name);
     }
 
     protected boolean isPhaseValidTile(Tile t){
@@ -60,6 +66,13 @@ public class MaglevConveyor extends StackConveyor{
             }else{
                 return uiPhaseIcon != null ? uiPhaseIcon : super.getDisplayIcon();
             }
+        }
+
+        @Override
+        public String getDisplayName(){
+            return this.team == Team.derelict
+            ? (phase ? localizedPhaseName : localizedName) + "\n" + Core.bundle.get("block.derelict")
+            : (phase ? localizedPhaseName : localizedName) + (this.team != Vars.player.team() && !this.team.emoji.isEmpty() ? " " + this.team.emoji : "");
         }
 
         @Override
