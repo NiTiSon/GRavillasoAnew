@@ -18,11 +18,14 @@ import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
+import nitis.gravillaso.entities.bullet.*;
 import nitis.gravillaso.graphics.*;
 import nitis.gravillaso.world.blocks.distribution.*;
 import nitis.gravillaso.world.blocks.liquid.*;
 import nitis.gravillaso.world.blocks.power.*;
+import nitis.gravillaso.world.blocks.production.*;
 import nitis.gravillaso.world.blocks.storage.*;
+import nitis.gravillaso.world.reservoir.*;
 
 import static mindustry.content.Items.*;
 import static mindustry.type.ItemStack.*;
@@ -36,6 +39,8 @@ public class GrBlocks{
     galena, galenaWall,
     cryogenFloor, cryogenWall,
     purpleStone, purpleStoneCrater, purpleStoneWall;
+    // wells
+    public static Floor wellBrine, wellOxygen;
     // boulders
     public static Block corundumBoulder, corundumCluster, purpleStoneBoulder, cryogenBoulder;
     // ores
@@ -55,6 +60,8 @@ public class GrBlocks{
     public static Block powerSection;
     // production
     public static Block bauxiteCrusher;
+    // wells building
+    public static Block wellCollector, pressureBooster;
     // storage
     public static Block coreBase;
     // turrets
@@ -421,6 +428,20 @@ public class GrBlocks{
             scaledHealth = 180;
             rotateSpeed = 1.5f;
         }};
+
+        /*testTurret = new PayloadAmmoTurret("test-turret"){{
+            requirements(Category.turret, with(cobalt, 1));
+            buildVisibility = BuildVisibility.hidden; // curse stuff
+            range = 45.5f * Vars.tilesize;
+            size = 3;
+
+            ammo(
+            Blocks.router, new PayloadBulletType(Blocks.router, 20f),
+            GrBlocks.cobaltWallLarge, new PayloadBulletType(GrBlocks.cobaltWallLarge, 10f)
+            );
+
+            limitRange();
+        }};*/
         // endregion
     }
 }

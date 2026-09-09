@@ -17,6 +17,7 @@ import nitis.gravillaso.content.*;
 import nitis.gravillaso.core.*;
 import nitis.gravillaso.gen.*;
 import nitis.gravillaso.graphics.*;
+import nitis.gravillaso.world.reservoir.*;
 import nitis.gravillaso.world.temperature.*;
 
 @SuppressWarnings("unused")
@@ -26,6 +27,7 @@ public class GravillasoMod extends Mod{
 
     public static TemperatureSystem temperatureSystem;
     public static @Nullable ThermalRenderer thermalRenderer;
+    public static ReservoirSystem reservoirSystem;
     public static GrLogic grLogic;
     public static GrGameState grState;
 

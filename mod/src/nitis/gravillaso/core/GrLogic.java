@@ -5,6 +5,7 @@ import arc.util.*;
 import mindustry.game.EventType.*;
 import mindustry.world.meta.*;
 import nitis.gravillaso.graphics.*;
+import nitis.gravillaso.world.reservoir.*;
 import nitis.gravillaso.world.temperature.*;
 
 import static mindustry.Vars.*;
@@ -21,6 +22,7 @@ public class GrLogic implements ApplicationListener{
     @Override
     public void init(){
         temperatureSystem = new TemperatureSystem();
+        reservoirSystem = new ReservoirSystem();
         grState = new GrGameState();
         thermalRenderer = new ThermalRenderer();
     }

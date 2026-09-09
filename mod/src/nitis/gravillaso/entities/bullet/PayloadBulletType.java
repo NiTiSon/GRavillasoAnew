@@ -14,6 +14,11 @@ public class PayloadBulletType extends BulletType{
         this.block = block;
     }
 
+    public PayloadBulletType(Block block, float speed){
+        super(speed, block.health);
+        this.block = block;
+    }
+
     @Override
     public void draw(Bullet b){
         super.draw(b);
