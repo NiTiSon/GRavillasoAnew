@@ -17,6 +17,7 @@ import mindustry.world.meta.BuildVisibility;
 
 import nitis.gravillaso.tools.*;
 import nitis.gravillaso.tools.GeneratedAtlas.GeneratedRegion;
+import nitis.gravillaso.world.blocks.distribution.*;
 
 import static mindustry.Vars.*;
 
@@ -38,20 +39,22 @@ public class BlockIconProcessor implements SpriteProcessor{
                 block.loadIcon();
                 process(block);
             }catch(Exception e){
-                Log.err(e);
                 Log.err("Failed to generate icons for @", block);
+                Log.err(e);
             }
         });
     }
 
     private void process(Block block){
-        block.loadIcon();
 
         Seq<TextureRegion> toOutline = new Seq<>();
         block.getRegionsToOutline(toOutline);
 
         TextureRegion[] regions = block.getGeneratedIcons();
-        if(regions.length == 0 || !regions[0].found()) return;
+        if(regions.length == 0 || !regions[0].found()){
+            Log.info("Skipped block @, no regions", block);
+            return;
+        }
 
         for(TextureRegion region : toOutline){
             Pixmap pix = get(region);
@@ -134,7 +137,12 @@ public class BlockIconProcessor implements SpriteProcessor{
         if(block.buildVisibility != BuildVisibility.hidden){
             saveScaled(image, block.name + "-icon-logic", Math.min(32 * 3, image.width), SpriteProcessor.uiFile(block.name + "-icon-logic"));
         }
+
         saveScaled(image, "block-" + block.name + "-ui", maxUiIcon, SpriteProcessor.uiFile("block-" + block.name + "-ui"));
+        if(block instanceof MaglevConveyor maglevBlock){
+            image = get(maglevBlock.phaseIcon()).copy();
+            saveScaled(image, "block-" + block.name + "-phase" + "-ui", maxUiIcon, SpriteProcessor.uiFile("block-" + block.name + "-phase" + "-ui"));
+        }
     }
 
     /** Returns the backing pixmap of an atlas-generated region, or null when missing. */
