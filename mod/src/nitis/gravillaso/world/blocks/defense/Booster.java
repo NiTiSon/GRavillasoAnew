@@ -91,25 +91,9 @@ public class Booster extends BoostBlock{
 
             for(var build : proximity){
                 if(build != null && build.team == team && build.block.canOverdrive){
-                    tryBoostBuild(self(), build, additiveBoost);
+                    tryBoostBuild(self(), build);
                 }
             }
-        }
-
-        static <T extends Building & DirectionalBoostBlock> void tryBoostBuild(T self, Building build, boolean additiveBoost){
-            // smallest possible float value
-            // this required to prevent timeScale accumulation on target building
-            final float epsilon = 1.401298e-45f; // boost worn off asap
-
-            int contact = DirectionalBoostBlock.contactPoints(self, build);
-            if(contact > 0 && self.isValidBoosterReceiver(build)){
-                float ratio = (float)contact / Math.min(build.block.size, self.block.size);
-                float blockBoost = DirectionalBoostBlock.getBoost(self.boost(), build, ratio, additiveBoost);
-                build.applyBoost(blockBoost, additiveBoost ? epsilon : 2f);
-            }
-        }
-
-        public void applyBoostOn(Building build, float boost){
         }
 
         @Override

@@ -17,13 +17,12 @@ public interface DirectionalBoostBlock extends Buildingc{
 
     /** @return boost for provided {@code build}
      * @param addition is timescale stacking allowed */
-    static float getBoost(float boost, Building build, float ratio, boolean addition){
+    static float getBoost(float boost, float ratio, boolean addition){
         boost *= ratio;
-        if(addition){
-            boost += build.timeScale(); // allow stacking booster
-        }else{
+        if(!addition){
             boost += 1f; // 1f = standalone 100%
         }
+
         return boost;
     }
 }
