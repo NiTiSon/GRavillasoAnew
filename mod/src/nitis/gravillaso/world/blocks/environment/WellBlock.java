@@ -1,5 +1,6 @@
 package nitis.gravillaso.world.blocks.environment;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -12,7 +13,9 @@ import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.*;
 import mindustry.world.blocks.environment.*;
 import nitis.gravillaso.world.reservoir.*;
 
@@ -57,18 +60,82 @@ public class WellBlock extends Floor{
         showReservoirEdit(table);
     }
 
-    public static void showReservoirEdit(Table table){
-        // save-wide editor:
-        // items:
-        // * selector_box, index, liquid_selector
-        for(int i = 0; i < ReservoirSystem.types.size; i++){
-            Liquid liquid = ReservoirSystem.types.get(i);
-            table.image(liquid.uiIcon);
-            table.labelWrap(liquid.localizedName);
+    public void showReservoirEdit(Table table){
+        table.left().top();
+        table.table(Styles.black6, rows -> {
+            rows.left().top();
+            rebuildReservoirRows(rows);
+        }).growX().left().top();
+    }
+
+    void rebuildReservoirRows(Table rows){
+        // TODO: add translation keys maybe?
+        rows.clear();
+        rows.left().top();
+
+        if(ReservoirSystem.types.isEmpty()){
+            rows.add("No reservoirs yet, add one.", Color.gray).left().pad(4f).row();
         }
-        table.button(Icon.add, () -> {
+
+        for(int i = 0; i < ReservoirSystem.types.size; i++){
+            int index = i;
+            rows.row();
+            rows.table(row -> {
+                row.left();
+
+                row.check(index + "", index == configIndex(), checked -> {
+                    lastConfig = checked ? index : null;
+                    rebuildReservoirRows(rows);
+                }).padRight(8f);
+
+                row.table(selector -> ItemSelection.buildTable(null, selector, content.liquids(),
+                    () -> reservoirLiquid(index),
+                    liquid -> { if(liquid != null) ReservoirSystem.types.set(index, liquid); },
+                    false, 2, 4
+                )).growX();
+
+                row.button(Icon.trash, Styles.flati, () -> {
+                    ReservoirSystem.types.remove(index);
+                    rebuildReservoirRows(rows);
+                }).size(40f).pad(4f);
+            }).growX().padBottom(2f);
+        }
+
+        rows.row();
+        rows.button("Add reservoir", Icon.add, Styles.cleart, () -> {
             ReservoirSystem.types.add(Liquids.oil);
-        });
+            rebuildReservoirRows(rows);
+        }).growX().left().padTop(4f);
+    }
+
+    int configIndex(){
+        return lastConfig instanceof Integer c && c >= 0 && c < ReservoirSystem.types.size ? c : -1;
+    }
+
+    Liquid reservoirLiquid(int index){
+        return index < ReservoirSystem.types.size ? ReservoirSystem.types.get(index) : null;
+    }
+
+    @Override
+    public Object getConfig(Tile tile){
+        return tile.extraData;
+    }
+
+    @Override
+    public void onPicked(Tile tile){
+        lastConfig = ReservoirSystem.types.isEmpty() ? null : Math.min(tile.extraData, ReservoirSystem.types.size - 1);
+    }
+
+    @Override
+    public void editorPicked(Tile tile){
+        onPicked(tile);
+    }
+
+    @Override
+    public void placeEnded(Tile tile, @Nullable Unit builder, int rotation, @Nullable Object config){
+        if(config instanceof Integer i){
+            tile.extraData = i;
+        }
     }
 
     @Override

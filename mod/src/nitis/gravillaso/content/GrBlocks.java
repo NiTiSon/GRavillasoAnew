@@ -40,9 +40,9 @@ public class GrBlocks{
     cryogenFloor, cryogenWall,
     purpleStone, purpleStoneCrater, purpleStoneWall;
     // wells
-    public static Floor corundumWell;
+    public static Floor corundumWell, galenaWell, purpleStoneWell;
     // boulders
-    public static Block corundumBoulder, corundumCluster, purpleStoneBoulder, cryogenBoulder;
+    public static Block corundumBoulder, corundumCluster, galenaBoulder, purpleStoneBoulder, cryogenBoulder;
     // ores
     // wall ores
     public static Block wallOreLead, wallOreCobalt;
@@ -113,6 +113,14 @@ public class GrBlocks{
         corundumWell = new WellBlock("corundum-well"){{
             parent = blendGroup = corundum;
         }};
+
+        galenaWell = new WellBlock("galena-well"){{
+            parent = blendGroup = galena;
+        }};
+
+        purpleStoneWell = new WellBlock("purple-stone-well"){{
+            parent = blendGroup = purpleStone;
+        }};
         // endregion
 
         // region boulders
@@ -125,6 +133,12 @@ public class GrBlocks{
         corundumCluster = new TallBlock("corundum-cluster"){{
             variants = 3;
             clipSize = 128f;
+        }};
+
+        galenaBoulder = new Prop("galena-boulder"){{
+            variants = 2;
+            galena.asFloor().decoration = this;
+            obstructsLight = false;
         }};
 
         purpleStoneBoulder = new Prop("purple-stone-boulder"){{

@@ -27,7 +27,7 @@ public class GrUnitTypes {
             targetPriority = -2;
             lowAltitude = false;
             mineWalls = true;
-            mineFloor = true;
+            mineFloor = false;
             mineHardnessScaling = false;
             flying = true;
             mineSpeed = 10f;
@@ -81,6 +81,7 @@ public class GrUnitTypes {
             controller = u -> new MinerAI();
 
             flying = true;
+            itemCapacity = 80;
             drag = 0.06f;
             accel = 0.11f;
             speed = 1.3f;
@@ -90,7 +91,7 @@ public class GrUnitTypes {
             engineOffset = 5.5f;
             payloadCapacity = 0f;
             targetable = false;
-            bounded = false;
+            bounded = true;
 
             isEnemy = false;
             hidden = false;
@@ -105,6 +106,9 @@ public class GrUnitTypes {
 
             mineTier = 1;
             mineSpeed = 3.75f;
+            mineWalls = true;
+            mineFloor = true;
+            mineHardnessScaling = false;
         }};
     }
 }
