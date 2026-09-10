@@ -1,25 +1,22 @@
 package nitis.gravillaso.world.blocks.defense;
 
 import arc.*;
-import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import arc.util.io.*;
-import mindustry.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
-import mindustry.world.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import nitis.gravillaso.world.draw.*;
 
-import static mindustry.Vars.*;
+public class Booster extends BoostBlock{
+    /** boost amount; 0.5 means 150% or +50% */
+    public float boostAmount = 0.5f;
 
-public class Booster extends Block{
-    public float additiveBoost = 0.5f;
     public DrawBlock drawer = new DrawMulti(
     new DrawDefault(),
     new DrawHeatOutput(),
@@ -30,14 +27,7 @@ public class Booster extends Block{
 
     public Booster(String name){
         super(name);
-        solid = update = true;
-        rotateDraw = false;
-        rotate = true;
-        drawArrow = true;
-        canOverdrive = false;
         hasPower = true;
-        group = BlockGroup.projectors;
-        envEnabled |= Env.space;
         ambientSound = Sounds.loopCircuit;
         ambientSoundVolume = 0.7f;
     }
@@ -52,7 +42,7 @@ public class Booster extends Block{
         //stats.timePeriod = useTime;
         super.setStats();
 
-        stats.add(Stat.speedIncrease, "+" + (int)(additiveBoost * 100f) + "%");
+        stats.add(Stat.speedIncrease, "+" + (int)(boostAmount * 100f) + "%");
     }
 
     @Override
@@ -61,7 +51,7 @@ public class Booster extends Block{
         addBar("boost", (BoosterBuild entity) -> new Bar(
         () -> Core.bundle.format("bar.boost", Mathf.round(Math.max((entity.boost() * 100), 0))),
         () -> Pal.accent,
-        () -> entity.boost() / additiveBoost));
+        () -> entity.boost() / boostAmount));
     }
 
     @Override
@@ -97,17 +87,29 @@ public class Booster extends Block{
 
         @Override
         public void updateTile(){
-            boost = Mathf.approachDelta(boost, additiveBoost * efficiency, warmupRate * delta());
+            boost = Mathf.approachDelta(boost, boostAmount * efficiency, warmupRate * delta());
 
             for(var build : proximity){
                 if(build != null && build.team == team && build.block.canOverdrive){
-                    int contact = DirectionalBoostBlock.contactPoints(self(), build);
-                    if(contact > 0 && relativeTo(build) == rotation){
-                        float ratio = (float)contact / Math.min(build.block.size, block.size);
-                        build.applyBoost(1f + (boost * ratio), 2f);
-                    }
+                    tryBoostBuild(self(), build, additiveBoost);
                 }
             }
+        }
+
+        static <T extends Building & DirectionalBoostBlock> void tryBoostBuild(T self, Building build, boolean additiveBoost){
+            // smallest possible float value
+            // this required to prevent timeScale accumulation on target building
+            final float epsilon = 1.401298e-45f; // boost worn off asap
+
+            int contact = DirectionalBoostBlock.contactPoints(self, build);
+            if(contact > 0 && self.isValidBoosterReceiver(build)){
+                float ratio = (float)contact / Math.min(build.block.size, self.block.size);
+                float blockBoost = DirectionalBoostBlock.getBoost(self.boost(), build, ratio, additiveBoost);
+                build.applyBoost(blockBoost, additiveBoost ? epsilon : 2f);
+            }
+        }
+
+        public void applyBoostOn(Building build, float boost){
         }
 
         @Override
@@ -122,7 +124,12 @@ public class Booster extends Block{
 
         @Override
         public float boostFrac(){
-            return boost / additiveBoost;
+            return boost / boostAmount;
+        }
+
+        @Override
+        public boolean isValidBoosterReceiver(Building receiver){
+            return relativeTo(receiver) == rotation;
         }
 
         @Override

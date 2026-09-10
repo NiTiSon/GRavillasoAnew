@@ -9,24 +9,18 @@ import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
-import mindustry.world.*;
 import mindustry.world.draw.*;
-import mindustry.world.meta.*;
 import nitis.gravillaso.content.*;
 
 import static mindustry.Vars.*;
 
-public class BoostConductor extends Block{
+public class BoostConductor extends BoostBlock{
     public float maxBoostThroughput = 2f;
     public DrawBlock drawer = new DrawMulti(new DrawDefault(), new DrawHeatOutput());
     public boolean splitBoost = false;
 
     public BoostConductor(String name){
         super(name);
-        update = solid = rotate = true;
-        group = BlockGroup.projectors;
-        rotateDraw = false;
-        canOverdrive = false;
         noUpdateDisabled = true;
     }
 
@@ -91,11 +85,7 @@ public class BoostConductor extends Block{
 
             for(var build : proximity){
                 if(build != null && build.team == team && build.block.canOverdrive){
-                    int contact = DirectionalBoostBlock.contactPoints(self(), build);
-                    if(contact > 0){
-                        float ratio = (float)contact / Math.min(build.block.size, block.size);
-                        build.applyBoost((1f + boost) * ratio, 2f);
-                    }
+                    Booster.BoosterBuild.tryBoostBuild(self(), build, additiveBoost);
                 }
             }
         }
@@ -145,6 +135,13 @@ public class BoostConductor extends Block{
         @Override
         public float boostFrac(){
             return (boost / maxBoostThroughput) / (splitBoost ? 3f : 1);
+        }
+
+        @Override
+        public boolean isValidBoosterReceiver(Building receiver){
+            return splitBoost
+            ? (relativeTo(receiver) + 2) % 4 != rotation
+            : relativeTo(receiver) == rotation;
         }
     }
 }
