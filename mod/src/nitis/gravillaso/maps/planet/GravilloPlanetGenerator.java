@@ -196,18 +196,19 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
 
             if((floor == Blocks.arkyciteFloor || floor == Blocks.arkyicStone) && block.isStatic()){
                 block = Blocks.arkyicWall;
-            }
+            }*/
 
             float max = 0;
             for(Point2 p : Geometry.d8){
-                //TODO I think this is the cause of lag
                 max = Math.max(max, world.getDarkness(x + p.x, y + p.y));
             }
+
             if(max > 0){
                 block = floor.asFloor().wall;
-                if(block == Blocks.air) block = Blocks.yellowStoneWall;
+                if(block == Blocks.air) block = GrBlocks.corundumWall;
             }
 
+            /*
             if(floor == Blocks.yellowStonePlates && noise(x + 78 + y, y, 3, 0.8f, 6f, 1f) > 0.44f){
                 floor = Blocks.yellowStone;
             }

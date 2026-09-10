@@ -21,9 +21,9 @@ import mindustry.world.meta.*;
 import nitis.gravillaso.entities.bullet.*;
 import nitis.gravillaso.graphics.*;
 import nitis.gravillaso.world.blocks.distribution.*;
+import nitis.gravillaso.world.blocks.environment.*;
 import nitis.gravillaso.world.blocks.liquid.*;
 import nitis.gravillaso.world.blocks.power.*;
-import nitis.gravillaso.world.blocks.production.*;
 import nitis.gravillaso.world.blocks.storage.*;
 import nitis.gravillaso.world.reservoir.*;
 
@@ -40,7 +40,7 @@ public class GrBlocks{
     cryogenFloor, cryogenWall,
     purpleStone, purpleStoneCrater, purpleStoneWall;
     // wells
-    public static Floor wellBrine, wellOxygen;
+    public static Floor corundumWell;
     // boulders
     public static Block corundumBoulder, corundumCluster, purpleStoneBoulder, cryogenBoulder;
     // ores
@@ -106,6 +106,12 @@ public class GrBlocks{
         purpleStoneWall = new StaticWall("purple-stone-wall"){{
             purpleStone.asFloor().wall = purpleStoneCrater.asFloor().wall = this;
             attributes.set(Attribute.sand, 1.25f);
+        }};
+        // endregion
+
+        // region well well well
+        corundumWell = new WellBlock("corundum-well"){{
+            parent = blendGroup = corundum;
         }};
         // endregion
 
