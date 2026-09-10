@@ -91,7 +91,11 @@ public class BoostConductor extends Block{
 
             for(var build : proximity){
                 if(build != null && build.team == team && build.block.canOverdrive){
-                    build.applyBoost(1f + boost, 2f);
+                    int contact = DirectionalBoostBlock.contactPoints(self(), build);
+                    if(contact > 0){
+                        float ratio = (float)contact / Math.min(build.block.size, block.size);
+                        build.applyBoost((1f + boost) * ratio, 2f);
+                    }
                 }
             }
         }
@@ -107,8 +111,7 @@ public class BoostConductor extends Block{
                     boolean split = build.block instanceof BoostConductor cond && cond.splitBoost;
                     if(!build.block.rotate || (!split && (relativeTo(build) + 2) % 4 == build.rotation) || (split && relativeTo(build) != build.rotation)){
                         if(!(build instanceof BoostConductorBuild bc && bc.cameFrom.contains(id()))){
-                            float diff = (Math.min(Math.abs(build.x - x), Math.abs(build.y - y)) / tilesize);
-                            int contactPoints = Math.min((int)(block.size / 2f + build.block.size / 2f - diff), Math.min(build.block.size, block.size));
+                            int contactPoints = DirectionalBoostBlock.contactPoints(self(), build);
 
                             float add = booster.boost() / build.block.size * contactPoints;
                             if(split) add /= 3f;

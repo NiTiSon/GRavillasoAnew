@@ -242,6 +242,7 @@ public class GrBlocks{
         largeBoostRedirector = new BoostConductor("large-boost-redirector"){{
             requirements(Category.effect, with(cobalt, 300, silicon, 120));
 
+            maxBoostThroughput = 4.5f;
             size = 3;
             regionRotated1 = 1;
         }};
@@ -251,6 +252,7 @@ public class GrBlocks{
             splitBoost = true;
 
             size = 2;
+            drawer = new DrawMulti(new DrawDefault(), new DrawHeatOutput(-1, false), new DrawHeatOutput(), new DrawHeatOutput(1, false));
             regionRotated1 = 1;
         }};
         // endregion
@@ -310,7 +312,7 @@ public class GrBlocks{
             health = 250;
             fogRadius = 3;
             laserRange = 6;
-            maxNodes = 3;
+            maxNodes = 8;
 
             consumePowerBuffered(5000f);
         }};

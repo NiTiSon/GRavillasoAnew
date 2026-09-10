@@ -1,10 +1,12 @@
 package nitis.gravillaso.world.blocks.defense;
 
 import arc.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -12,12 +14,18 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
+import nitis.gravillaso.world.draw.*;
 
 import static mindustry.Vars.*;
 
 public class Booster extends Block{
     public float additiveBoost = 0.5f;
-    public DrawBlock drawer = new DrawMulti(new DrawDefault(), new DrawHeatOutput());
+    public DrawBlock drawer = new DrawMulti(
+    new DrawDefault(),
+    new DrawHeatOutput(),
+    new DrawOverdriveTop(),
+    new DrawDirectionalPulse(Pal.redLight)
+    );
     public float warmupRate = 0.05f;
 
     public Booster(String name){
@@ -90,7 +98,21 @@ public class Booster extends Block{
         @Override
         public void updateTile(){
             boost = Mathf.approachDelta(boost, additiveBoost * efficiency, warmupRate * delta());
-            // TODO: boost blocks
+
+            for(var build : proximity){
+                if(build != null && build.team == team && build.block.canOverdrive){
+                    int contact = DirectionalBoostBlock.contactPoints(self(), build);
+                    if(contact > 0 && relativeTo(build) == rotation){
+                        float ratio = (float)contact / Math.min(build.block.size, block.size);
+                        build.applyBoost(1f + (boost * ratio), 2f);
+                    }
+                }
+            }
+        }
+
+        @Override
+        public float warmup(){
+            return boostFrac();
         }
 
         @Override
