@@ -91,7 +91,7 @@ public class Booster extends BoostBlock{
 
             for(var build : proximity){
                 if(build != null && build.team == team && build.block.canOverdrive){
-                    tryBoostBuild(self(), build);
+                    tryBoostBuild(self(), build, 1f);
                 }
             }
         }

@@ -85,7 +85,7 @@ public class BoostConductor extends BoostBlock{
 
             for(var build : proximity){
                 if(build != null && build.team == team && build.block.canOverdrive){
-                    tryBoostBuild(self(), build);
+                    tryBoostBuild(self(), build, splitBoost ? 1f / 3f : 1f);
                 }
             }
         }

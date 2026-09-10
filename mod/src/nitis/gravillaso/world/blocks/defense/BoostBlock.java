@@ -55,11 +55,13 @@ public class BoostBlock extends Block{
         }
     }
 
-    <T extends Building & DirectionalBoostBlock> void tryBoostBuild(T self, Building build){
+    <T extends Building & DirectionalBoostBlock> void tryBoostBuild(T self, Building build, float sideAspect){
         int contact = DirectionalBoostBlock.contactPoints(self, build);
 
         if(contact > 0 && self.isValidBoosterReceiver(build)){
             float ratio = (float)contact / Math.min(build.block.size, self.block.size);
+            ratio *= sideAspect;
+
             float blockBoost = DirectionalBoostBlock.getBoost(self.boost(), ratio, additiveBoost);
             if(additiveBoost){
                 int key = build.tile.pos() + 1;
