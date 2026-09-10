@@ -51,7 +51,7 @@ public class GrBlocks{
     // walls
     public static Block cobaltWall, cobaltWallLarge;
     // defense
-    public static Block booster, boostRedirector, largeBoostRedirector;
+    public static Block booster, boostRedirector, largeBoostRedirector, boostRouter;
     // transport
     public static Block cobaltConveyor, maglevConveyor;
     // liquid
@@ -226,15 +226,15 @@ public class GrBlocks{
 
             researchCostMultiplier = 10f;
 
-            group = BlockGroup.projectors;
             size = 2;
             regionRotated1 = 1;
+
+            consumePower(3f);
         }};
 
         boostRedirector = new BoostConductor("boost-redirector"){{
             requirements(Category.effect, with(cobalt, 100, silicon, 35));
 
-            group = BlockGroup.projectors;
             size = 2;
             regionRotated1 = 1;
         }};
@@ -242,8 +242,15 @@ public class GrBlocks{
         largeBoostRedirector = new BoostConductor("large-boost-redirector"){{
             requirements(Category.effect, with(cobalt, 300, silicon, 120));
 
-            group = BlockGroup.projectors;
             size = 3;
+            regionRotated1 = 1;
+        }};
+
+        boostRouter = new BoostConductor("boost-router"){{
+            requirements(Category.effect, with(cobalt, 120, silicon, 50));
+            splitBoost = true;
+
+            size = 2;
             regionRotated1 = 1;
         }};
         // endregion
