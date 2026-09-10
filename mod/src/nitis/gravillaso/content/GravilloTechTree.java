@@ -56,7 +56,11 @@ public class GravilloTechTree{
 
             // power
             node(powerSection, () -> {
-
+                node(booster, () -> {
+                    node(boostRedirector, () -> {
+                        node(largeBoostRedirector);
+                    });
+                });
             });
 
             // cores

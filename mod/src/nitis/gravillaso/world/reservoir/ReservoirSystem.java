@@ -20,10 +20,28 @@ import java.util.*;
 import static mindustry.Vars.*;
 
 public class ReservoirSystem implements SaveFileReader.CustomChunk{
-    public static final Seq<Liquid> types = Seq.with();
+    public static final Seq<Liquid> types = Seq.with(); // maybe add information like maximum pressure/efficiency
 
     public ReservoirSystem(){
         SaveVersion.addCustomChunk("gr-reservoir", this);
+    }
+
+    /** get current efficiency of {@code reserviour}. */
+    public float getPressure(int reserviour){
+        if(reserviour >= types.size){
+            return 0f; // invalid reserviour id, no logging, since this method is called very often
+        }
+
+        // TODO: track current pressure
+        return 1f;
+    }
+
+    public Liquid getReserviourLiquid(int reserviour){
+        if(reserviour >= types.size){
+            return Liquids.oil;
+        }
+
+        return types.get(reserviour);
     }
 
     @Override

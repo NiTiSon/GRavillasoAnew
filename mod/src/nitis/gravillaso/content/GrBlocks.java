@@ -18,14 +18,13 @@ import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
-import nitis.gravillaso.entities.bullet.*;
 import nitis.gravillaso.graphics.*;
+import nitis.gravillaso.world.blocks.defense.*;
 import nitis.gravillaso.world.blocks.distribution.*;
 import nitis.gravillaso.world.blocks.environment.*;
 import nitis.gravillaso.world.blocks.liquid.*;
 import nitis.gravillaso.world.blocks.power.*;
 import nitis.gravillaso.world.blocks.storage.*;
-import nitis.gravillaso.world.reservoir.*;
 
 import static mindustry.content.Items.*;
 import static mindustry.type.ItemStack.*;
@@ -52,6 +51,7 @@ public class GrBlocks{
     // walls
     public static Block cobaltWall, cobaltWallLarge;
     // defense
+    public static Block booster, boostRedirector, largeBoostRedirector;
     // transport
     public static Block cobaltConveyor, maglevConveyor;
     // liquid
@@ -219,6 +219,34 @@ public class GrBlocks{
             envDisabled |= Env.scorching;
         }};
         // endregion walls
+
+        // region defense
+        booster = new Booster("booster"){{
+            requirements(Category.effect, with(cobalt, 250, silicon, 120)); // TODO: price too low
+
+            researchCostMultiplier = 10f;
+
+            group = BlockGroup.projectors;
+            size = 2;
+            regionRotated1 = 1;
+        }};
+
+        boostRedirector = new BoostConductor("boost-redirector"){{
+            requirements(Category.effect, with(cobalt, 100, silicon, 35));
+
+            group = BlockGroup.projectors;
+            size = 2;
+            regionRotated1 = 1;
+        }};
+
+        largeBoostRedirector = new BoostConductor("large-boost-redirector"){{
+            requirements(Category.effect, with(cobalt, 300, silicon, 120));
+
+            group = BlockGroup.projectors;
+            size = 3;
+            regionRotated1 = 1;
+        }};
+        // endregion
 
         // region transport
         cobaltConveyor = new StackConveyor("cobalt-conveyor"){{
