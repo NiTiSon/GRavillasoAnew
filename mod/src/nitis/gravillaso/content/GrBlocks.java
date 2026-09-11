@@ -25,6 +25,7 @@ import nitis.gravillaso.world.blocks.environment.*;
 import nitis.gravillaso.world.blocks.liquid.*;
 import nitis.gravillaso.world.blocks.power.*;
 import nitis.gravillaso.world.blocks.storage.*;
+import nitis.gravillaso.world.draw.*;
 
 import static mindustry.content.Items.*;
 import static mindustry.type.ItemStack.*;
@@ -252,7 +253,11 @@ public class GrBlocks{
             splitBoost = true;
 
             size = 2;
-            drawer = new DrawMulti(new DrawDefault(), new DrawHeatOutput(-1, false), new DrawHeatOutput(), new DrawHeatOutput(1, false));
+            drawer = new DrawMulti(
+            new DrawDefault(),
+            new DrawHeatOutput(-1, false), new DrawHeatOutput(0, false), new DrawHeatOutput(+1, false),
+            new DrawDirectionalPulse(Pal.redLight)
+            );
             regionRotated1 = 1;
         }};
         // endregion

@@ -11,12 +11,17 @@ import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.draw.*;
 import nitis.gravillaso.content.*;
+import nitis.gravillaso.world.draw.*;
 
 import static mindustry.Vars.*;
 
 public class BoostConductor extends BoostBlock{
     public float maxBoostThroughput = 2f;
-    public DrawBlock drawer = new DrawMulti(new DrawDefault(), new DrawHeatOutput());
+    public DrawBlock drawer = new DrawMulti(
+    new DrawDefault(),
+    new DrawHeatOutput(),
+    new DrawDirectionalPulse(Pal.redLight)
+    );
     public boolean splitBoost = false;
 
     public BoostConductor(String name){
@@ -125,6 +130,11 @@ public class BoostConductor extends BoostBlock{
             }
 
             return Math.min(total, maxBoostThroughput);
+        }
+
+        @Override
+        public float warmup(){
+            return boostFrac();
         }
 
         @Override
