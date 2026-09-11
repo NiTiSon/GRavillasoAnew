@@ -327,13 +327,14 @@ public class GrBlocks{
             requirements(Category.power, with(cobalt, 5, lead, 20));
             consumesPower = outputsPower = true;
             size = 2;
-            health = 250;
+            health = 300;
             fogRadius = 3;
-            laserRange = 6;
-            maxNodes = 8;
+            laserRange = 12;
+            maxNodes = 15;
 
-            consumePowerBuffered(5000f);
+            consumePowerBuffered(7500f);
         }};
+        // TODO: big a 3x3/4x4 large range power sector
         // endregion
 
         // region production
