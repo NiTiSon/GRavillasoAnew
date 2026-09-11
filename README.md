@@ -3,7 +3,7 @@
 # Gravillaso Anew
 The anew version of old [Gravillaso mod](https://github.com/NiTiSon/Gravillaso).
 
-![Discord](https://img.shields.io/discord/1548059787575693424)
+![Discord](https://img.shields.io/discord/1548059787575693424?logo=discord&link=https%3A%2F%2Fdiscord.gg%2FNk6edf79Gk)
 
 </div>
 
