@@ -134,7 +134,7 @@ public class BoostConductor extends BoostBlock{
 
         @Override
         public float warmup(){
-            return boostFrac();
+            return boost / maxBoostThroughput;
         }
 
         @Override

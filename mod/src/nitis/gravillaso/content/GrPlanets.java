@@ -20,7 +20,8 @@ public class GrPlanets {
         gravillo = new Planet("gravillo", Planets.sun, 1.125f, 2) {{
             loadPlanetData = false;
 
-            rotateTime = 10 * 60f;
+            // 10 minutes full day span
+            rotateTime = 10 * Time.toMinutes * Time.toSeconds;
             generator = new GravilloPlanetGenerator();
             meshLoader = () -> new HexMesh(this, 5);
             //  cloudMeshLoader = () ->

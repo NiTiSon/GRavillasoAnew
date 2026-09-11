@@ -13,12 +13,18 @@ import static mindustry.Vars.tilesize;
 
 public class DrawDirectionalPulse extends DrawBlock{
     public Color color = Color.white;
+    public int rotation;
 
     public DrawDirectionalPulse(){
     }
 
     public DrawDirectionalPulse(Color color){
         this.color = color;
+    }
+
+    public DrawDirectionalPulse(Color color, int rotation){
+        this.color = color;
+        this.rotation = rotation;
     }
 
     @Override
@@ -34,7 +40,7 @@ public class DrawDirectionalPulse extends DrawBlock{
         float pos = Mathf.lerp(-half, half, f);
 
         // travel = facing direction, line perpendicular to it
-        var dir = Geometry.d4(build.rotation);
+        var dir = Geometry.d4((build.rotation + rotation) % 4);
         float dx = dir.x, dy = dir.y;
         float px = -dy, py = dx;
 

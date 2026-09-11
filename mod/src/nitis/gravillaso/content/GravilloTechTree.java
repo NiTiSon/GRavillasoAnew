@@ -59,7 +59,9 @@ public class GravilloTechTree{
                 node(booster, () -> {
                     node(boostRedirector, () -> {
                         node(largeBoostRedirector);
-                        node(boostRouter);
+                        node(boostRouter, () -> {
+                            node(largeBoostRouter);
+                        });
                     });
                 });
             });

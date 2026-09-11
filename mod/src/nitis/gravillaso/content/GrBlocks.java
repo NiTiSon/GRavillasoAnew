@@ -52,7 +52,7 @@ public class GrBlocks{
     // walls
     public static Block cobaltWall, cobaltWallLarge;
     // defense
-    public static Block booster, boostRedirector, largeBoostRedirector, boostRouter;
+    public static Block booster, boostRedirector, largeBoostRedirector, boostRouter, largeBoostRouter;
     // transport
     public static Block cobaltConveyor, maglevConveyor;
     // liquid
@@ -256,7 +256,20 @@ public class GrBlocks{
             drawer = new DrawMulti(
             new DrawDefault(),
             new DrawHeatOutput(-1, false), new DrawHeatOutput(0, false), new DrawHeatOutput(+1, false),
-            new DrawDirectionalPulse(Pal.redLight)
+            new DrawOverdriveProjectorPulse(Pal.redLight)
+            );
+            regionRotated1 = 1;
+        }};
+
+        largeBoostRouter = new BoostConductor("large-boost-router"){{
+            requirements(Category.effect, with(cobalt, 250, silicon, 120));
+            splitBoost = true;
+
+            size = 3;
+            drawer = new DrawMulti(
+            new DrawDefault(),
+            new DrawHeatOutput(-1, false), new DrawHeatOutput(0, false), new DrawHeatOutput(+1, false),
+            new DrawOverdriveProjectorPulse(Pal.redLight)
             );
             regionRotated1 = 1;
         }};
