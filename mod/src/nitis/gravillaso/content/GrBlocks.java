@@ -39,8 +39,9 @@ public class GrBlocks{
     galena, galenaWall,
     cryogenFloor, cryogenWall,
     purpleStone, purpleStoneCrater, purpleStoneWall;
-    // wells
+    // wells and fissures
     public static Floor corundumWell, galenaWell, purpleStoneWell;
+    public static Floor corundumFissure, galenaFissure, purpleStoneFissure;
     // boulders
     public static Block corundumBoulder, corundumCluster, galenaBoulder, purpleStoneBoulder, cryogenBoulder;
     // ores
@@ -110,18 +111,30 @@ public class GrBlocks{
         }};
         // endregion
 
-        // region well well well
-        corundumWell = new FissureBlock("corundum-fissure"){{
+        // region well well well and fisures
+        corundumWell = new WellBlock("corundum-well"){{
+            parent = blendGroup = corundum;
+        }};
+
+        galenaWell = new WellBlock("galena-well"){{
+            parent = blendGroup = galena;
+        }};
+
+        purpleStoneWell = new WellBlock("purple-stone-well"){{
+            parent = blendGroup = purpleStone;
+        }};
+
+        corundumFissure = new FissureBlock("corundum-fissure"){{
             parent = blendGroup = corundum;
             variants = 0;
         }};
 
-        galenaWell = new FissureBlock("galena-fissure"){{
+        galenaFissure = new FissureBlock("galena-fissure"){{
             parent = blendGroup = galena;
             variants = 0;
         }};
 
-        purpleStoneWell = new FissureBlock("purple-stone-fissure"){{
+        purpleStoneFissure = new FissureBlock("purple-stone-fissure"){{
             parent = blendGroup = purpleStone;
             variants = 0;
         }};
