@@ -51,11 +51,19 @@ public class GravilloTechTree{
 
             // production
             node(bauxiteCrusher, () -> {
+                node(wellCollector, () -> {
+                    node(pressureBooster, () -> {
 
+                    });
+                });
             });
 
             // power
             node(powerSection, () -> {
+                // power-producers
+                node(windTurbine, () -> {
+
+                });
                 node(booster, () -> {
                     node(boostRedirector, () -> {
                         node(largeBoostRedirector);

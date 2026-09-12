@@ -59,10 +59,10 @@ public class GrBlocks{
     // liquid
     public static Block screenConduit, radiantConduit, screenLiquidRouter;
     // power
-    public static Block powerSection;
+    public static Block powerSection, windTurbine;
     // production
     public static Block bauxiteCrusher;
-    // wells building
+    // production - wells
     public static Block wellCollector, pressureBooster;
     // storage
     public static Block coreBase;
@@ -377,6 +377,22 @@ public class GrBlocks{
             consumePowerBuffered(7500f);
         }};
         // TODO: big a 3x3/4x4 large range power sector
+
+        windTurbine = new WindPowerGenerator("wind-turbine"){{
+            requirements(Category.power, with(cobalt, 80, lead, 100));
+
+            size = 2;
+            health = 450;
+            fogRadius = 3;
+
+            drawer = new DrawMulti(
+            new DrawDefault(),
+            new DrawBlurSpin("rotor", 1f)
+            );
+
+            powerProduction = 13.5f;
+            windStrengthForMaximumEfficiency = 8.5f;
+        }};
         // endregion
 
         // region production
@@ -392,6 +408,25 @@ public class GrBlocks{
             researchCost = with(cobalt, 100, lead, 80);
             ambientSound = Sounds.loopDrill;
             ambientSoundVolume = 0.04f;
+        }};
+
+        wellCollector = new Block("well-collector"){{
+            requirements(Category.production, with());
+            buildVisibility = BuildVisibility.hidden;
+
+            size = 2;
+            fogRadius = 2;
+        }};
+
+        pressureBooster = new Block("pressure-booster"){{
+            requirements(Category.production, with());
+            buildVisibility = BuildVisibility.hidden;
+
+            size = 3;
+            fogRadius = 5;
+
+            consumeLiquid(oxygen, 2f);
+            consumePower(12f);
         }};
         // endregion
 
