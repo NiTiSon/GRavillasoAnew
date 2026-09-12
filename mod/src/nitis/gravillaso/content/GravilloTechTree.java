@@ -41,9 +41,9 @@ public class GravilloTechTree{
             // distribution
             node(cobaltConveyor, () -> {
                 // TODO: junction
-                //node(cobaltRouter, () -> {
+                node(cobaltRouter, () -> {
 
-                //});
+                });
                 node(maglevConveyor, () -> {
 
                 });
@@ -67,7 +67,7 @@ public class GravilloTechTree{
             });
 
             // cores
-            node(draugDrone, ItemStack.with(cobalt, 1500), () -> {
+            node(draugDrone, ItemStack.with(cobalt, 1500, lead, 1000), () -> {
 //            node(coreTier2, () -> {
 //                node(coreTier3, () -> {
 //

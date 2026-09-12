@@ -54,7 +54,7 @@ public class GrBlocks{
     // defense
     public static Block booster, boostRedirector, largeBoostRedirector, boostRouter, largeBoostRouter;
     // transport
-    public static Block cobaltConveyor, maglevConveyor;
+    public static Block cobaltConveyor, maglevConveyor, cobaltRouter;
     // liquid
     public static Block screenConduit, radiantConduit, screenLiquidRouter;
     // power
@@ -286,12 +286,20 @@ public class GrBlocks{
         }};
 
         maglevConveyor = new MaglevConveyor("maglev-conveyor"){{
-            requirements(Category.distribution, with(tungsten, 2, silicon, 2, phaseFabric, 1));
-            health = 250;
+            requirements(Category.distribution, with(aluminium, 2, silicon, 2, phaseFabric, 1));
+            health = 150;
 
             recharge = 1f;
-            speed = 6f / 60f;
+            speed = 6f / Time.toSeconds;
             itemCapacity = 10;
+        }};
+
+        cobaltRouter = new GrStackRouter("cobalt-router"){{
+            requirements(Category.distribution, with(cobalt, 5));
+            health = maglevConveyor.health;
+
+            speed = 15;
+            itemCapacity = 15;
         }};
         // endregion
 

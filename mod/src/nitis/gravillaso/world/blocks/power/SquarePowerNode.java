@@ -1,5 +1,6 @@
 package nitis.gravillaso.world.blocks.power;
 
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -16,6 +17,7 @@ public class SquarePowerNode extends PowerNode{
 
     public SquarePowerNode(String name){
         super(name);
+        laserColor2 = Color.valueOf("#b8ecff");
     }
 
     @Override
