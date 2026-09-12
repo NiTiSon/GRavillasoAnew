@@ -40,8 +40,8 @@ public class GrBlocks{
     cryogenFloor, cryogenWall,
     purpleStone, purpleStoneCrater, purpleStoneWall;
     // wells and fissures
-    public static Floor corundumWell, galenaWell, purpleStoneWell;
-    public static Floor corundumFissure, galenaFissure, purpleStoneFissure;
+    public static Floor corundumWell, galenaWell, purpleStoneWell, shaleWell, cryogenWell;
+    public static Floor corundumFissure, galenaFissure, purpleStoneFissure, shaleFissure, cryogenFissure;
     // boulders
     public static Block corundumBoulder, corundumCluster, galenaBoulder, purpleStoneBoulder, cryogenBoulder;
     // ores
@@ -111,7 +111,7 @@ public class GrBlocks{
         }};
         // endregion
 
-        // region well well well and fisures
+        // region well well well and fissures
         corundumWell = new WellBlock("corundum-well"){{
             parent = blendGroup = corundum;
         }};
@@ -122,6 +122,14 @@ public class GrBlocks{
 
         purpleStoneWell = new WellBlock("purple-stone-well"){{
             parent = blendGroup = purpleStone;
+        }};
+
+        shaleWell = new WellBlock("shale-well"){{
+            parent = blendGroup = Blocks.shale;
+        }};
+
+        cryogenWell = new WellBlock("cryogen-well"){{
+            parent = blendGroup = cryogenFloor;
         }};
 
         corundumFissure = new FissureBlock("corundum-fissure"){{
@@ -136,6 +144,16 @@ public class GrBlocks{
 
         purpleStoneFissure = new FissureBlock("purple-stone-fissure"){{
             parent = blendGroup = purpleStone;
+            variants = 0;
+        }};
+
+        shaleFissure = new FissureBlock("shale-fissure"){{
+            parent = blendGroup = Blocks.shale;
+            variants = 0;
+        }};
+
+        cryogenFissure = new FissureBlock("cryogen-fissure"){{
+            parent = blendGroup = cryogenFloor;
             variants = 0;
         }};
         // endregion

@@ -81,7 +81,10 @@ public class WellBlock extends Floor implements ReservoirBlock{
         }
 
         if(checkAdjacent(tile)){
-            Draw.rect(variantRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, variantRegions.length - 1))], tile.worldx() - tilesize, tile.worldy() - tilesize);
+            Draw.rect(
+            variantRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, variantRegions.length - 1))],
+            tile.worldx() - (tilesize / 2f), tile.worldy() - (tilesize / 2f)
+            );
         }
     }
 
