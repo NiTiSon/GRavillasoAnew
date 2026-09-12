@@ -111,16 +111,19 @@ public class GrBlocks{
         // endregion
 
         // region well well well
-        corundumWell = new WellBlock("corundum-well"){{
+        corundumWell = new CrackBlock("corundum-cracks"){{
             parent = blendGroup = corundum;
+            variants = 0;
         }};
 
-        galenaWell = new WellBlock("galena-well"){{
+        galenaWell = new CrackBlock("galena-cracks"){{
             parent = blendGroup = galena;
+            variants = 0;
         }};
 
-        purpleStoneWell = new WellBlock("purple-stone-well"){{
+        purpleStoneWell = new CrackBlock("purple-stone-cracks"){{
             parent = blendGroup = purpleStone;
+            variants = 0;
         }};
         // endregion
 

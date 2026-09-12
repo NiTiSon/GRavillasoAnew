@@ -1,6 +1,5 @@
 package nitis.gravillaso.world.blocks.environment;
 
-import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -21,8 +20,8 @@ import nitis.gravillaso.world.reservoir.*;
 
 import static mindustry.Vars.*;
 
-//can't use an overlay for this because it spans multiple tiles
-public class WellBlock extends Floor{
+//modification of SteamVent class
+public class CrackBlock extends Floor{
     public static final Point2[] offsets = {
         new Point2(0, 0),
         new Point2(1, 0),
@@ -46,7 +45,7 @@ public class WellBlock extends Floor{
         }
     }
 
-    public WellBlock(String name){
+    public CrackBlock(String name){
         super(name);
         variants = 2;
         saveData = true;
