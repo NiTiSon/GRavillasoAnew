@@ -21,7 +21,7 @@ import nitis.gravillaso.world.reservoir.*;
 import static mindustry.Vars.*;
 
 //modification of SteamVent class
-public class CrackBlock extends Floor{
+public class FissureBlock extends Floor{
     public static final Point2[] offsets = {
         new Point2(0, 0),
         new Point2(1, 0),
@@ -45,7 +45,7 @@ public class CrackBlock extends Floor{
         }
     }
 
-    public CrackBlock(String name){
+    public FissureBlock(String name){
         super(name);
         variants = 2;
         saveData = true;
