@@ -56,6 +56,7 @@ public class GravillasoMod extends Mod{
         GrBlocks.load();
         GrWeathers.load();
         GrPlanets.load();
+        GrStatusEffects.load();
         GravilloTechTree.load();
     }
 
