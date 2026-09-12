@@ -15,6 +15,7 @@ import mindustry.world.blocks.environment.*;
 
 import mindustry.world.blocks.legacy.*;
 import nitis.gravillaso.tools.*;
+import nitis.gravillaso.world.blocks.environment.*;
 
 import static mindustry.Vars.*;
 
@@ -48,6 +49,7 @@ public class ColorProcessor implements SpriteProcessor{
             for(int i = 0; i < blocks.size; i++){
                 Block block = blocks.get(i);
                 if(block instanceof ConstructBlock || block instanceof OreBlock || block instanceof LegacyBlock) continue;
+                if(block instanceof WellBlock || block instanceof FissureBlock) continue; // skip wells and fissures, they resolved based on their blendGroup
 
                 boolean colored = false;
 

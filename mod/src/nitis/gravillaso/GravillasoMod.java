@@ -17,6 +17,7 @@ import nitis.gravillaso.content.*;
 import nitis.gravillaso.core.*;
 import nitis.gravillaso.gen.*;
 import nitis.gravillaso.graphics.*;
+import nitis.gravillaso.world.blocks.environment.*;
 import nitis.gravillaso.world.reservoir.*;
 import nitis.gravillaso.world.temperature.*;
 
@@ -112,6 +113,11 @@ public class GravillasoMod extends Mod{
             for(Block block : Vars.content.blocks()){
                 if(!isRelated(block)) continue;
                 if(block instanceof ConstructBlock || block instanceof OreBlock || block instanceof LegacyBlock) continue;
+                if(block instanceof WellBlock || block instanceof FissureBlock){
+                    block.mapColor.set(block.asFloor().blendGroup.mapColor);
+                    block.squareSprite = block.mapColor.a > 0.5f;
+                    block.mapColor.a = 1f;
+                }
 
                 if(index >= pixmap.width){
                     Log.warn("GravillasoMod::resolveBlockColors - index out of bounds for @", block.name);
