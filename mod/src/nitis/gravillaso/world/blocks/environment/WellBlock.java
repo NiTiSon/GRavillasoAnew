@@ -75,6 +75,18 @@ public class WellBlock extends Floor implements ReservoirBlock{
     }
 
     @Override
+    public String getDisplayName(Tile tile){
+        Liquid liquid = tileLiquid(tile);
+        return liquid == null ? super.getDisplayName(tile) : liquid.localizedName;
+    }
+
+    @Override
+    public TextureRegion getDisplayIcon(Tile tile){
+        Liquid liquid = tileLiquid(tile);
+        return liquid == null ? super.getDisplayIcon(tile) : liquid.uiIcon;
+    }
+
+    @Override
     public void drawMain(Tile tile){
         if(parent instanceof Floor floor){
             floor.drawMain(tile);
