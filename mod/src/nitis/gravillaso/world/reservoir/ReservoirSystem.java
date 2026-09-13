@@ -10,6 +10,7 @@ import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.game.EventType.*;
 import mindustry.io.*;
+import mindustry.io.SaveFileReader.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import nitis.gravillaso.*;
@@ -22,12 +23,26 @@ import static mindustry.Vars.*;
 public class ReservoirSystem implements SaveFileReader.CustomChunk{
     public static final Seq<Liquid> types = Seq.with(); // maybe add information like maximum pressure/efficiency
 
+    private static @Nullable Tiles syncTiles; //used for sync new maps
     public ReservoirSystem(){
+        /* ResetEvent is enough, I suppose
         Events.on(WorldLoadEvent.class, e -> {
-            types.clear(); //clear previous map reservoir
+            reset();
+            syncTiles = world.tiles; //clear previous map reservoir
+        });
+        */
+        Events.on(ResetEvent.class, e -> {
+            if(syncTiles != world.tiles){
+                reset();
+                syncTiles = world.tiles;
+            }
         });
 
         SaveVersion.addCustomChunk("gr-reservoir", this);
+    }
+
+    public static void reset(){
+        types.clear();
     }
 
     /** get current efficiency of {@code reservoir}. */
@@ -46,6 +61,11 @@ public class ReservoirSystem implements SaveFileReader.CustomChunk{
         }
 
         return types.get(reservoir);
+    }
+
+    @Override
+    public boolean shouldWrite(){
+        return types.size > 0;
     }
 
     @Override

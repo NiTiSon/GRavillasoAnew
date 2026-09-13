@@ -49,7 +49,7 @@ public class WellBlock extends Floor implements ReservoirBlock{
     }
 
     public int configIndex(){
-        return lastConfig instanceof Integer c && c >= 0 && c < ReservoirSystem.types.size ? c : -1;
+        return lastConfig instanceof Integer c && c >= 0 && c < ReservoirSystem.types.size ? c : 0;
     }
 
     @Override
