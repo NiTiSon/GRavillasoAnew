@@ -385,13 +385,14 @@ public class GrBlocks{
             health = 450;
             fogRadius = 3;
 
-            drawer = new DrawMulti(
-            new DrawDefault(),
-            new DrawBlurSpin("rotor", 1f)
-            );
-
             powerProduction = 13.5f;
             windStrengthForMaximumEfficiency = 8.5f;
+
+            drawer = new DrawMulti(
+            new DrawDefault(),
+            new DrawBlurSpin("-rotor", windStrengthForMaximumEfficiency / 2f),
+            new DrawRegion("-top")
+            );
         }};
         // endregion
 

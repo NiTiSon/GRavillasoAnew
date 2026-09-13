@@ -17,6 +17,7 @@ import static mindustry.Vars.tilesize;
 
 public class WindPowerGenerator extends PowerGenerator{
     public static float allowedRange = 16f;
+    public float minEfficiency = 0.05f;
     public float windStrengthForMaximumEfficiency = 4f;
 
     // this generator is kinda boring, change of the wind power is rough
@@ -82,7 +83,9 @@ public class WindPowerGenerator extends PowerGenerator{
                 }
             }
 
-            productionEfficiency = enabled ? Math.min(wind / windStrengthForMaximumEfficiency, 1f) : 0f;
+            productionEfficiency = enabled
+            ? Math.max(Math.min(wind / windStrengthForMaximumEfficiency, 1f), minEfficiency)
+            : 0f;
         }
 
         @Override
