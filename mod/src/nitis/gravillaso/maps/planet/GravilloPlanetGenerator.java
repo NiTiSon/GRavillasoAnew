@@ -1,6 +1,7 @@
 package nitis.gravillaso.maps.planet;
 
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
@@ -28,6 +29,8 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
     public static int arkSeed = 7, arkOct = 2;
     public static float liqThresh = 0.90f, liqScl = 70f;
     public static float airThresh = 0.15f, airScl = 15;
+
+    Liquid[] reservoirDrop = {Liquids.oil, GrLiquids.brine};
 
     //Block[] terrain = {Blocks.regolith, Blocks.regolith, Blocks.regolith, Blocks.regolith, Blocks.yellowStone, Blocks.rhyolite, Blocks.rhyolite, Blocks.carbonStone};
     Block[] terrain = {GrBlocks.corundum, GrBlocks.corundum, GrBlocks.corundum, GrBlocks.corundum, GrBlocks.purpleStone, GrBlocks.galena, GrBlocks.galena, GrBlocks.galena}; // TODO: need another one block
@@ -326,7 +329,7 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
                     for(Point2 p : FissureBlock.offsets){
                         tiles.getn(tile.x + p.x, tile.y + p.y).setFloor(fissure);
                     }
-                    placed.add(Tmp.p2.set(FissureBlock.offsets[4]).add(tile.x, tile.y));
+                    placed.add(new Point2(tile.x, tile.y));
 
                     for(int[] spot : spots){
                         for(Point2 p : WellBlock.offsets){
@@ -336,8 +339,6 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
                 }
             }
         }
-
-        Log.debug(placed.size);
 
         for(Tile tile : tiles){
             if(tile.overlay().needsSurface && !tile.floor().hasSurface()){
@@ -362,8 +363,17 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
     boolean validPlace(int cx, int cy, Block floor, Point2[] offsets){
         for(Point2 p : offsets){
             Tile other = tiles.get(cx + p.x, cy + p.y);
-            if(other == null || other.block().solid || other.floor() != floor || nearWall(p.x, p.y)) return false;
+            if(other == null || other.block().solid || other.floor() != floor || nearWall(cx + p.x, cy + p.y)) return false;
         }
+
         return true;
+    }
+
+    Liquid getReservoirLiquid(Tile tile, int index){
+        if(index < reservoirDrop.length){
+            return reservoirDrop[index];
+        }
+
+        return reservoirDrop[Mathf.randomSeed(tile.pos(), 0, reservoirDrop.length)];
     }
 }

@@ -23,25 +23,29 @@ public class ReservoirSystem implements SaveFileReader.CustomChunk{
     public static final Seq<Liquid> types = Seq.with(); // maybe add information like maximum pressure/efficiency
 
     public ReservoirSystem(){
+        Events.on(WorldLoadEvent.class, e -> {
+            types.clear(); //clear previous map reservoir
+        });
+
         SaveVersion.addCustomChunk("gr-reservoir", this);
     }
 
-    /** get current efficiency of {@code reserviour}. */
-    public float getPressure(int reserviour){
-        if(reserviour >= types.size){
-            return 0f; // invalid reserviour id, no logging, since this method is called very often
+    /** get current efficiency of {@code reservoir}. */
+    public static float getPressure(int reservoir){
+        if(reservoir >= types.size){
+            return 0f; // invalid reservoir id, no logging, since this method is called very often
         }
 
         // TODO: track current pressure
         return 1f;
     }
 
-    public Liquid getReserviourLiquid(int reserviour){
-        if(reserviour >= types.size){
+    public static Liquid getReserviourLiquid(int reservoir){
+        if(reservoir >= types.size){
             return Liquids.oil;
         }
 
-        return types.get(reserviour);
+        return types.get(reservoir);
     }
 
     @Override
@@ -49,7 +53,7 @@ public class ReservoirSystem implements SaveFileReader.CustomChunk{
         stream.writeByte(1);
         stream.writeInt(types.size);
         for(int i = 0; i < types.size; i++){
-            stream.writeUTF(types.get(i).name); // id is unstable between saves , I suppose
+            stream.writeUTF(types.get(i).name); //item id is unstable between different mod versions, I suppose
         }
     }
 
@@ -64,5 +68,7 @@ public class ReservoirSystem implements SaveFileReader.CustomChunk{
             if(liquid == null) liquid = Liquids.oil;
             types.add(liquid);
         }
+
+        Log.debug("gr-reservoir read: @", types);
     }
 }

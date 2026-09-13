@@ -12,6 +12,6 @@ public interface ReservoirBlock{
     /** Reservoir liquid configured on a tile, or null if it has none. */
     default @Nullable Liquid tileLiquid(Tile tile){
         int index = tile.extraData;
-        return index >= 0 && index < ReservoirSystem.types.size ? ReservoirSystem.types.get(index) : null;
+        return ReservoirSystem.getReserviourLiquid(index);
     }
 }
