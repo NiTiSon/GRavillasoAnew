@@ -106,7 +106,7 @@ public final class TemperatureSystem implements CustomChunk{
 
     @Override
     public boolean shouldWrite(){
-        return data.length > 0 && !isInEditor();
+        return data != null && data.length > 0 && !isInEditor();
     }
 
     @Override
