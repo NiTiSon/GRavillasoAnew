@@ -17,6 +17,7 @@ import mindustry.world.blocks.environment.*;
 import mindustry.world.meta.*;
 import nitis.gravillaso.content.*;
 import nitis.gravillaso.core.*;
+import nitis.gravillaso.world.blocks.environment.*;
 
 import static mindustry.Vars.*;
 
@@ -260,25 +261,83 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
 
         trimDark();
 
-        int minVents = rand.random(4, 7);
+        int minReservoir = rand.random(4, 7);
         int reservoirCount = 0;
 
         int iterations = 0;
         int maxIterations = 5;
 
-        while(reservoirCount < minVents && iterations++ < maxIterations){
+        Seq<Point2> placed = new Seq<>(8);
+        final float safeRange = 40f;
+        while(reservoirCount < minReservoir && iterations++ < maxIterations){
             outer:
             for(Tile tile : tiles){
-                if(rand.chance(0.00018 * (1 + iterations)) && !Mathf.within(tile.x, tile.y, spawnX, spawnY, 5f)){
-                    // TODO: implement fissure and well placement
-                    // 1. select valid place for fissure placement
-                    // 2. try to place 2..4 wells within 5..20 blocks
-                    //      cancel placement if not enough space for wells
-                    //      otherwise place and continue
+                if(rand.chance(0.00016 * (1 + iterations)) && !Mathf.within(tile.x, tile.y, spawnX, spawnY, 8f)){
+                    for(Point2 otherFissure : placed){
+                        //prevent spawning a fissure near the other
+                        if(Mathf.within(tile.x, tile.y, otherFissure.x, otherFissure.y, safeRange)){
+                            continue outer;
+                        }
+                    }
+
+                    Block floor = tile.floor();
+
+                    Floor[] blocks = reservoirBlocks(floor);
+                    if(blocks == null) continue;
+
+                    Floor fissure = blocks[0], well = blocks[1];
+
+                    //1. select valid place for fissure placement
+                    if(!validPlace(tile.x, tile.y, floor, FissureBlock.offsets)) continue;
+
+                    //2. try to place 2..4 wells within 5..20 blocks
+                    int wellCount = rand.random(3, 5);
+                    int[][] spots = new int[wellCount][2];
+                    boolean ok = true;
+
+                    for(int i = 0; i < wellCount && ok; i++){
+                        boolean found = false;
+                        for(int attempt = 0; attempt < 8 && !found; attempt++){
+                            float ang = rand.random(360f), dist = rand.random(5f, 20f);
+                            int wx = tile.x + (int)(Mathf.cosDeg(ang) * dist), wy = tile.y + (int)(Mathf.sinDeg(ang) * dist);
+
+                            if(validPlace(wx, wy, floor, WellBlock.offsets)){
+                                found = true;
+                                for(int j = 0; j < i; j++){
+                                    if(Mathf.within(spots[j][0], spots[j][1], wx, wy, 3f)){
+                                        found = false;
+                                        break;
+                                    }
+                                }
+                                if(found){
+                                    spots[i][0] = wx;
+                                    spots[i][1] = wy;
+                                }
+                            }
+                        }
+                        //cancel placement if not enough space for wells
+                        if(!found) ok = false;
+                    }
+
+                    if(!ok) continue;
+
+                    //3. otherwise place and continue
+                    reservoirCount ++;
+                    for(Point2 p : FissureBlock.offsets){
+                        tiles.getn(tile.x + p.x, tile.y + p.y).setFloor(fissure);
+                    }
+                    placed.add(Tmp.p2.set(FissureBlock.offsets[4]).add(tile.x, tile.y));
+
+                    for(int[] spot : spots){
+                        for(Point2 p : WellBlock.offsets){
+                            tiles.getn(spot[0] + p.x, spot[1] + p.y).setFloor(well);
+                        }
+                    }
                 }
             }
         }
 
+        Log.debug(placed.size);
 
         for(Tile tile : tiles){
             if(tile.overlay().needsSurface && !tile.floor().hasSurface()){
@@ -289,5 +348,22 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
         decoration(0.017f);
 
         Schematics.placeLaunchLoadout(spawnX, spawnY);
+    }
+
+    Floor[] reservoirBlocks(Block floor){
+        if(floor == GrBlocks.corundum) return new Floor[]{GrBlocks.corundumFissure, GrBlocks.corundumWell};
+        if(floor == GrBlocks.galena) return new Floor[]{GrBlocks.galenaFissure, GrBlocks.galenaWell};
+        if(floor == GrBlocks.purpleStone) return new Floor[]{GrBlocks.purpleStoneFissure, GrBlocks.purpleStoneWell};
+        if(floor == Blocks.shale) return new Floor[]{GrBlocks.shaleFissure, GrBlocks.shaleWell};
+        if(floor == GrBlocks.cryogenFloor) return new Floor[]{GrBlocks.cryogenFissure, GrBlocks.cryogenWell};
+        return null;
+    }
+
+    boolean validPlace(int cx, int cy, Block floor, Point2[] offsets){
+        for(Point2 p : offsets){
+            Tile other = tiles.get(cx + p.x, cy + p.y);
+            if(other == null || other.block().solid || other.floor() != floor || nearWall(p.x, p.y)) return false;
+        }
+        return true;
     }
 }
