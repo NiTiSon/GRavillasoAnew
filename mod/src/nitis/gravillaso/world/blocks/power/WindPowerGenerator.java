@@ -92,5 +92,10 @@ public class WindPowerGenerator extends PowerGenerator{
         public float warmup(){
             return productionEfficiency;
         }
+
+        @Override
+        public float totalProgress(){
+            return super.totalProgress() * warmup();
+        }
     }
 }

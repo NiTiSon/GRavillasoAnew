@@ -14,6 +14,7 @@ import mindustry.maps.generators.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
+import mindustry.world.meta.*;
 import nitis.gravillaso.content.*;
 import nitis.gravillaso.core.*;
 
@@ -258,6 +259,26 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
         });
 
         trimDark();
+
+        int minVents = rand.random(4, 7);
+        int reservoirCount = 0;
+
+        int iterations = 0;
+        int maxIterations = 5;
+
+        while(reservoirCount < minVents && iterations++ < maxIterations){
+            outer:
+            for(Tile tile : tiles){
+                if(rand.chance(0.00018 * (1 + iterations)) && !Mathf.within(tile.x, tile.y, spawnX, spawnY, 5f)){
+                    // TODO: implement fissure and well placement
+                    // 1. select valid place for fissure placement
+                    // 2. try to place 2..4 wells within 5..20 blocks
+                    //      cancel placement if not enough space for wells
+                    //      otherwise place and continue
+                }
+            }
+        }
+
 
         for(Tile tile : tiles){
             if(tile.overlay().needsSurface && !tile.floor().hasSurface()){

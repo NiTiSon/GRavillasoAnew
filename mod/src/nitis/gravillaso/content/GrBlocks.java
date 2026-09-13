@@ -1,6 +1,7 @@
 package nitis.gravillaso.content;
 
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -386,11 +387,16 @@ public class GrBlocks{
             fogRadius = 3;
 
             powerProduction = 13.5f;
-            windStrengthForMaximumEfficiency = 8.5f;
+            windStrengthForMaximumEfficiency = 6f;
 
             drawer = new DrawMulti(
             new DrawDefault(),
-            new DrawBlurSpin("-rotor", windStrengthForMaximumEfficiency / 2f),
+            new DrawBlurSpin("-rotor", windStrengthForMaximumEfficiency){
+                @Override
+                public TextureRegion[] icons(Block block){
+                    return new TextureRegion[]{};
+                }
+            },
             new DrawRegion("-top")
             );
         }};
