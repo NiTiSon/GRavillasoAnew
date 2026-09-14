@@ -4,7 +4,7 @@ import arc.struct.*;
 import mindustry.type.*;
 
 import static mindustry.content.Items.*;
-import static mindustry.content.Liquids.cryofluid;
+import static mindustry.content.Liquids.*;
 import static mindustry.content.TechTree.*;
 import static nitis.gravillaso.content.GrBlocks.*;
 import static nitis.gravillaso.content.GrItems.*;
@@ -120,6 +120,10 @@ public class GravilloTechTree{
 
                         });
                     });
+                });
+
+                nodeProduce(oil, () -> {
+
                 });
 
                 nodeProduce(cryofluid, () -> { // Use rockets for phaseFabric, (maybe replace with phaseFluid/phaseAlloy

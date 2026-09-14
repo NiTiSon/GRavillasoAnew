@@ -19,6 +19,7 @@ import mindustry.world.meta.*;
 import nitis.gravillaso.content.*;
 import nitis.gravillaso.core.*;
 import nitis.gravillaso.world.blocks.environment.*;
+import nitis.gravillaso.world.reservoir.*;
 
 import static mindustry.Vars.*;
 
@@ -270,12 +271,12 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
         int iterations = 0;
         int maxIterations = 5;
 
-        Seq<Point2> placed = new Seq<>(8);
+        Seq<Point2> placed = new Seq<>(16);
         final float safeRange = 40f;
         while(reservoirCount < minReservoir && iterations++ < maxIterations){
             outer:
             for(Tile tile : tiles){
-                if(rand.chance(0.00016 * (1 + iterations)) && !Mathf.within(tile.x, tile.y, spawnX, spawnY, 8f)){
+                if(rand.chance(0.00008 * (1 + iterations)) && !Mathf.within(tile.x, tile.y, spawnX, spawnY, 8f)){
                     for(Point2 otherFissure : placed){
                         //prevent spawning a fissure near the other
                         if(Mathf.within(tile.x, tile.y, otherFissure.x, otherFissure.y, safeRange)){
@@ -325,17 +326,23 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
                     if(!ok) continue;
 
                     //3. otherwise place and continue
-                    reservoirCount ++;
+                    Liquid reservoirType = getReservoirLiquid(tile, reservoirCount);
+                    ReservoirSystem.types.add(reservoirType);
                     for(Point2 p : FissureBlock.offsets){
-                        tiles.getn(tile.x + p.x, tile.y + p.y).setFloor(fissure);
+                        Tile t = tiles.getn(tile.x + p.x, tile.y + p.y);
+                        t.setFloor(fissure);
+                        t.extraData = reservoirCount;
                     }
                     placed.add(new Point2(tile.x, tile.y));
 
                     for(int[] spot : spots){
                         for(Point2 p : WellBlock.offsets){
-                            tiles.getn(spot[0] + p.x, spot[1] + p.y).setFloor(well);
+                            Tile t = tiles.getn(spot[0] + p.x, spot[1] + p.y);
+                            t.setFloor(well);
+                            t.extraData = reservoirCount;
                         }
                     }
+                    reservoirCount++;
                 }
             }
         }
@@ -374,6 +381,6 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
             return reservoirDrop[index];
         }
 
-        return reservoirDrop[Mathf.randomSeed(tile.pos(), 0, reservoirDrop.length)];
+        return reservoirDrop[Mathf.randomSeed(tile.pos(), 0, reservoirDrop.length - 1)];
     }
 }
