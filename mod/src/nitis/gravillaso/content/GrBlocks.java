@@ -39,6 +39,7 @@ public class GrBlocks{
     corundum, corundumWall,
     galena, galenaWall,
     cryogenFloor, cryogenWall,
+    alunite, aluniteWall,
     purpleStone, purpleStoneCrater, purpleStoneWall;
     // wells and fissures
     public static Floor corundumWell, galenaWell, purpleStoneWell, shaleWell, cryogenWell;
@@ -95,6 +96,12 @@ public class GrBlocks{
 
         cryogenWall = new StaticWall("cryogen-wall"){{
             cryogenFloor.asFloor().wall = this;
+        }};
+
+        alunite = new Floor("alunite", 3);
+
+        aluniteWall = new StaticWall("alunite-wall"){{
+            alunite.asFloor().wall = this;
         }};
 
         purpleStone = new Floor("purple-stone", 4){{
@@ -174,20 +181,18 @@ public class GrBlocks{
         galenaBoulder = new Prop("galena-boulder"){{
             variants = 2;
             galena.asFloor().decoration = this;
-            obstructsLight = false;
         }};
 
         purpleStoneBoulder = new Prop("purple-stone-boulder"){{
             variants = 2;
             customShadow = true;
-            purpleStone.asFloor().decoration = this;
+            alunite.asFloor().decoration = purpleStone.asFloor().decoration = this;
             obstructsLight = false;
         }};
 
         cryogenBoulder = new Prop("cryogen-boulder"){{
             variants = 2;
             cryogenFloor.asFloor().decoration = this;
-            obstructsLight = false;
         }};
         // endregion
 

@@ -3,7 +3,6 @@ package nitis.gravillaso.core;
 import arc.*;
 import arc.util.*;
 import mindustry.game.EventType.*;
-import mindustry.world.meta.*;
 import nitis.gravillaso.graphics.*;
 import nitis.gravillaso.world.reservoir.*;
 import nitis.gravillaso.world.temperature.*;

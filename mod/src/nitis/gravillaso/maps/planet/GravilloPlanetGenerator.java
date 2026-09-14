@@ -24,7 +24,7 @@ import nitis.gravillaso.world.reservoir.*;
 import static mindustry.Vars.*;
 
 public class GravilloPlanetGenerator extends PlanetGenerator {
-    public float heightScl = 0.7f, octaves = 6, persistence = 0.5f, heightPow = 3f, heightMult = 1.3f;
+    public float heightScl = 0.8f, octaves = 8, persistence = 0.6f, heightPow = 3f, heightMult = 1.8f;
 
     public static float arkThresh = 0.28f, arkScl = 0.83f;
     public static int arkSeed = 7, arkOct = 2;
@@ -34,10 +34,11 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
     Liquid[] reservoirDrop = {Liquids.oil, GrLiquids.brine};
 
     //Block[] terrain = {Blocks.regolith, Blocks.regolith, Blocks.regolith, Blocks.regolith, Blocks.yellowStone, Blocks.rhyolite, Blocks.rhyolite, Blocks.carbonStone};
-    Block[] terrain = {GrBlocks.corundum, GrBlocks.corundum, GrBlocks.corundum, GrBlocks.corundum, GrBlocks.purpleStone, GrBlocks.galena, GrBlocks.galena, GrBlocks.galena}; // TODO: need another one block
+    Block[] terrain = {GrBlocks.corundum, GrBlocks.corundum, GrBlocks.corundum, GrBlocks.corundum, GrBlocks.alunite, GrBlocks.purpleStone, GrBlocks.purpleStone, GrBlocks.galena}; // TODO: need another one block
 
     {
         baseSeed = 2;
+        //in v9 defaultLoadout is moved to the planet
         defaultLoadout = GrLoadouts.basicBase;
     }
 
@@ -358,22 +359,41 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
         Schematics.placeLaunchLoadout(spawnX, spawnY);
     }
 
-    Floor[] reservoirBlocks(Block floor){
-        if(floor == GrBlocks.corundum) return new Floor[]{GrBlocks.corundumFissure, GrBlocks.corundumWell};
-        if(floor == GrBlocks.galena) return new Floor[]{GrBlocks.galenaFissure, GrBlocks.galenaWell};
-        if(floor == GrBlocks.purpleStone) return new Floor[]{GrBlocks.purpleStoneFissure, GrBlocks.purpleStoneWell};
-        if(floor == Blocks.shale) return new Floor[]{GrBlocks.shaleFissure, GrBlocks.shaleWell};
-        if(floor == GrBlocks.cryogenFloor) return new Floor[]{GrBlocks.cryogenFissure, GrBlocks.cryogenWell};
+    @Nullable Floor[] reservoirBlocks(Block floor){
+        if(floor == GrBlocks.corundum){
+            return new Floor[]{GrBlocks.corundumFissure, GrBlocks.corundumWell};
+        }
+        if(floor == GrBlocks.galena){
+            return new Floor[]{GrBlocks.galenaFissure, GrBlocks.galenaWell};
+        }
+        if(floor == GrBlocks.purpleStone || floor == GrBlocks.alunite){ //TODO: improve drawMain in reservoir block for better blending
+            return new Floor[]{GrBlocks.purpleStoneFissure, GrBlocks.purpleStoneWell};
+        }
+        if(floor == Blocks.shale){
+            return new Floor[]{GrBlocks.shaleFissure, GrBlocks.shaleWell};
+        }
+        if(floor == GrBlocks.cryogenFloor){
+            return new Floor[]{GrBlocks.cryogenFissure, GrBlocks.cryogenWell};
+        }
+
         return null;
     }
 
     boolean validPlace(int cx, int cy, Block floor, Point2[] offsets){
         for(Point2 p : offsets){
             Tile other = tiles.get(cx + p.x, cy + p.y);
-            if(other == null || other.block().solid || other.floor() != floor || nearWall(cx + p.x, cy + p.y)) return false;
+            if(other == null || other.block().solid || !sameFloor(other.floor(), floor) || nearWall(cx + p.x, cy + p.y)) return false;
         }
 
         return true;
+    }
+
+    boolean sameFloor(Block floor1, Block floor2){
+        if(floor1 == GrBlocks.alunite || floor1 == GrBlocks.purpleStone){
+            return floor2 == GrBlocks.alunite || floor2 == GrBlocks.purpleStone;
+        }
+
+        return floor1 == floor2;
     }
 
     Liquid getReservoirLiquid(Tile tile, int index){
