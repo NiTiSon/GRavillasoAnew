@@ -24,7 +24,7 @@ public class WindPowerGenerator extends PowerGenerator{
     // maybe we can add perlin to the wind speed?
     public WindPowerGenerator(String name){
         super(name);
-        canPickup = false;
+        allowedInPayloads = false;
     }
 
     @Override
