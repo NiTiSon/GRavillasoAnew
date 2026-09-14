@@ -17,6 +17,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.environment.*;
 import nitis.gravillaso.world.reservoir.*;
+import arc.scene.ui.*;
 
 import static mindustry.Vars.*;
 
@@ -43,9 +44,14 @@ public abstract class ReservoirBlock extends Floor{
         super.buildEditorConfig(table);
 
         table.left().top();
-        table.table(Styles.black6, rows -> {
-            rows.left().top();
+        table.table(Styles.black6, cont -> {
+            Table rows = new Table().left().top();
             rebuildReservoirRows(rows);
+
+            ScrollPane pane = new ScrollPane(rows, Styles.smallPane);
+            pane.setScrollingDisabled(true, false);
+            pane.setOverscroll(false, false);
+            cont.add(pane).growX().maxHeight(Math.min(Math.max(ReservoirSystem.types.size, 2), 8) * 46f);
         }).growX().left().top();
     }
 
