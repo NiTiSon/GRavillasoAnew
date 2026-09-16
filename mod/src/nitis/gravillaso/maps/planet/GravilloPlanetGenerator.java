@@ -401,6 +401,6 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
             return reservoirDrop[index];
         }
 
-        return reservoirDrop[Mathf.randomSeed(tile.pos(), 0, reservoirDrop.length - 1)];
+        return reservoirDrop[Mathf.randomSeed(tile.pos() + seed, 0, reservoirDrop.length - 1)];
     }
 }

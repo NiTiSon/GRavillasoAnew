@@ -25,6 +25,7 @@ import nitis.gravillaso.world.blocks.distribution.*;
 import nitis.gravillaso.world.blocks.environment.*;
 import nitis.gravillaso.world.blocks.liquid.*;
 import nitis.gravillaso.world.blocks.power.*;
+import nitis.gravillaso.world.blocks.production.*;
 import nitis.gravillaso.world.blocks.storage.*;
 import nitis.gravillaso.world.draw.*;
 
@@ -422,23 +423,22 @@ public class GrBlocks{
             ambientSoundVolume = 0.04f;
         }};
 
-        wellCollector = new Block("well-collector"){{
-            requirements(Category.production, with());
-            buildVisibility = BuildVisibility.hidden;
+        wellCollector = new WellCollector("well-collector"){{
+            requirements(Category.production, with(cobalt, 1));
 
             size = 2;
             fogRadius = 2;
         }};
 
-        pressureBooster = new Block("pressure-booster"){{
-            requirements(Category.production, with());
-            buildVisibility = BuildVisibility.hidden;
+        pressureBooster = new PressureBooster("pressure-booster"){{
+            requirements(Category.production, with(cobalt, 1));
 
             size = 3;
             fogRadius = 5;
 
             consumeLiquid(oxygen, 2f);
-            consumePower(12f);
+            liquidCapacity = 300f;
+            consumePower(14.5f);
         }};
         // endregion
 

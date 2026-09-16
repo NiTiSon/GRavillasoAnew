@@ -14,6 +14,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.storage.*;
 import nitis.gravillaso.content.*;
+import nitis.gravillaso.world.meta.*;
 
 import static mindustry.Vars.*;
 
@@ -36,7 +37,7 @@ public class FactoryCoreBlock extends CoreBlock {
         super.setStats();
 
         // code from CoreBlock.setStas
-        stats.add(GrStat.droneType,table -> {
+        stats.add(GrStat.droneType, table -> {
             table.row();
             table.table(Styles.grayPanel, b -> {
                 if(droneType.unlockedNow()){

@@ -55,6 +55,14 @@ public class ReservoirSystem implements SaveFileReader.CustomChunk{
         return 1f;
     }
 
+    public static float getPressureCapacity(int reservoir){
+        if(reservoir >= types.size){
+            return 0f; // invalid reservoir id, no logging, since this method is called very often
+        }
+
+        return 240f;
+    }
+
     public static Liquid getReserviourLiquid(int reservoir){
         if(reservoir >= types.size){
             return Liquids.oil;

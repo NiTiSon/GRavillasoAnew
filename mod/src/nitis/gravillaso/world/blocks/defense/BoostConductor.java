@@ -10,8 +10,8 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.draw.*;
-import nitis.gravillaso.content.*;
 import nitis.gravillaso.world.draw.*;
+import nitis.gravillaso.world.meta.*;
 
 import static mindustry.Vars.*;
 

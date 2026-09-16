@@ -1,4 +1,4 @@
-package nitis.gravillaso.content;
+package nitis.gravillaso.world.meta;
 
 import mindustry.world.meta.*;
 

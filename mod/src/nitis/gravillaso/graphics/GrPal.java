@@ -6,6 +6,7 @@ public class GrPal{
     /** Any usage of this color should be temporal */
     public static Color todoColor = Color.red;
 
+    public static Color pressure = Color.valueOf("caecec");
     public static Color outline = Color.valueOf("363e3e");
     public static Color cobalt = Color.valueOf("9aa3bf");
     public static Color bauxite = Color.valueOf("e2ddbb");
