@@ -6,5 +6,5 @@ import nitis.gravillaso.graphics.*;
 
 public class GrStatUnit{
     public static StatUnit
-    pressure = new StatUnit("pressureUnit", "[#" + GrPal.pressure.toString() + "]" + Iconc.down + "[]");
+    pressure = new StatUnit("gr-pressureunit", "[#" + GrPal.pressure.toString() + "]" + Iconc.down + "[]");
 }

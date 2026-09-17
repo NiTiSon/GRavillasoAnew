@@ -4,6 +4,6 @@ import mindustry.world.meta.*;
 
 public class GrStat{
     public static final Stat
-    droneType = new Stat("dronetype",StatCat.function),
-    speedThroughput = new Stat("speedThroughput", StatCat.function);
+    droneType = new Stat("gr-dronetype",StatCat.function),
+    speedThroughput = new Stat("gr-speedThroughput", StatCat.function);
 }
