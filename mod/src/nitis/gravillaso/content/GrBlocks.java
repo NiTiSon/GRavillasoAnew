@@ -426,6 +426,8 @@ public class GrBlocks{
         wellCollector = new WellCollector("well-collector"){{
             requirements(Category.production, with(cobalt, 1));
 
+            liquidCapacity = 160f;
+
             size = 2;
             fogRadius = 2;
         }};

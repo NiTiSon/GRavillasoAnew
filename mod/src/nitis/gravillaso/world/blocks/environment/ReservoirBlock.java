@@ -51,7 +51,7 @@ public abstract class ReservoirBlock extends Floor{
             ScrollPane pane = new ScrollPane(rows, Styles.smallPane);
             pane.setScrollingDisabled(true, false);
             pane.setOverscroll(false, false);
-            cont.add(pane).growX().maxHeight(Math.min(Math.max(ReservoirSystem.types.size, 2), 8) * 46f);
+            cont.add(pane).growX().maxHeight(Math.min(Math.max(ReservoirSystem.types.length, 2), 8) * 46f);
         }).growX().left().top();
     }
 
@@ -60,11 +60,11 @@ public abstract class ReservoirBlock extends Floor{
         rows.clear();
         rows.left().top();
 
-        if(ReservoirSystem.types.isEmpty()){
+        if(ReservoirSystem.types.length == 0){
             rows.add("No reservoirs yet.", Color.gray).left().pad(4f).row();
         }
 
-        for(int i = 0; i < ReservoirSystem.types.size; i++){
+        for(int i = 0; i < ReservoirSystem.types.length; i++){
             int index = i;
             rows.row();
             rows.table(row -> {
@@ -77,12 +77,12 @@ public abstract class ReservoirBlock extends Floor{
 
                 row.table(selector -> ItemSelection.buildTable(null, selector, content.liquids(),
                     () -> ReservoirSystem.getReserviourLiquid(index),
-                    liquid -> { if(liquid != null) ReservoirSystem.types.set(index, liquid); },
+                    liquid -> { if(liquid != null) ReservoirSystem.types[index] = liquid; },
                     false, 2, 4
                 )).growX();
 
                 row.button(Icon.trash, Styles.flati, () -> {
-                    ReservoirSystem.types.remove(index);
+                    ReservoirSystem.removeReservoir(index);
                     rebuildReservoirRows(rows);
                 }).size(40f).pad(4f);
             }).growX().padBottom(2f);
@@ -90,13 +90,13 @@ public abstract class ReservoirBlock extends Floor{
 
         rows.row();
         rows.button("Add reservoir", Icon.add, Styles.cleart, () -> {
-            ReservoirSystem.types.add(Liquids.oil);
+            ReservoirSystem.addReservoir(Liquids.oil);
             rebuildReservoirRows(rows);
         }).growX().left().padTop(4f);
     }
 
     public int configIndex(){
-        return lastConfig instanceof Integer c && c >= 0 && c < ReservoirSystem.types.size ? c : -1;
+        return lastConfig instanceof Integer c && c >= 0 && c < ReservoirSystem.types.length ? c : -1;
     }
 
     @Override
@@ -106,7 +106,7 @@ public abstract class ReservoirBlock extends Floor{
 
     @Override
     public void onPicked(Tile tile){
-        lastConfig = ReservoirSystem.types.isEmpty() ? null : Math.min(tile.extraData, ReservoirSystem.types.size - 1);
+        lastConfig = ReservoirSystem.types.length == 0 ? null : Math.min(tile.extraData, ReservoirSystem.types.length - 1);
     }
 
     @Override

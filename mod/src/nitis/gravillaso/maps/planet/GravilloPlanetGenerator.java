@@ -328,11 +328,11 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
 
                     //3. otherwise place and continue
                     Liquid reservoirType = getReservoirLiquid(tile, reservoirCount);
-                    ReservoirSystem.types.add(reservoirType);
+                    int reservoirId = ReservoirSystem.addReservoir(reservoirType);
                     for(Point2 p : FissureBlock.offsets){
                         Tile t = tiles.getn(tile.x + p.x, tile.y + p.y);
                         t.setFloor(fissure);
-                        t.extraData = reservoirCount;
+                        t.extraData = reservoirId;
                     }
                     placed.add(new Point2(tile.x, tile.y));
 
@@ -340,7 +340,7 @@ public class GravilloPlanetGenerator extends PlanetGenerator {
                         for(Point2 p : WellBlock.offsets){
                             Tile t = tiles.getn(spot[0] + p.x, spot[1] + p.y);
                             t.setFloor(well);
-                            t.extraData = reservoirCount;
+                            t.extraData = reservoirId;
                         }
                     }
                     reservoirCount++;

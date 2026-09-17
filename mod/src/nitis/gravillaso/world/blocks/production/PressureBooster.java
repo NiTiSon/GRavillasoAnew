@@ -55,8 +55,31 @@ public class PressureBooster extends Block{
         return drawer.icons(this);
     }
 
-    public class PressureBoosterBuild extends Building{
+    public class PressureBoosterBuild extends Building implements PressureProducer{
         public float pressure;
+
+        @Override
+        public void updateTile(){
+            if(efficiency > 0){
+                pressure = Mathf.approachDelta(maxProducedPressure, 0f, pressureSpeed);
+            }else{
+                pressure = Mathf.approachDelta(pressure, 0f, pressureSpeed);
+            }
+        }
+
+        @Override
+        public void onProximityAdded(){
+            super.onProximityAdded();
+
+            ReservoirSystem.addProducer(this);
+        }
+
+        @Override
+        public void onProximityRemoved(){
+            super.onProximityRemoved();
+
+            ReservoirSystem.removeProducer(this);
+        }
 
         public float pressure(){
             return pressure;
@@ -73,15 +96,6 @@ public class PressureBooster extends Block{
 
         public int reservoir(){
             return tile.extraData;
-        }
-
-        @Override
-        public void updateTile(){
-            if(efficiency > 0){
-                pressure = Mathf.approachDelta(maxProducedPressure, 0f, pressureSpeed);
-            }else{
-                pressure = Mathf.approachDelta(pressure, 0f, pressureSpeed);
-            }
         }
     }
 }
