@@ -28,7 +28,7 @@ public class WellCollector extends LiquidBlock{
         super.setBars();
 
         addBar("gr-pressure", (WellCollectorBuild build) -> new Bar(
-        () -> Core.bundle.format("bar.gr-pressure", build.pressure(), build.maxPressure()),
+        () -> Core.bundle.format("bar.gr-pressure", (int)build.pressure(), build.maxPressure()),
         () -> GrPal.pressure,
         build::pressureFrac
         ));

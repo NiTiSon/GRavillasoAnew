@@ -3,6 +3,8 @@ package nitis.gravillaso.world.blocks.production;
 import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.util.*;
+import arc.util.io.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
@@ -15,8 +17,8 @@ import nitis.gravillaso.world.meta.*;
 import nitis.gravillaso.world.reservoir.*;
 
 public class PressureBooster extends Block{
-    public float maxProducedPressure = 80f;
-    public float pressureSpeed = 0.15f;
+    public float maxPressureProduction = 80f;
+    public float pressureSpeed = 0.1f;
 
     public DrawBlock drawer = new DrawDefault();
 
@@ -32,7 +34,7 @@ public class PressureBooster extends Block{
         super.setBars();
 
         addBar("gr-pressure", (PressureBoosterBuild build) -> new Bar(
-        () -> Core.bundle.format("bar.gr-pressure", build.pressure(), build.maxPressure()),
+        () -> Core.bundle.format("bar.gr-pressure", (int)build.pressure(), build.maxPressure()),
         () -> GrPal.pressure,
         build::pressureFrac
         ));
@@ -42,7 +44,7 @@ public class PressureBooster extends Block{
     public void setStats(){
         super.setStats();
 
-        stats.add(Stat.output, maxProducedPressure, GrStatUnit.pressure);
+        stats.add(Stat.output, maxPressureProduction, GrStatUnit.pressure);
     }
 
     @Override
@@ -61,9 +63,9 @@ public class PressureBooster extends Block{
         @Override
         public void updateTile(){
             if(efficiency > 0){
-                pressure = Mathf.approachDelta(maxProducedPressure, 0f, pressureSpeed);
+                pressure = Mathf.approachDelta(pressure, maxPressureProduction(), pressureSpeed * edelta());
             }else{
-                pressure = Mathf.approachDelta(pressure, 0f, pressureSpeed);
+                pressure = Mathf.approachDelta(pressure, 0f, pressureSpeed * Time.delta);
             }
         }
 
@@ -81,12 +83,16 @@ public class PressureBooster extends Block{
             ReservoirSystem.removeProducer(this);
         }
 
+        public float maxPressureProduction(){
+            return maxPressureProduction * this.timeScale;
+        }
+
         public float pressure(){
             return pressure;
         }
 
         public float pressureFrac(){
-            return pressure / Math.max(maxProducedPressure, maxPressure());
+            return pressure / Math.max(maxPressureProduction(), maxPressure());
         }
 
         public float maxPressure(){
@@ -96,6 +102,23 @@ public class PressureBooster extends Block{
 
         public int reservoir(){
             return tile.extraData;
+        }
+
+        @Override
+        public byte version(){
+            return 1;
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+            write.f(pressure);
+        }
+
+        @Override
+        public void read(Reads read, byte revision){
+            super.read(read, revision);
+            pressure = read.f();
         }
     }
 }
