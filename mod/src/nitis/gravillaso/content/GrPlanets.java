@@ -56,6 +56,7 @@ public class GrPlanets {
             allowLegacyLaunchPads = false;
             allowSelfSectorLaunch = true;
             enemyCoreSpawnReplace = true;
+            enemyInfiniteItems = false;
 
             enemyFactoryActivationDelay = 120f * Time.toSeconds;
             launchCapacityMultiplier = 0.5f;

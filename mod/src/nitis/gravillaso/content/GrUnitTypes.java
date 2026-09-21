@@ -162,11 +162,11 @@ public class GrUnitTypes {
             flying = true;
             itemCapacity = 80;
             drag = 0.06f;
-            accel = 0.11f;
-            speed = 1.3f;
+            accel = 0.2f;
+            speed = 1.8f;
             health = 90;
             range = 60f;
-            engineSize = 1.2f;
+            engineSize = 1.1f;
             engineOffset = 5.5f;
             payloadCapacity = 0f;
             targetable = false;
@@ -184,7 +184,7 @@ public class GrUnitTypes {
             envDisabled = Env.none;
 
             mineTier = 1;
-            mineSpeed = 3.75f;
+            mineSpeed = 4.75f;
             mineWalls = true;
             mineFloor = true;
             mineHardnessScaling = false;
