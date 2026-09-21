@@ -30,6 +30,12 @@ public class PressureBooster extends Block{
     }
 
     @Override
+    public void load(){
+        super.load();
+        drawer.load(this);
+    }
+
+    @Override
     public void setBars(){
         super.setBars();
 
@@ -59,6 +65,11 @@ public class PressureBooster extends Block{
 
     public class PressureBoosterBuild extends Building implements PressureProducer{
         public float pressure;
+
+        @Override
+        public void draw(){
+            drawer.draw(this);
+        }
 
         @Override
         public void updateTile(){

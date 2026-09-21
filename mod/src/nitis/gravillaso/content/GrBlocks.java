@@ -441,6 +441,11 @@ public class GrBlocks{
             consumeLiquid(oxygen, 2f);
             liquidCapacity = 300f;
             consumePower(14.5f);
+
+            drawer = new DrawMulti(
+            new DrawRegion("-bottom"),
+            new DrawDefault()
+            );
         }};
         // endregion
 
