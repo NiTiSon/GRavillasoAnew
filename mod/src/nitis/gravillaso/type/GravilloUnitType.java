@@ -4,8 +4,8 @@ import mindustry.type.*;
 import mindustry.world.meta.*;
 import nitis.gravillaso.graphics.*;
 
-public class GravillasoUnitType extends UnitType{
-    public GravillasoUnitType(String name){
+public class GravilloUnitType extends UnitType{
+    public GravilloUnitType(String name){
         super(name);
         outlineColor = GrPal.outline;
         envDisabled = Env.scorching;
