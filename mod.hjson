@@ -3,7 +3,7 @@ displayName: Gravillaso Anew
 author: NiTiSon
 description: ""
 version: v3.42
-minGameVersion: 160
+minGameVersion: 160.5
 
 java: true
 # pregenerated option disables most of the vanilla in-game operations that we do precompile
