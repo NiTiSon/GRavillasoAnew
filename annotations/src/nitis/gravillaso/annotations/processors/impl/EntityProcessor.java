@@ -1,9 +1,11 @@
 package nitis.gravillaso.annotations.processors.impl;
 
 import arc.util.*;
+import arc.util.io.*;
 import arc.struct.*;
 import com.squareup.javapoet.*;
 import mindustry.gen.*;
+import mindustry.io.*;
 import mindustry.world.*;
 import nitis.gravillaso.annotations.Annotations.*;
 import nitis.gravillaso.annotations.processors.*;
@@ -88,6 +90,20 @@ public class EntityProcessor extends BaseProcessor{
 			.addModifiers(Modifier.PUBLIC)
 			.addStatement("super.update()")
 			.addCode("if(building == null || !building.isValid() || building.team != team){\n    $T.unitDespawn(self());\n}\n", cName(Call.class))
+			.build())
+		.addMethod(MethodSpec.methodBuilder("write")
+			.addAnnotation(Override.class)
+			.addModifiers(Modifier.PUBLIC)
+			.addParameter(cName(Writes.class), "write")
+			.addStatement("super.write(write)")
+			.addStatement("$T.writeBuilding(write, building)", cName(TypeIO.class))
+			.build())
+		.addMethod(MethodSpec.methodBuilder("read")
+			.addAnnotation(Override.class)
+			.addModifiers(Modifier.PUBLIC)
+			.addParameter(cName(Reads.class), "read")
+			.addStatement("super.read(read)")
+			.addStatement("building = $T.readBuilding(read)", cName(TypeIO.class))
 			.build());
 	}
 
