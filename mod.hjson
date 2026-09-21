@@ -9,4 +9,4 @@ java: true
 # pregenerated option disables most of the vanilla in-game operations that we do precompile
 pregenerated: true
 main: nitis.gravillaso.GravillasoMod
-hideBrowser: true
+hideBrowser: false
