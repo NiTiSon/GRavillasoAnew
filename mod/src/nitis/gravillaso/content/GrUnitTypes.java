@@ -58,7 +58,7 @@ public class GrUnitTypes {
             targetAir = true;
             //researchCostMultiplier = 0f;
 
-            weapons.add(new Weapon("offense-weapon"){{
+            weapons.add(new GrWeapon("offense-weapon"){{
                 layerOffset = 0.0001f;
                 mirror = false;
                 x = 0f;
