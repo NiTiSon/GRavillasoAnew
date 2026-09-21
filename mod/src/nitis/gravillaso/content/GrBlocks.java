@@ -105,7 +105,7 @@ public class GrBlocks{
             alunite.asFloor().wall = this;
         }};
 
-        purpleStone = new Floor("purple-stone", 4){{
+        purpleStone = new Floor("purple-stone"){{
             attributes.set(Attribute.sand, 1.25f);
         }};
 
