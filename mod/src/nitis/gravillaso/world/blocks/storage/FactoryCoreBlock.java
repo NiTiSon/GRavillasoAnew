@@ -73,6 +73,9 @@ public class FactoryCoreBlock extends CoreBlock {
                     var unit = Groups.unit.getByID(i);
                     if(unit != null){
                         units.add(unit);
+                        if(unit instanceof BuildingTetherc tether){
+                            tether.building(this);
+                        }
                     }
                 });
                 readUnits.clear();
@@ -89,6 +92,11 @@ public class FactoryCoreBlock extends CoreBlock {
 
             if(units.size < droneSlots && droneType.unlockedNow() && (droneProgress += delta() * state.rules.unitBuildSpeed(team) / droneConstructTime) >= 1f){
                 var unit = droneType.create(team);
+                if(unit instanceof BuildingTetherc tether){
+                    tether.building(this);
+                }else{
+                    Log.err("Drone is not implements BuildingTetherc");
+                }
                 unit.set(x, y);
                 unit.rotation = 90f;
                 unit.add();

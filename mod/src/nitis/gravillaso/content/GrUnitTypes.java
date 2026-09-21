@@ -1,6 +1,7 @@
 package nitis.gravillaso.content;
 
 import arc.graphics.*;
+import arc.struct.*;
 import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
@@ -16,9 +17,11 @@ import nitis.gravillaso.type.*;
 import static mindustry.Vars.tilesize;
 
 public class GrUnitTypes {
-    public static @EntityDef({Unitc.class, Legsc.class}) UnitType offense;
+    public static @EntityDef({Unitc.class, Legsc.class}) UnitType offense, thelyphoni;
+    // core units
     public static @EntityDef({Unitc.class}) UnitType tantalus;
-    public static @EntityDef({Unitc.class}) UnitType draugDrone;
+    // core drone units
+    public static @EntityDef({Unitc.class, BuildingTetherc.class}) UnitType draugDrone;
 
     public static void load(){
         offense = new GravilloUnitType("offense"){{
@@ -154,6 +157,7 @@ public class GrUnitTypes {
         draugDrone = new GravilloUnitType("draug-drone"){{
             constructor = DraugDroneUnit::new;
             controller = u -> new MinerAI();
+            mineItems.add(GrItems.cobalt);
 
             flying = true;
             itemCapacity = 80;

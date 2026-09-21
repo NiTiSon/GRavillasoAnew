@@ -4,6 +4,7 @@ import arc.util.*;
 import arc.struct.*;
 import com.squareup.javapoet.*;
 import mindustry.gen.*;
+import mindustry.world.*;
 import nitis.gravillaso.annotations.Annotations.*;
 import nitis.gravillaso.annotations.processors.*;
 
@@ -61,8 +62,33 @@ public class EntityProcessor extends BaseProcessor{
 				.addStatement("return classId")
 				.build());
 
+			if(components.contains(cName(BuildingTetherc.class).canonicalName())){
+				emitTether(entity);
+			}
+
 			write(entity.build());
 		}
+	}
+
+	private void emitTether(TypeSpec.Builder entity){
+		entity.addSuperinterface(cName(BuildingTetherc.class))
+		.addField(FieldSpec.builder(cName(Building.class), "building", Modifier.PUBLIC).build())
+		.addMethod(MethodSpec.methodBuilder("building")
+			.returns(cName(Building.class))
+			.addModifiers(Modifier.PUBLIC)
+			.addStatement("return building")
+			.build())
+		.addMethod(MethodSpec.methodBuilder("building")
+			.addParameter(cName(Building.class), "building")
+			.addModifiers(Modifier.PUBLIC)
+			.addStatement("this.building = building")
+			.build())
+		.addMethod(MethodSpec.methodBuilder("update")
+			.addAnnotation(Override.class)
+			.addModifiers(Modifier.PUBLIC)
+			.addStatement("super.update()")
+			.addCode("if(building == null || !building.isValid() || building.team != team){\n    $T.unitDespawn(self());\n}\n", cName(Call.class))
+			.build());
 	}
 
 	/** Reads the {@code value()} Class array through mirrors; calling {@code annotation.value()} directly throws MirroredTypesException. */
