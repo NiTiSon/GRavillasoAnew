@@ -41,4 +41,19 @@ public class Annotations{
 	@Retention(RetentionPolicy.SOURCE)
 	public @interface EnsureLoad{}
 	//endregion
+
+	//region entity
+	/**
+	 * Declares an entity definition for a content field. Generates an entity class
+	 * extending the matching vanilla base (e.g. {@code LegsUnit} for {@code Legsc}) into the gen package,
+	 * registered with a valid class ID in {@link mindustry.gen.EntityMapping} at class load.
+	 * Assign it as the unit's {@code constructor} when the field is created.
+	 */
+	@Target(ElementType.FIELD)
+	@Retention(RetentionPolicy.SOURCE)
+	public @interface EntityDef{
+		/** List of component interfaces (e.g. {@code Unitc.class, Legsc.class}). */
+		Class[] value();
+	}
+	//endregion
 }
