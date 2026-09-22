@@ -394,10 +394,11 @@ public class GrBlocks{
 
             powerProduction = 13.5f;
             windStrengthForMaximumEfficiency = 6f;
+            minEfficiency = 0.10f;
 
             drawer = new DrawMulti(
             new DrawDefault(),
-            new DrawBlurSpin("-rotor", windStrengthForMaximumEfficiency){
+            new DrawBlurSpin("-rotor", windStrengthForMaximumEfficiency * 1.5f){
                 @Override
                 public TextureRegion[] icons(Block block){
                     return new TextureRegion[]{};

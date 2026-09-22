@@ -22,6 +22,7 @@ public class WindPowerGenerator extends PowerGenerator{
 
     // this generator is kinda boring, change of the wind power is rough
     // maybe we can add perlin to the wind speed?
+    // TODO: add max,min power stats
     public WindPowerGenerator(String name){
         super(name);
         allowedInPayloads = false;
