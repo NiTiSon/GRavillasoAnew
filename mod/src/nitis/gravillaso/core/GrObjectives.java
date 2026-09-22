@@ -5,6 +5,18 @@ import mindustry.game.Objectives.*;
 import mindustry.type.*;
 
 public class GrObjectives{
+    public static class Blocked implements Objective{
+        @Override
+        public boolean complete(){
+            return false;
+        }
+
+        @Override
+        public String display(){
+            return Core.bundle.get("requirement.blocked");
+        }
+    }
+
     public static class OnWave implements Objective{
         public SectorPreset preset;
         public int wave;

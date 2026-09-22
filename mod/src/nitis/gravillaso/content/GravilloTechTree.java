@@ -2,6 +2,8 @@ package nitis.gravillaso.content;
 
 import arc.struct.*;
 import mindustry.type.*;
+import nitis.gravillaso.core.*;
+import nitis.gravillaso.core.GrObjectives.*;
 
 import static mindustry.content.Items.*;
 import static mindustry.content.Liquids.*;
@@ -14,18 +16,20 @@ import static nitis.gravillaso.content.GrUnitTypes.*;
 public class GravilloTechTree{
     public static void load() {
         // planned resources:
-        // T1: cobalt, lead - 1st map
-        // T2: bauxite, silicon - 2nd map
-        // T3: gold - 3rd/4th map
-        // T4: tungsten
+        // T1: cobalt, lead, bauxite, silicon - 1st & 2nd map
+        // T2: titanium - 3rd/4th map
+        // T3: oxide - 5th map
+        // T4: tungsten - 6th map
         // T5: aluminium
+
         // T6: some kind of replacement for surge-alloy and phase-fabric
         //
         //   oxygen?
         //   hydrogen?
+        //   sulfuric acid?
         //
-        // silicon is acquired from bauxite + brine
-        // aluminium & oxygen is acquired from bauxite
+        // silicon is acquired from bauxite
+        // aluminium & oxygen? is acquired from bauxite + brine
 
         var costMultipliers = new ObjectFloatMap<Item>();
         /*
@@ -84,7 +88,7 @@ public class GravilloTechTree{
             });
 
             // turrets
-            node(sight, () -> {
+            node(sight, Seq.with(new Blocked()), () -> {
                 node(cobaltWall, () -> {
                    node(cobaltWallLarge, () -> {
 
