@@ -25,4 +25,4 @@ jobs:
       with:
         archive: false
         name: ${{ github.event.repository.name }}
-        path: mod/build/libs/*.jar
+        path: mod/build/libs/GravillasoAnew.jar
