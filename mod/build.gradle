@@ -39,6 +39,8 @@ jar{
     exclude '**/.gitkeep'
 }
 
+processResources.dependsOn ':tools:run'
+
 tasks.register('jarAndroid', Jar){
     archiveFileName = "${modArtifact}Android.jar"
     dependsOn jar

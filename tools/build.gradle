@@ -15,11 +15,11 @@ def modProject = project(':mod')
 
 dependencies{
     implementation "Anuken:Mindustry:$mindustryVersion"
-    implementation files(modProject.sourceSets.main.output)
+    implementation files(modProject.sourceSets.main.output.classesDirs)
 }
 
 tasks.named('compileJava'){
-    dependsOn modProject.tasks.named('classes')
+    dependsOn modProject.tasks.named('compileJava')
 }
 
 def rawDir = file("$rootDir/mod/assets-raw/sprites")
@@ -43,6 +43,7 @@ tasks.register('run', JavaExec){
         copy{
             from rawDir
             into "$temporaryDir/sprites"
+            exclude '**/*.ase'
         }
 
         //vanilla sprites used by processors only; kept outside 'sprites' so they are never shipped
