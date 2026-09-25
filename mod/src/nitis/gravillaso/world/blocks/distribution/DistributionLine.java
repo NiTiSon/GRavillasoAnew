@@ -357,9 +357,13 @@ public class DistributionLine extends Block implements Autotiler{
             }
         }
 
+        public int getLink(){
+            return link;
+        }
+
         protected boolean canTransferTo(Building target){
             if(target == null || target.team != team || lastItem == null) return false;
-            if(target instanceof DistributionLineBuild line) return line.link == -1 && line.acceptItem(this, lastItem);
+            if(target instanceof DistributionLineBuild line) return line.getLink() == -1;
             if(target instanceof StackConveyorBuild line) return line.link == -1;
             return false;
         }
@@ -414,10 +418,16 @@ public class DistributionLine extends Block implements Autotiler{
 
         @Override
         public void updateTile(){
+            //the item still needs to be "reeled" in when disabled
+            float eff = enabled ? efficiency : 1f;
+
             //reel in crater
             if(cooldown > 0f){
-                cooldown = Mathf.clamp(cooldown - speed * delta(), 0f, recharge);
-                if(link != -1 && (state == stateFork || state == stateJunction) && routeDir == -1) routeDir = selectForkOutput();
+                cooldown = Mathf.clamp(cooldown - speed * eff * delta(), 0f, recharge);
+                //this is pure visuals
+                if(link != -1 && (state == stateFork || state == stateJunction) && routeDir == -1){
+                    routeDir = state == stateFork ? selectForkOutput() : selectJunctionOutput();
+                }
             }
 
             //indicates empty state
