@@ -52,9 +52,17 @@ public class RegionsProcessor extends BaseProcessor{
 
 				for(Element field : annotated.get(base)){
 					Load annotation = field.getAnnotation(Load.class);
+					TypeName type = TypeName.get(field.asType());
 
 					StringBuilder extra = new StringBuilder();
 					if(!annotation.splits()){
+						if(type instanceof ArrayTypeName array && annotation.lengths().length > 0){
+							StringBuilder dimensions = new StringBuilder();
+							for(int length : annotation.lengths()){
+								dimensions.append('[').append(length).append(']');
+							}
+							loadMethod.addStatement("mapped.$L = new $T$L", field.getSimpleName(), array.componentType, dimensions);
+						}
 						for(int i = 0; i < annotation.lengths().length; i++){
 							loadMethod.beginControlFlow(
 							"for (int INDEX$L = 0; INDEX$L < $L; INDEX$L++)",
