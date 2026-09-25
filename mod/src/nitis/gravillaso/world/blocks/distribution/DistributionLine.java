@@ -319,7 +319,6 @@ public class DistributionLine extends Block implements Autotiler{
                 }
             }
 
-            //TODO: more strict check
             boolean oppositeInputs =  (inputMask & 0b0101) == 0b0101 || (inputMask & 0b1010) == 0b1010 ;
             if(inputs >= 2 && outputs >= 2 && !oppositeInputs){
                 state = stateJunction;
@@ -395,7 +394,14 @@ public class DistributionLine extends Block implements Autotiler{
         }
 
         protected int selectJunctionOutput(){
-            return selectForkOutput();
+            if(link == -1) return -1;
+            Tile from = world.tile(link);
+            if(from == null || from.build == null) return -1;
+
+            for(int i = 0; i < 4; i++){
+                if(nearby(i) == from.build) return (i + 2) & 0b11;
+            }
+            return -1;
         }
 
         protected int selectForkOutput(){
