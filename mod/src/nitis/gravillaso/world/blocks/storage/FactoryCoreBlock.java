@@ -13,7 +13,9 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.storage.*;
+import nitis.gravillaso.annotations.Annotations.*;
 import nitis.gravillaso.content.*;
+import nitis.gravillaso.gen.*;
 import nitis.gravillaso.world.meta.*;
 
 import static mindustry.Vars.*;
@@ -58,6 +60,14 @@ public class FactoryCoreBlock extends CoreBlock {
         });
     }
 
+    /** Tells clients which building a spawned drone is tethered to; the tether field isn't part of the unit snapshot. */
+    @Remote(targets = Loc.server)
+    public static void unitTetheredToCore(Building building, int unitId){
+        var unit = Groups.unit.getByID(unitId);
+        if(unit == null || unit.dead || !(unit instanceof BuildingTetherc tether)) return;
+        tether.building(building);
+    }
+
     public class FactoryCoreBuild extends CoreBlock.CoreBuild {
         protected IntSeq readUnits = new IntSeq(); // required for saves
         public float droneProgress, totalDroneProgress, droneWarmup;
@@ -75,13 +85,15 @@ public class FactoryCoreBlock extends CoreBlock {
                         units.add(unit);
                         if(unit instanceof BuildingTetherc tether){
                             tether.building(this);
+                            //sync the reassigned tether to clients
+                            GravillasoCall.unitTetheredToCore(this, unit.id);
                         }
                     }
                 });
                 readUnits.clear();
             }
 
-            // TODO: weapons and drones are simulated on the server only; spawned units sync to clients, and cores can't use @Remote
+            // weapons and drones are simulated on the server only; spawned units sync to clients via @Remote
             if(net.client()) return;
 
             units.removeAll(u -> !u.isAdded() || u.dead);
@@ -101,6 +113,7 @@ public class FactoryCoreBlock extends CoreBlock {
                 unit.rotation = 90f;
                 unit.add();
                 units.add(unit);
+                GravillasoCall.unitTetheredToCore(this, unit.id);
                 droneProgress = 0f;
                 Fx.spawn.at(x, y);
             }

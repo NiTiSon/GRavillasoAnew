@@ -74,6 +74,9 @@ public class GravillasoMod extends Mod{
 
     @Override
     public void init(){
+        //register generated remote-call packets before any connection happens
+        GravillasoCall.registerPackets();
+
         if(grLogic != null){
             grLogic.init();
         }
