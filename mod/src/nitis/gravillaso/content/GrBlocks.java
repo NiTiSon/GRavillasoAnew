@@ -58,7 +58,7 @@ public class GrBlocks{
     // defense
     public static Block booster, boostRedirector, largeBoostRedirector, boostRouter, largeBoostRouter;
     // transport
-    public static Block cobaltConveyor, maglevConveyor, cobaltRouter;
+    public static Block distributionLine, cobaltConveyor, maglevConveyor, cobaltRouter;
     // liquid
     public static Block screenConduit, radiantConduit, screenLiquidRouter;
     // power
@@ -317,6 +317,15 @@ public class GrBlocks{
         // endregion
 
         // region transport
+        distributionLine = new DistributionLine("distribution-line"){{
+            requirements(Category.distribution, with(cobalt, 1));
+            buildVisibility = BuildVisibility.sandboxOnly; // TODO: remove cobalt conveyor, when fully implement this
+            health = 120;
+
+            speed = 2f / 60f;
+            itemCapacity = 8;
+        }};
+
         cobaltConveyor = new StackConveyor("cobalt-conveyor"){{
             requirements(Category.distribution, with(cobalt, 1));
             health = 120;
