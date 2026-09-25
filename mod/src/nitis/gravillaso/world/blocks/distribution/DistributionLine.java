@@ -144,23 +144,55 @@ public class DistributionLine extends Block implements Autotiler{
                 }
             }
 
-            Draw.color(lineColor);
+            Lines.stroke(1f, lineColor);
 
-            for(int i = 0; i < 4; i++){
-                int dir = Mathf.mod(rotation - i, 4);
-                float xOffset = Geometry.d4x(dir) * tilesize / 2f;
-                float yOffset = Geometry.d4y(dir) * tilesize / 2f;
-                if((blendprox & (1 << i)) != 0){
-                    Lines.line(x, y, x + xOffset, y + yOffset);
+            final float halfSize = tilesize / 2f;
+            final float revPadding = tilesize / 4f;
+            if(state != stateFork){
+                for(int i = 0; i < 4; i++){
+                    int dir = Mathf.mod(rotation - i, 4);
+                    float xOffset = Geometry.d4x(dir) * halfSize;
+                    float yOffset = Geometry.d4y(dir) * halfSize;
+                    if((blendprox & (1 << i)) != 0){
+                        Lines.line(x, y, x + xOffset, y + yOffset);
+                    }
+                }
+            }else{
+                for(int i = 0; i < 4; i++){
+                    int dir = Mathf.mod(rotation - i, 4);
+                    float xOffset = Geometry.d4x(dir) * halfSize;
+                    float yOffset = Geometry.d4y(dir) * halfSize;
+                    float padX = Geometry.d4x(dir) * (revPadding + 0.2f);
+                    float padY = Geometry.d4y(dir) * (revPadding + 0.2f);
+                    if((blendprox & (1 << i)) != 0){
+                        Lines.line(x + padX, y + padY, x + xOffset, y + yOffset);
+                    }
                 }
             }
 
             switch(state){
                 case stateFork -> {
+                    Lines.beginLine();
+                    int lines = 0;
+                    for(int i = 0; i < 4; i++){
+                        int dir = Mathf.mod(rotation - i, 4);
+                        float xOffset = Geometry.d4x(dir) * revPadding;
+                        float yOffset = Geometry.d4y(dir) * revPadding;
+                        if((blendprox & (1 << i)) != 0){
+                            Lines.linePoint(x + xOffset, y + yOffset);
+                            lines++;
+                        }
+                    }
+                    Lines.endLine(lines == 4);
                     break;
                 }
                 case stateJunction -> {
+                    Lines.line(x - revPadding, y - revPadding, x + revPadding, y + revPadding);
+                    Lines.line(x + revPadding, y - revPadding, x - revPadding, y + revPadding);
                     break;
+                }
+                case stateLoad, stateUnload -> {
+                    Draw.rect("white", x, y, 2f, 2f, 45f);
                 }
             }
             Draw.color();
