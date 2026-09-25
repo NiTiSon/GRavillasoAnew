@@ -9,12 +9,14 @@ import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.distribution.Conveyor.*;
+import mindustry.world.blocks.distribution.StackConveyor.*;
 import mindustry.world.meta.*;
 import nitis.gravillaso.annotations.Annotations.*;
 
@@ -34,7 +36,6 @@ public class DistributionLine extends Block implements Autotiler{
 
     public float speed = 0f;
     public float recharge = 3f;
-    public boolean outputRouter = false;
 
     public Color lineColor = Pal.accent;
     public Effect loadEffect = Fx.conveyorPoof;
@@ -61,7 +62,7 @@ public class DistributionLine extends Block implements Autotiler{
     @Override
     public String getDisplayName(Tile tile){
         if(tile.build instanceof DistributionLineBuild build){
-            return super.getDisplayName(tile) + " " + build.state + " " + build.blendprox;
+            return super.getDisplayName(tile) + " " + build.state + " " + build.blendprox + " " + build.cooldown;
         }
 
         return super.getDisplayName(tile);
@@ -80,11 +81,10 @@ public class DistributionLine extends Block implements Autotiler{
             int state = b.state;
             if(state == stateLoad){ //standard conveyor mode
                 return otherblock.outputsItems() && lookingAtEither(tile, rotation, otherx, othery, otherrot, otherblock);
-            }else if(state == stateUnload && !outputRouter){ //router mode
+            }else if(state == stateUnload){ //router mode
                 return otherblock.acceptsItems &&
                 (!otherblock.noSideBlend || lookingAtEither(tile, rotation, otherx, othery, otherrot, otherblock)) &&
-                (notLookingAt(tile, rotation, otherx, othery, otherrot, otherblock) ||
-                (otherblock instanceof DistributionLine && facing(otherx, othery, otherrot, tile.x, tile.y))) &&
+                (notLookingAt(tile, rotation, otherx, othery, otherrot, otherblock) || (otherblock instanceof DistributionLine && facing(otherx, othery, otherrot, tile.x, tile.y))) &&
                 !(world.build(otherx, othery) instanceof DistributionLineBuild s && s.state == stateUnload) &&
                 !(world.build(otherx, othery) instanceof DistributionLineBuild s2 && s2.state == stateMove &&
                 !facing(otherx, othery, otherrot, tile.x, tile.y));
@@ -101,6 +101,21 @@ public class DistributionLine extends Block implements Autotiler{
     }
 
     @Override
+    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+        int[] bits = getTiling(plan, list);
+
+        if(bits == null) return;
+
+        Draw.rect(bottomRegion, plan.drawx(), plan.drawy(), plan.rotation * 90);
+
+        for(int i = 0; i < 4; i++){
+            if((bits[3] & (1 << i)) == 0){
+                Draw.rect(edgeRegion, plan.drawx(), plan.drawy(), (plan.rotation - i) * 90);
+            }
+        }
+    }
+
+    @Override
     public boolean rotatedOutput(int x, int y){
         Building tile = world.build(x, y);
         if(tile instanceof DistributionLineBuild s){
@@ -110,9 +125,9 @@ public class DistributionLine extends Block implements Autotiler{
     }
 
     public class DistributionLineBuild extends Building{
-        public int state, blendprox;
+        public int state, blendprox, outputMask;
 
-        public int link = -1;
+        public int link = -1, outputCursor, routeDir = -1;
         public float cooldown;
         public Item lastItem;
 
@@ -162,8 +177,8 @@ public class DistributionLine extends Block implements Autotiler{
                     int dir = Mathf.mod(rotation - i, 4);
                     float xOffset = Geometry.d4x(dir) * halfSize;
                     float yOffset = Geometry.d4y(dir) * halfSize;
-                    float padX = Geometry.d4x(dir) * (revPadding + 0.2f);
-                    float padY = Geometry.d4y(dir) * (revPadding + 0.2f);
+                    float padX = Geometry.d4x(dir) * (revPadding + 0.225f); //little offset between square and lines required
+                    float padY = Geometry.d4y(dir) * (revPadding + 0.225f);
                     if((blendprox & (1 << i)) != 0){
                         Lines.line(x + padX, y + padY, x + xOffset, y + yOffset);
                     }
@@ -173,26 +188,43 @@ public class DistributionLine extends Block implements Autotiler{
             switch(state){
                 case stateFork -> {
                     Lines.beginLine();
-                    int lines = 0;
-                    for(int i = 0; i < 4; i++){
-                        int dir = Mathf.mod(rotation - i, 4);
-                        float xOffset = Geometry.d4x(dir) * revPadding;
-                        float yOffset = Geometry.d4y(dir) * revPadding;
-                        if((blendprox & (1 << i)) != 0){
+                    if(Integer.bitCount(blendprox) == 4){
+                        for(int i = 0; i < 4; i++){
+                            float xOffset = Geometry.d4x[i] * revPadding;
+                            float yOffset = Geometry.d4y[i] * revPadding;
                             Lines.linePoint(x + xOffset, y + yOffset);
-                            lines++;
                         }
+                        Lines.endLine(true);
+                    }else{ //else, only 3 bits
+                        //it's hard to explain
+                        //tldr: returns first index of zero
+                        int forkDir = Integer.numberOfTrailingZeros(~blendprox & 0xF) + rotation;
+                        int left = forkDir - 1;
+                        int right = forkDir + 1;
+
+                        float xOffset = Geometry.d4x(left) * revPadding;
+                        float yOffset = Geometry.d4y(left) * revPadding;
+                        Lines.linePoint(x + xOffset, y + yOffset);
+                        xOffset = Geometry.d4x(forkDir) * revPadding;
+                        yOffset = Geometry.d4y(forkDir) * revPadding;
+                        Lines.linePoint(x + xOffset, y + yOffset);
+                        xOffset = Geometry.d4x(right) * revPadding;
+                        yOffset = Geometry.d4y(right) * revPadding;
+                        Lines.linePoint(x + xOffset, y + yOffset);
+                        //yeah, it's unwrapped loop, go ahead, BLAME ME!!
+
+                        Lines.endLine(false);
                     }
-                    Lines.endLine(lines == 4);
-                    break;
                 }
                 case stateJunction -> {
                     Lines.line(x - revPadding, y - revPadding, x + revPadding, y + revPadding);
                     Lines.line(x + revPadding, y - revPadding, x - revPadding, y + revPadding);
-                    break;
                 }
-                case stateLoad, stateUnload -> {
-                    Draw.rect("white", x, y, 2f, 2f, 45f);
+                case stateLoad -> {
+                    Draw.rect("white", x, y, 2.5f, 2.5f, 45f);
+                }
+                case stateUnload -> {
+                    Draw.rect("white", x, y, 2.5f, 2.5f, 0f);
                 }
             }
             Draw.color();
@@ -202,8 +234,38 @@ public class DistributionLine extends Block implements Autotiler{
         public void draw(){
             Draw.z(Layer.block - 0.1f);
 
-            // TODO: draw lines
-            // TODO: draw item stack
+            Tile from = world.tile(link);
+
+            if(link == -1 || from == null || lastItem == null) return;
+
+            int fromRot = rotation;
+            if(from.build != null){
+                for(int i = 0; i < 4; i++){
+                    if(nearby(i) == from.build){
+                        fromRot = (i + 2) & 3;
+                        break;
+                    }
+                }
+            }
+
+            //offset
+            Tmp.v1.set(from.worldx(), from.worldy());
+            Tmp.v2.set(x, y);
+            Tmp.v1.interpolate(Tmp.v2, 1f - cooldown, Interp.linear);
+
+            //rotation
+            int targetRot = (state == stateFork || state == stateJunction) && routeDir != -1 ? routeDir : rotation;
+            float a = (fromRot%4) * 90;
+            float b = (targetRot%4) * 90;
+            if((fromRot%4) == 3 && (targetRot%4) == 0) a = -1 * 90;
+            if((fromRot%4) == 0 && (targetRot%4) == 3) a =  4 * 90;
+
+            //stack
+            Draw.rect(stackRegion, Tmp.v1.x, Tmp.v1.y, Mathf.lerp(a, b, Interp.smooth.apply(1f - Mathf.clamp(cooldown * 2, 0f, 1f))));
+
+            //item
+            float size = itemSize * Mathf.lerp(Math.min((float)items.total() / itemCapacity, 1), 1f, 0.4f);
+            Draw.rect(lastItem.fullIcon, Tmp.v1.x, Tmp.v1.y, size, size, 0);
         }
 
         @Override
@@ -240,22 +302,25 @@ public class DistributionLine extends Block implements Autotiler{
 
             int[] bits = buildBlending(tile, rotation, null, true);
             if(bits[0] == 0 && blends(tile, rotation, 0) && (!blends(tile, rotation, 2) || back() instanceof DistributionLineBuild b && b.state == stateUnload)) state = stateLoad;  // a 0 that faces into a conveyor with none behind it
-            if(outputRouter && bits[0] == 0 && !blends(tile, rotation, 0) && blends(tile, rotation, 2)) state = stateUnload; // a 0 that faces into none with a conveyor behind it
-            if(!outputRouter && !(front() instanceof DistributionLineBuild)) state = stateUnload; // a 0 that faces into none with a conveyor behind it
+            if(!(front() instanceof DistributionLineBuild)) state = stateUnload; // a 0 that faces into none with a conveyor behind it
 
-            int lines = 0, inputs = 0, inputMask = 0;
+            int inputs = 0, inputMask = 0;
+            int outputs = 0;
+            outputMask = 0;
             for(int i = 0; i < 4; i++){
-                if(nearby(i) instanceof DistributionLineBuild line && line.team == team){
-                    lines++;
+                if(nearby(i) instanceof DistributionLineBuild line && line.team == team && line.isValid()){
                     if(line.front() == this){
                         inputs++;
                         inputMask |= 1 << i;
+                    }else if (line.back() == this){
+                        outputs++;
+                        outputMask |= 1 << i;
                     }
                 }
             }
 
-            int outputs = lines - inputs;
-            boolean oppositeInputs = (inputMask & 0b0101) == 0b0101 || (inputMask & 0b1010) == 0b1010;
+            //TODO: more strict check
+            boolean oppositeInputs =  (inputMask & 0b0101) == 0b0101 || (inputMask & 0b1010) == 0b1010 ;
             if(inputs >= 2 && outputs >= 2 && !oppositeInputs){
                 state = stateJunction;
             }else if(inputs >= 1 && outputs >= 2){
@@ -266,7 +331,7 @@ public class DistributionLine extends Block implements Autotiler{
                 blendprox = 0;
 
                 for(int i = 0; i < 4; i++){
-                    if(blends(tile, rotation, i) && (state != stateUnload || outputRouter || i == 0 || nearby(Mathf.mod(rotation - i, 4)) instanceof DistributionLineBuild)){
+                    if(blends(tile, rotation, i) && (state != stateUnload || i == 0 || nearby(Mathf.mod(rotation - i, 4)) instanceof DistributionLineBuild)){
                         blendprox |= (1 << i);
                     }
                 }
@@ -292,6 +357,106 @@ public class DistributionLine extends Block implements Autotiler{
             }
         }
 
+        protected boolean canTransferTo(Building target){
+            if(target == null || target.team != team || lastItem == null) return false;
+            if(target instanceof DistributionLineBuild line) return line.link == -1 && line.acceptItem(this, lastItem);
+            if(target instanceof StackConveyorBuild line) return line.link == -1;
+            return false;
+        }
+
+        protected void transferTo(Building target){
+            if(target instanceof DistributionLineBuild line){
+                if(!canTransferTo(line)) return;
+                line.items.add(items);
+                line.lastItem = lastItem;
+                line.link = tile.pos();
+                link = -1;
+                items.clear();
+                cooldown = recharge;
+                line.cooldown = 1;
+                return;
+            }
+
+            if(target instanceof StackConveyorBuild stackConveyor){
+                if(!canTransferTo(stackConveyor)) return;
+                stackConveyor.items.add(items);
+                stackConveyor.lastItem = lastItem;
+                stackConveyor.link = tile.pos();
+                link = -1;
+                items.clear();
+                cooldown = recharge;
+                stackConveyor.cooldown = 1;
+            }
+
+        }
+
+        protected int selectJunctionOutput(){
+            return selectForkOutput();
+        }
+
+        protected int selectForkOutput(){
+            int start = outputCursor & 0b11;
+            for(int i = 0; i < 4; i++){
+                int dir = (start + i) & 0b11;
+                if((outputMask & (1 << dir)) == 0) continue;
+                if(canTransferTo(nearby(dir))) return dir;
+            }
+            return -1;
+        }
+
+        protected boolean transferOutput(int direction){
+            if(direction < 0) return false;
+            transferTo(nearby(direction));
+            outputCursor = (direction + 1) & 0b11;
+            routeDir = -1;
+            return true;
+        }
+
+        @Override
+        public void updateTile(){
+            //reel in crater
+            if(cooldown > 0f){
+                cooldown = Mathf.clamp(cooldown - speed * delta(), 0f, recharge);
+                if(link != -1 && (state == stateFork || state == stateJunction) && routeDir == -1) routeDir = selectForkOutput();
+            }
+
+            //indicates empty state
+            if(link == -1) return;
+
+            //crater needs to be centered
+            if(cooldown > 0f) return;
+
+            //get current item
+            if(lastItem == null || !items.has(lastItem)){
+                lastItem = items.first();
+            }
+
+            //do not continue if disabled, will still allow one to be reeled in to prevent visual stacking
+            if(!enabled) return;
+
+            if(state == stateUnload){ //unload
+                while(lastItem != null ? moveForward(lastItem) : dump(null)){
+                    items.remove(lastItem, 1);
+
+                    if(!items.has(lastItem)){
+                        poofOut();
+                        lastItem = null;
+                        break;
+                    }
+                }
+            }else if(state == stateFork){
+                int dir = selectForkOutput();
+                transferOutput(dir);
+            }else if(state == stateJunction){
+                int dir = selectJunctionOutput();
+                transferOutput(dir);
+            }else{ //transfer
+                if(state != stateLoad || (items.total() >= getMaximumAccepted(lastItem))){
+                    transferTo(front());
+                }
+            }
+        }
+
         @Override
         public boolean canUnload(){
             return state != stateLoad;
@@ -314,12 +479,14 @@ public class DistributionLine extends Block implements Autotiler{
 
         protected void poofIn(){
             link = tile.pos();
+            routeDir = -1;
             loadEffect.at(this);
         }
 
         protected void poofOut(){
             unloadEffect.at(this);
             link = -1;
+            routeDir = -1;
         }
 
         @Override
@@ -373,8 +540,12 @@ public class DistributionLine extends Block implements Autotiler{
                 return items.total() < itemCapacity && (!items.any() || items.has(item));
             }
 
+            boolean fromLine = source instanceof DistributionLineBuild line &&
+            (line.front() == this || (back() == line && (line.state == stateFork || line.state == stateJunction)));
+
             return cooldown <= recharge - 1f
-            && state == stateLoad
+            && source.team == team
+            && (state == stateLoad || fromLine)
             && (!items.any() || items.has(item))
             && items.total() < getMaximumAccepted(item)
             && source != front();
@@ -385,6 +556,7 @@ public class DistributionLine extends Block implements Autotiler{
             super.write(write);
 
             write.i(link);
+            write.b(outputCursor);
             write.f(cooldown);
         }
 
@@ -394,6 +566,7 @@ public class DistributionLine extends Block implements Autotiler{
 
             link = read.i();
             cooldown = read.f();
+            outputCursor = read.b();
             lastItem = items.first();
         }
     }
