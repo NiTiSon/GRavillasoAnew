@@ -3,6 +3,7 @@ package nitis.gravillaso;
 import arc.*;
 import arc.files.*;
 import arc.graphics.*;
+import arc.graphics.gl.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.ctype.*;
@@ -84,6 +85,7 @@ public class GravillasoMod extends Mod{
         if(!Vars.headless){
             thermalRenderer = new ThermalRenderer();
             GrUI.inject();
+            GrShaders.init();
         }
     }
 

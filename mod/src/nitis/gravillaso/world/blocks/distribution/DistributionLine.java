@@ -1,5 +1,6 @@
 package nitis.gravillaso.world.blocks.distribution;
 
+import arc.Core;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -18,7 +19,9 @@ import mindustry.world.blocks.*;
 import mindustry.world.blocks.distribution.Conveyor.*;
 import mindustry.world.blocks.distribution.StackConveyor.*;
 import mindustry.world.meta.*;
+import nitis.gravillaso.GravillasoMod;
 import nitis.gravillaso.annotations.Annotations.*;
+import nitis.gravillaso.graphics.*;
 
 import static mindustry.Vars.*;
 
@@ -137,6 +140,73 @@ public class DistributionLine extends Block implements Autotiler{
         public void drawCached(){
             Draw.rect(bottomRegion, x, y, rotdeg());
 
+            for(int i = 0; i < 4; i++){
+                if((blendprox & (1 << i)) == 0){
+                    Draw.rect(edgeRegion, x, y, (rotation - i) * 90);
+                }
+            }
+
+            //draw inputs
+            if(state == stateLoad){
+                for(int i = 0; i < 4; i++){
+                    int dir = Mathf.mod(rotation - i, 4);
+                    var near = nearby(dir);
+                    if((blendprox & (1 << i)) != 0 && i != 0 && near != null && !near.block.squareSprite){
+                        Draw.rect(sliced(bottomRegion, SliceMode.bottom), x + Geometry.d4x(dir) * tilesize*0.75f, y + Geometry.d4y(dir) * tilesize*0.75f, (float)(dir*90));
+                    }
+                }
+            }else if(state == stateUnload){ //front unload
+                //TOOD hacky front check
+                if((blendprox & (1)) != 0 && front() != null && !front().block.squareSprite){
+                    Draw.rect(sliced(bottomRegion, SliceMode.top), x + Geometry.d4x(rotation) * tilesize*0.75f, y + Geometry.d4y(rotation) * tilesize*0.75f, rotation * 90f);
+                }
+            }
+        }
+
+        @Override
+        public void draw(){
+            Draw.z(Layer.block - 0.11f);
+
+            drawLines();
+
+            Draw.z(Layer.block - 0.1f);
+
+            Tile from = world.tile(link);
+
+            if(link == -1 || from == null || lastItem == null) return;
+
+            int fromRot = rotation;
+            if(from.build != null){
+                for(int i = 0; i < 4; i++){
+                    if(nearby(i) == from.build){
+                        fromRot = (i + 2) & 3;
+                        break;
+                    }
+                }
+            }
+
+            //offset
+            Tmp.v1.set(from.worldx(), from.worldy());
+            Tmp.v2.set(x, y);
+            Tmp.v1.interpolate(Tmp.v2, 1f - cooldown, Interp.linear);
+
+            //rotation
+            int targetRot = (state == stateFork || state == stateJunction) && routeDir != -1 ? routeDir : rotation;
+            float a = (fromRot%4) * 90;
+            float b = (targetRot%4) * 90;
+            if((fromRot%4) == 3 && (targetRot%4) == 0) a = -1 * 90;
+            if((fromRot%4) == 0 && (targetRot%4) == 3) a =  4 * 90;
+
+            //stack
+            Draw.rect(stackRegion, Tmp.v1.x, Tmp.v1.y, Mathf.lerp(a, b, Interp.smooth.apply(1f - Mathf.clamp(cooldown * 2, 0f, 1f))));
+
+            //item
+            float size = itemSize * Mathf.lerp(Math.min((float)items.total() / itemCapacity, 1), 1f, 0.4f);
+            Draw.rect(lastItem.fullIcon, Tmp.v1.x, Tmp.v1.y, size, size, 0);
+        }
+
+        protected void drawLines(){
+            // TODO: replace lines with sprites for faster drawing?
             Lines.stroke(1f, lineColor);
 
             final float halfSize = tilesize / 2f;
@@ -206,66 +276,6 @@ public class DistributionLine extends Block implements Autotiler{
                 }
             }
             Draw.color();
-
-            for(int i = 0; i < 4; i++){
-                if((blendprox & (1 << i)) == 0){
-                    Draw.rect(edgeRegion, x, y, (rotation - i) * 90);
-                }
-            }
-
-            //draw inputs
-            if(state == stateLoad){
-                for(int i = 0; i < 4; i++){
-                    int dir = Mathf.mod(rotation - i, 4);
-                    var near = nearby(dir);
-                    if((blendprox & (1 << i)) != 0 && i != 0 && near != null && !near.block.squareSprite){
-                        Draw.rect(sliced(bottomRegion, SliceMode.bottom), x + Geometry.d4x(dir) * tilesize*0.75f, y + Geometry.d4y(dir) * tilesize*0.75f, (float)(dir*90));
-                    }
-                }
-            }else if(state == stateUnload){ //front unload
-                //TOOD hacky front check
-                if((blendprox & (1)) != 0 && front() != null && !front().block.squareSprite){
-                    Draw.rect(sliced(bottomRegion, SliceMode.top), x + Geometry.d4x(rotation) * tilesize*0.75f, y + Geometry.d4y(rotation) * tilesize*0.75f, rotation * 90f);
-                }
-            }
-        }
-
-        @Override
-        public void draw(){
-            Draw.z(Layer.block - 0.1f);
-
-            Tile from = world.tile(link);
-
-            if(link == -1 || from == null || lastItem == null) return;
-
-            int fromRot = rotation;
-            if(from.build != null){
-                for(int i = 0; i < 4; i++){
-                    if(nearby(i) == from.build){
-                        fromRot = (i + 2) & 3;
-                        break;
-                    }
-                }
-            }
-
-            //offset
-            Tmp.v1.set(from.worldx(), from.worldy());
-            Tmp.v2.set(x, y);
-            Tmp.v1.interpolate(Tmp.v2, 1f - cooldown, Interp.linear);
-
-            //rotation
-            int targetRot = (state == stateFork || state == stateJunction) && routeDir != -1 ? routeDir : rotation;
-            float a = (fromRot%4) * 90;
-            float b = (targetRot%4) * 90;
-            if((fromRot%4) == 3 && (targetRot%4) == 0) a = -1 * 90;
-            if((fromRot%4) == 0 && (targetRot%4) == 3) a =  4 * 90;
-
-            //stack
-            Draw.rect(stackRegion, Tmp.v1.x, Tmp.v1.y, Mathf.lerp(a, b, Interp.smooth.apply(1f - Mathf.clamp(cooldown * 2, 0f, 1f))));
-
-            //item
-            float size = itemSize * Mathf.lerp(Math.min((float)items.total() / itemCapacity, 1), 1f, 0.4f);
-            Draw.rect(lastItem.fullIcon, Tmp.v1.x, Tmp.v1.y, size, size, 0);
         }
 
         @Override
