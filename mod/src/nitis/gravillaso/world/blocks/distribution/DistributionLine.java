@@ -581,8 +581,8 @@ public class DistributionLine extends Block implements Autotiler{
             super.read(read, revision);
 
             link = read.i();
-            cooldown = read.f();
             outputCursor = read.b();
+            cooldown = read.f();
             lastItem = items.first();
         }
     }
