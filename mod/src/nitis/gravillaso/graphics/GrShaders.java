@@ -5,6 +5,7 @@ import arc.files.*;
 import arc.graphics.gl.*;
 import arc.util.*;
 import mindustry.*;
+import mindustry.core.*;
 import mindustry.graphics.*;
 import mindustry.mod.*;
 import nitis.gravillaso.*;
@@ -21,6 +22,11 @@ public class GrShaders{
     public static class LineGlossShader extends Shader{
         public LineGlossShader(Fi vertexShader, Fi fragmentShader){
             super(vertexShader, fragmentShader);
+        }
+
+        @Override
+        public void apply(){
+            setUniformf("u_time", Time.time);
         }
     }
 

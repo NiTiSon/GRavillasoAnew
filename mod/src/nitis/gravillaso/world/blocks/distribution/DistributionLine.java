@@ -146,6 +146,8 @@ public class DistributionLine extends Block implements Autotiler{
                 }
             }
 
+            drawLines();
+
             //draw inputs
             if(state == stateLoad){
                 for(int i = 0; i < 4; i++){
@@ -165,9 +167,11 @@ public class DistributionLine extends Block implements Autotiler{
 
         @Override
         public void draw(){
-            Draw.z(Layer.block - 0.11f);
-
-            drawLines();
+            /*Draw.draw(Layer.block - 0.11f, () -> {
+                Draw.shader(GrShaders.lineGloss);
+                drawLines();
+                Draw.shader();
+            });*/
 
             Draw.z(Layer.block - 0.1f);
 
